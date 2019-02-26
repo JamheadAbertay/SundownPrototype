@@ -45,11 +45,6 @@ void ABirdSpline::BeginPlay() {
 	// Find the player pawn
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), PawnClassType, Pawns);
 	Pawn = Cast<APawn>(Pawns[0]);
-
-	if (Pawn)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Pawn found!"));
-	}
 }
 
 void ABirdSpline::Tick(float DeltaSeconds) {
@@ -63,10 +58,8 @@ void ABirdSpline::Tick(float DeltaSeconds) {
 }
 
 void ABirdSpline::NotifyHit(class UPrimitiveComponent* MyComp, class AActor* Other, class UPrimitiveComponent* OtherComp, bool bSelfMoved, FVector HitLocation, FVector HitNormal, FVector NormalImpulse, const FHitResult& Hit){
-	UE_LOG(LogTemp, Warning, TEXT("Spline cylinder hit!"));
 	if (SplineStarted != true) {
 		SplineStarted = true;
-		UE_LOG(LogTemp, Warning, TEXT("Spline should start!"));
 		StartCylinder->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 		StartCylinder->SetCollisionProfileName(TEXT("OverlapAll"));
 	}

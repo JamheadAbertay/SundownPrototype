@@ -121,9 +121,7 @@ void ABirdPawn::NotifyHit(class UPrimitiveComponent* MyComp, class AActor* Other
 		OnSpline = true;
 		move = false;
 		Spline = Cast<USplineComponent>(Hit.GetActor());
-		UE_LOG(LogTemp, Warning, TEXT("SplineCyl hit! 1/2"));
 		SplineBounds = Cast<UStaticMeshComponent>(Hit.GetComponent());
-		UE_LOG(LogTemp, Warning, TEXT("SplineCyl hit! 2/2"));
 	}
 
 	// Deflect along the surface when we collide.
