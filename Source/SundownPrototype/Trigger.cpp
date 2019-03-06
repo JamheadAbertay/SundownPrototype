@@ -53,8 +53,9 @@ void ATrigger::OnOverlapBegin(class AActor* OverlappedActor, class AActor* Other
 			SequencePlayer->Play();
 		}
 
-		// Cinder = Cast<ACharacter>(OtherActor);
+		//Cinder = Cast<ACharacter>(OtherActor);
 		GetWorld()->GetTimerManager().SetTimer(TimerHandle, this, &ATrigger::SitOnBrazier, 3.0f, false);
+		GetWorld()->GetTimerManager().SetTimer(TimerHandle, this, &ATrigger::OpenNewLevel, 3.0f, false);
 	}
 }
 
@@ -64,4 +65,10 @@ void ATrigger::SitOnBrazier()
 	//Cinder->SetActorRotation(NewRotation);
 	Cinder->SetActorLocationAndRotation(NewLocation, NewRotation, false, 0, ETeleportType::None);
 	GetWorldTimerManager().ClearTimer(TimerHandle);
+}
+
+void ATrigger::OpenNewLevel()
+{
+	UGameplayStatics::OpenLevel(GetWorld(), levelToOpen);
+	//GetWorldTimerManager().ClearTimer(TimerHandle);
 }
