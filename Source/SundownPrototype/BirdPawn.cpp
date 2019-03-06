@@ -110,9 +110,7 @@ void ABirdPawn::NotifyHit(class UPrimitiveComponent* MyComp, class AActor* Other
 	if (Other->GetClass()->IsChildOf(SplineClassType)) {
 		OnSpline = true;
 		Spline = Cast<USplineComponent>(Hit.GetActor());
-		UE_LOG(LogTemp, Warning, TEXT("SplineCyl hit! 1/2"));
 		SplineBounds = Cast<UStaticMeshComponent>(Hit.GetComponent());
-		UE_LOG(LogTemp, Warning, TEXT("SplineCyl hit! 2/2"));
 	}
 }
 
