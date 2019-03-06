@@ -79,6 +79,9 @@ private:
 	// Calculate spline movement function
 	void CalculateSpline(float DeltaSeconds);
 
+	// FVector used to store the last location of important actors
+	FVector lastLocation;
+
 protected:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;

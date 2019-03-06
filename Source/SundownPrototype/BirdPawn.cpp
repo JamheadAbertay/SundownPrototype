@@ -44,11 +44,18 @@ void ABirdPawn::BeginPlay()
 
 void ABirdPawn::Tick(float DeltaSeconds)
 {
-	if (OnSpline != true) {
+	// Quick state machine for flight and spline movement
+	if (OnSpline == false) {
 		CalculateFlight(DeltaSeconds);
 	}
 	else {
-		CalculateSpline(DeltaSeconds);
+		if (lastLocation != SplineBounds->GetComponentLocation()) {
+			CalculateSpline(DeltaSeconds);
+			lastLocation = SplineBounds->GetComponentLocation();
+		}
+		else {
+			OnSpline = false;
+		}
 	}
 
 	// Call any parent class Tick implementation
