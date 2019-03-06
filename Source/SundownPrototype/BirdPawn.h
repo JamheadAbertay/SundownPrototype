@@ -76,6 +76,9 @@ private:
 	// Calculate flight function
 	void CalculateFlight(float DeltaSeconds);
 
+	// Calculate spline movement function
+	void CalculateSpline(float DeltaSeconds);
+
 protected:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;

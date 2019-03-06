@@ -44,7 +44,12 @@ void ABirdPawn::BeginPlay()
 
 void ABirdPawn::Tick(float DeltaSeconds)
 {
-	CalculateFlight(DeltaSeconds);
+	if (OnSpline != true) {
+		CalculateFlight(DeltaSeconds);
+	}
+	else {
+		CalculateSpline(DeltaSeconds);
+	}
 
 	// Call any parent class Tick implementation
 	Super::Tick(DeltaSeconds);
@@ -101,6 +106,12 @@ void ABirdPawn::CalculateFlight(float DeltaSeconds)
 	float ZVel = FMath::FInterpTo(GetCharacterMovement()->Velocity.Z, (InclinationAmount * -980 * FMath::Abs(InclinationAmount)), DeltaSeconds, 4);
 	FVector newVel = FVector(0.0f, 0.0f, ZVel);
 	GetCharacterMovement()->Velocity.SetComponentForAxis(EAxis::Z, newVel.Z);
+}
+
+void ABirdPawn::CalculateSpline(float DeltaSeconds) {
+	FRotator MeshCorrection = FRotator(0.0f, -90.0f, 0.0f);
+	SetActorLocation(SplineBounds->GetComponentLocation());
+	SetActorRotation(SplineBounds->GetComponentRotation() + MeshCorrection);
 }
 
 void ABirdPawn::NotifyHit(class UPrimitiveComponent* MyComp, class AActor* Other, class UPrimitiveComponent* OtherComp, bool bSelfMoved, FVector HitLocation, FVector HitNormal, FVector NormalImpulse, const FHitResult& Hit)

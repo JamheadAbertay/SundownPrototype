@@ -6,6 +6,7 @@
 #include "GameFramework/Actor.h"
 #include "Classes/Components/SplineComponent.h"
 #include "Components/StaticMeshComponent.h"
+#include "GameFramework/Character.h"
 #include "Runtime/Engine/Classes/Engine/EngineTypes.h"
 #include "BirdSpline.generated.h"
 
@@ -25,12 +26,6 @@ public:
 	/** Starting cylinder to attach to spline */
 	UPROPERTY(EditAnywhere, Category = SplineSettings)
 	UStaticMeshComponent* StartCylinder;
-
-	/** Reference to player */
-	TArray<AActor*> Pawns;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Pawn)
-		TSubclassOf<class AActor>  PawnClassType;
-	APawn* Pawn;
 
 protected:
 
