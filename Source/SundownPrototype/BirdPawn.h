@@ -34,7 +34,6 @@ protected:
 
 	/** Bound to the control rotation pitch (camera too) */
 	void PitchInput(float Val);
-
 	/** Bound to the control rotation yaw (camera too) */
 	void YawInput(float Val);
 
@@ -58,17 +57,13 @@ private:
 	UPROPERTY(EditAnywhere, Category = Flight)
 		UCurveFloat* AngCurve;
 
-	/** How quickly forward speed changes */
-	UPROPERTY(EditDefaultsOnly, Category = Flight)
-		float Acceleration;
-
 	/** The force of gravity */
 	UPROPERTY(EditDefaultsOnly, Category = Flight)
 		float GravityConstant;
 
-	// This is used when calculating the inclination of the character
+	// This is used when calculating the inclination of the character (then used for Z velocity)
 	float InclinationAmount;
-	// This is used to control the lift of the bird
+	// This is used to control the lift of the bird (force against gravity)
 	float LiftAmount;
 	// This is the flyspeedHold variable for handling movement (default value is 1.0f)
 	float SpeedHoldAmount = 1.0f;
@@ -76,8 +71,11 @@ private:
 	// Calculate flight function
 	void CalculateFlight(float DeltaSeconds);
 
-	// Calculate spline movement function
-	void CalculateSpline(float DeltaSeconds);
+	// Calculate spline movement function with overloaded direction function
+	void CalculateDirection(float DeltaSeconds);
+
+	// Overloaded function for spline movement (direction)
+	void CalculateDirection(float DeltaSeconds, FVector SplineInterpLocation);
 
 	// FVector used to store the last location of important actors
 	FVector lastLocation;
