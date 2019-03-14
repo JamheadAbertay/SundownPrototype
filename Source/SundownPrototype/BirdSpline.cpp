@@ -42,15 +42,13 @@ ABirdSpline::ABirdSpline()
 
 void ABirdSpline::BeginPlay() {
 	Super::BeginPlay();
-	// Find the player pawn
-	UGameplayStatics::GetAllActorsOfClass(GetWorld(), PawnClassType, Pawns);
-	Pawn = Cast<APawn>(Pawns[0]);
 }
 
 void ABirdSpline::Tick(float DeltaSeconds) {
 	Super::Tick(DeltaSeconds);
+
 	if ((SplineStarted) && (SplineDistance < MovementSpline->GetDistanceAlongSplineAtSplinePoint(MovementSpline->GetNumberOfSplinePoints() - 1))) {
-		SplineDistance += 10;
+		SplineDistance += 5;
 		//UE_LOG(LogTemp, Warning, TEXT("Spline should be moving!"));
 		StartCylinder->SetWorldLocation(MovementSpline->GetLocationAtDistanceAlongSpline(SplineDistance, ESplineCoordinateSpace::World), false);
 		StartCylinder->SetRelativeRotation(MovementSpline->GetRotationAtDistanceAlongSpline(SplineDistance, ESplineCoordinateSpace::World), false);
@@ -58,7 +56,7 @@ void ABirdSpline::Tick(float DeltaSeconds) {
 }
 
 void ABirdSpline::NotifyHit(class UPrimitiveComponent* MyComp, class AActor* Other, class UPrimitiveComponent* OtherComp, bool bSelfMoved, FVector HitLocation, FVector HitNormal, FVector NormalImpulse, const FHitResult& Hit){
-	if (SplineStarted != true) {
+	if ((SplineStarted != true) && (Other->IsA(ACharacter::StaticClass()))) {
 		SplineStarted = true;
 		StartCylinder->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 		StartCylinder->SetCollisionProfileName(TEXT("OverlapAll"));
