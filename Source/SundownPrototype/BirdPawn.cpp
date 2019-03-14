@@ -6,13 +6,12 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/Controller.h"
 #include "Engine/World.h"
-#include "EngineUtils.h"
-#include "Engine.h"
 #include "Kismet/GameplayStatics.h"
 #include "Runtime/Engine/Classes/Kismet/KismetMathLibrary.h"
 #include "UnrealMath.h"
-#include <EngineGlobals.h>
-#include <Runtime/Engine/Classes/Engine/Engine.h>
+#include "Engine.h"
+#include "EngineGlobals.h"
+#include "EngineUtils.h"
 
 // Sets default values
 ABirdPawn::ABirdPawn()
@@ -38,12 +37,13 @@ void ABirdPawn::BeginPlay()
 	GetCharacterMovement()->AirControl = 1.0f;
 	GetCharacterMovement()->BrakingFrictionFactor = 2.0f;
 	GetCharacterMovement()->RotationRate = FRotator(0.0f, 180.0f, 90.0f);
-	GetCharacterMovement()->MaxAcceleration = 2000.0f;
+	GetCharacterMovement()->MaxAcceleration = 2400.0f;
 }
 
 void ABirdPawn::Tick(float DeltaSeconds)
 {
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("SpeedHoldAmount: %f"), SpeedHoldAmount));
+	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("SpeedHoldAmount: %f"), SpeedHoldAmount));
+	deltatime = DeltaSeconds;
 	// Quick state machine for flight and spline movement
 	if (OnSpline == false) {
 		CalculateFlight(DeltaSeconds);
@@ -147,9 +147,11 @@ void ABirdPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 }
 
 void ABirdPawn::PitchInput(float Val) {
-	AddControllerPitchInput(Val);
+	PitchAmount = FMath::FInterpTo(PitchAmount, Val, deltatime, 4);
+	AddControllerPitchInput(PitchAmount);
 }
 
 void ABirdPawn::YawInput(float Val) {
-	AddControllerYawInput(Val);
+	YawAmount = FMath::FInterpTo(YawAmount, Val, deltatime, 4);
+	AddControllerYawInput(YawAmount);
 }
