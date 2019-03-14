@@ -36,20 +36,12 @@ public:
 	UFUNCTION()
 		void SitOnBrazier();
 
-	//Function to open new level if being uused as an open level trigger
-	UFUNCTION()
-		void OpenNewLevel();
-
 	//Reference to player
 	ACharacter* Cinder;
 
 	//Collision box that will trigger sequence
-	UPROPERTY(EditAnywhere, Category = CollisionBox)
+	UPROPERTY()
 	UBoxComponent* CollisionBox;
-
-	//New level to open if being used as an open level trigger
-	UPROPERTY(EditAnywhere, Category = LevelToOpen)
-		FName levelToOpen;
 
 	//Level sequence player used to play fade out
 	UPROPERTY()
