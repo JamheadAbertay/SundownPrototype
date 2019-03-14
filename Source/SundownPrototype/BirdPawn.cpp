@@ -37,7 +37,7 @@ void ABirdPawn::BeginPlay()
 	GetCharacterMovement()->AirControl = 1.0f;
 	GetCharacterMovement()->BrakingFrictionFactor = 2.0f;
 	GetCharacterMovement()->RotationRate = FRotator(0.0f, 180.0f, 90.0f);
-	GetCharacterMovement()->MaxAcceleration = 2400.0f;
+	GetCharacterMovement()->MaxAcceleration = 3000.0f;
 }
 
 void ABirdPawn::Tick(float DeltaSeconds)
@@ -147,7 +147,7 @@ void ABirdPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 }
 
 void ABirdPawn::PitchInput(float Val) {
-	PitchAmount = FMath::FInterpTo(PitchAmount, Val, deltatime, 4);
+	PitchAmount = FMath::FInterpTo(PitchAmount, Val, deltatime, 2.5);
 	AddControllerPitchInput(PitchAmount);
 }
 
