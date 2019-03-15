@@ -34,8 +34,10 @@ protected:
 
 	/** Bound to the control rotation pitch (camera too) */
 	void PitchInput(float Val);
+	float PitchAmount = 0.0f;
 	/** Bound to the control rotation yaw (camera too) */
 	void YawInput(float Val);
+	float YawAmount = 0.0f;
 
 	// Begin AActor overrides
 	virtual void BeginPlay();
@@ -79,6 +81,9 @@ private:
 
 	// FVector used to store the last location of important actors
 	FVector lastLocation;
+
+	// Float for storing delta time
+	float deltatime;
 
 protected:
 	// Called to bind functionality to input
