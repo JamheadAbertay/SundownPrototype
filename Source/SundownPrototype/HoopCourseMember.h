@@ -40,15 +40,24 @@ public:
 	UPROPERTY()
 		UBoxComponent* CollisionBox;
 
-	//Fire particle system that will play when bird flies through hoop
-	UPROPERTY()
-		UParticleSystemComponent* HoopFire;
+	//Next hoop actor to spawn when bird flies through current hoop
+	UPROPERTY(EditAnywhere, Category = HoopToSpawn)
+		AHoopCourseMember* HoopToSpawn;
 
 	//Sound to play when bird flies through hoop
 	UPROPERTY()
 		USoundCue* HoopSound;
 
+	//Sound to play when fire starts
+	UPROPERTY()
+		USoundCue* FireSound;
+
+	//Fire particle system to spawn when bird flies through hoop
+	UPROPERTY()
+		UParticleSystemComponent* HoopFire;
+
 	//Whether this hoop is active on the course
-	bool isHoopActive = true;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool isHoopActive = false;
 	
 };
