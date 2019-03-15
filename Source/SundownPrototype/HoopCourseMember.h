@@ -8,6 +8,7 @@
 #include "Components/StaticMeshComponent.h"
 #include "Runtime/Engine/Classes/Particles/ParticleSystemComponent.h"
 #include "GameFramework/Character.h"
+#include "Sound/SoundCue.h"
 #include "HoopCourseMember.generated.h"
 
 UCLASS()
@@ -32,7 +33,7 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	//Hoop object
-	UPROPERTY(EditAnywhere, Category = hoop)
+	UPROPERTY()
 		UStaticMeshComponent* Hoop;
 
 	//Collision box that will trigger sequence
@@ -40,6 +41,14 @@ public:
 		UBoxComponent* CollisionBox;
 
 	//Fire particle system that will play when bird flies through hoop
-	UParticleSystemComponent* OurParticleSystem;
+	UPROPERTY()
+		UParticleSystemComponent* HoopFire;
+
+	//Sound to play when bird flies through hoop
+	UPROPERTY()
+		USoundCue* HoopSound;
+
+	//Whether this hoop is active on the course
+	bool isHoopActive = true;
 	
 };
