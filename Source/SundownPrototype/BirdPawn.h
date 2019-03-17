@@ -27,8 +27,12 @@ public:
 	// Camera components
 	UPROPERTY(EditAnywhere)
 		USpringArmComponent* mCameraSpringArm;
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 		UCameraComponent* mCamera;
+
+	/** Spline movement bool, false by default */
+	UPROPERTY(BlueprintReadOnly, Category = Spline)
+		bool OnSpline = false;
 
 protected:
 
@@ -46,9 +50,6 @@ protected:
 	// End AActor overrides
 
 private:
-
-	/** Spline movement bool, false by default */
-	bool OnSpline = false;
 
 	// FLYING MOVEMENT
 	/** Flight Velocity Lift Multiplier Curve */
@@ -88,12 +89,4 @@ private:
 protected:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-
-public:
-	/** Returns CameraSpringArm subobject **/
-	FORCEINLINE class USpringArmComponent* GetCameraArm() const { return mCameraSpringArm; }
-	/** Returns Camera subobject **/
-	FORCEINLINE class UCameraComponent* GetCamera() const { return mCamera; }
-
-	bool allowedToFly = true;
 };
