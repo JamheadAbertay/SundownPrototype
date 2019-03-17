@@ -35,7 +35,7 @@ ABirdSpline::ABirdSpline()
 		StartCylinder->SetRelativeRotation(FRotator(0.0f, 0.0f, 90.0f));
 		StartCylinder->SetWorldScale3D(FVector(1.0f));
 		StartCylinder->SetMobility(EComponentMobility::Movable);
-		StartCylinder->bVisible = false;
+		StartCylinder->bVisible = true;
 		StartCylinder->bCastDynamicShadow = false;
 	}
 }
@@ -53,6 +53,15 @@ void ABirdSpline::Tick(float DeltaSeconds) {
 		StartCylinder->SetWorldLocation(MovementSpline->GetLocationAtDistanceAlongSpline(SplineDistance, ESplineCoordinateSpace::World), false);
 		StartCylinder->SetRelativeRotation(MovementSpline->GetRotationAtDistanceAlongSpline(SplineDistance, ESplineCoordinateSpace::World), false);
 		}
+	else {
+		SplineStarted = false;
+
+		/*SplineDistance = 0;
+		StartCylinder->SetWorldLocation(MovementSpline->GetLocationAtDistanceAlongSpline(SplineDistance, ESplineCoordinateSpace::World), false);
+		StartCylinder->SetRelativeRotation(MovementSpline->GetRotationAtDistanceAlongSpline(SplineDistance, ESplineCoordinateSpace::World), false);
+		StartCylinder->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+		StartCylinder->SetCollisionProfileName(TEXT("BlockAllDynamic"));*/
+	}
 }
 
 void ABirdSpline::NotifyHit(class UPrimitiveComponent* MyComp, class AActor* Other, class UPrimitiveComponent* OtherComp, bool bSelfMoved, FVector HitLocation, FVector HitNormal, FVector NormalImpulse, const FHitResult& Hit){

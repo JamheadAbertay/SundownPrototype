@@ -120,8 +120,12 @@ void ABirdPawn::CalculateDirection(float DeltaSeconds) {
 void ABirdPawn::CalculateDirection(float DeltaSeconds, FVector SplineInterpLocation) {
 	// Calculate change in yaw rotation
 	//FVector SplineVector = SplineInterpLocation - GetActorLocation();
-	FVector XYVelocity = SplineInterpLocation - GetActorLocation(); //FVector(GetCharacterMovement()->Velocity.X, GetCharacterMovement()->Velocity.Y, 0.0f); //XY Movement FVector
-	AddMovementInput(XYVelocity, 1.0f);
+	//FVector XYVelocity = SplineInterpLocation - GetActorLocation(); //FVector(GetCharacterMovement()->Velocity.X, GetCharacterMovement()->Velocity.Y, 0.0f); //XY Movement FVector
+	//AddMovementInput(XYVelocity, 1.0f);
+	
+	FRotator MeshCorrection = FRotator(0.0f, -90.0f, 00.0f);
+	SetActorRotation(SplineBounds->GetComponentRotation() + MeshCorrection);
+	SetActorLocation(SplineBounds->GetComponentLocation());
 }
 
 void ABirdPawn::NotifyHit(class UPrimitiveComponent* MyComp, class AActor* Other, class UPrimitiveComponent* OtherComp, bool bSelfMoved, FVector HitLocation, FVector HitNormal, FVector NormalImpulse, const FHitResult& Hit)

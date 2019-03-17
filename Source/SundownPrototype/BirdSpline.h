@@ -24,8 +24,11 @@ public:
 	USplineComponent* MovementSpline;
 
 	/** Starting cylinder to attach to spline */
-	UPROPERTY(EditAnywhere, Category = SplineSettings)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = SplineSettings)
 	UStaticMeshComponent* StartCylinder;
+
+	UPROPERTY(BlueprintReadOnly, Category = SplineCamera)
+	bool SplineStarted = false; // Whether spline is being travelled along based on collision with the StartCylinder
 
 protected:
 
@@ -36,6 +39,5 @@ protected:
 	/** End overrides */
 
 private:
-	bool SplineStarted = false; // Whether spline is being travelled along based on collision with the StartCylinder
 	float SplineDistance = 0.0f; // Distance along spline
 };
