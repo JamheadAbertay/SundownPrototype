@@ -5,10 +5,11 @@ TO-DO...
 
 PART 1
 
-Create the spline itself (the spline shape)
-Create tools so that designers can place/edit points on the spline
-Get bird to follow spline, experiment with changing bird speed
-Setup a movement bounds system and integrate into the movement spline w/ speed control
+Create the spline itself (the spline shape) (DONE)
+Create tools so that designers can place/edit points on the spline (DONE)
+Get bird to follow spline, experiment with changing bird speed (DONE)
+Setup a cinematic camera system for the spline (WORKING ON WITH CAVAN IN BLUEPRINT)
+Setup a movement bounds system and integrate into the movement spline w/ speed control (UNFINISHED)
 
 **/
 
@@ -35,7 +36,7 @@ ABirdSpline::ABirdSpline()
 		StartCylinder->SetRelativeRotation(FRotator(0.0f, 0.0f, 90.0f));
 		StartCylinder->SetWorldScale3D(FVector(1.0f));
 		StartCylinder->SetMobility(EComponentMobility::Movable);
-		StartCylinder->bVisible = false;
+		StartCylinder->bVisible = true;
 		StartCylinder->bCastDynamicShadow = false;
 	}
 }
@@ -48,11 +49,20 @@ void ABirdSpline::Tick(float DeltaSeconds) {
 	Super::Tick(DeltaSeconds);
 
 	if ((SplineStarted) && (SplineDistance < MovementSpline->GetDistanceAlongSplineAtSplinePoint(MovementSpline->GetNumberOfSplinePoints() - 1))) {
-		SplineDistance += 5;
+		SplineDistance += SplineSpeed;
 		//UE_LOG(LogTemp, Warning, TEXT("Spline should be moving!"));
 		StartCylinder->SetWorldLocation(MovementSpline->GetLocationAtDistanceAlongSpline(SplineDistance, ESplineCoordinateSpace::World), false);
 		StartCylinder->SetRelativeRotation(MovementSpline->GetRotationAtDistanceAlongSpline(SplineDistance, ESplineCoordinateSpace::World), false);
 		}
+	else {
+		SplineStarted = false;
+
+		/*SplineDistance = 0;
+		StartCylinder->SetWorldLocation(MovementSpline->GetLocationAtDistanceAlongSpline(SplineDistance, ESplineCoordinateSpace::World), false);
+		StartCylinder->SetRelativeRotation(MovementSpline->GetRotationAtDistanceAlongSpline(SplineDistance, ESplineCoordinateSpace::World), false);
+		StartCylinder->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+		StartCylinder->SetCollisionProfileName(TEXT("BlockAllDynamic"));*/
+	}
 }
 
 void ABirdSpline::NotifyHit(class UPrimitiveComponent* MyComp, class AActor* Other, class UPrimitiveComponent* OtherComp, bool bSelfMoved, FVector HitLocation, FVector HitNormal, FVector NormalImpulse, const FHitResult& Hit){
