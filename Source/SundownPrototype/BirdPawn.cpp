@@ -35,9 +35,11 @@ void ABirdPawn::BeginPlay()
 	// Set relevant character movement properties
 	GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Falling);
 	GetCharacterMovement()->AirControl = 1.0f;
-	GetCharacterMovement()->BrakingFrictionFactor = 2.0f;
+	GetCharacterMovement()->BrakingFrictionFactor = 1.0f;
+	GetCharacterMovement()->FallingLateralFriction = 1.0f;
 	GetCharacterMovement()->RotationRate = FRotator(0.0f, 180.0f, 90.0f);
 	GetCharacterMovement()->MaxAcceleration = 3000.0f;
+	GetCharacterMovement()->MaxWalkSpeed = 325.0f;
 }
 
 void ABirdPawn::Tick(float DeltaSeconds)
@@ -45,10 +47,28 @@ void ABirdPawn::Tick(float DeltaSeconds)
 	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("SpeedHoldAmount: %f"), SpeedHoldAmount));
 	deltatime = DeltaSeconds;
 	// Quick state machine for flight and spline movement
+	// NOT SPLINE
 	if (OnSpline == false) {
 		CalculateFlight(DeltaSeconds);
 		CalculateDirection(DeltaSeconds);
-	}
+		// BOOST
+		if (Boosting) {
+			GetCharacterMovement()->MaxWalkSpeed *= 1.05f;
+			if (GetCharacterMovement()->MaxWalkSpeed > BoostSpeed) {
+				Boosting = false;
+			}
+		}
+		// NOT BOOST
+		else {
+			if (GetCharacterMovement()->MaxWalkSpeed > 325.0f) {
+				GetCharacterMovement()->MaxWalkSpeed *= 0.985f;
+			}
+			else {
+				GetCharacterMovement()->MaxWalkSpeed = 325.0f;
+				}
+			}
+		}
+	// SPLINE
 	else {
 		if (lastLocation != SplineBounds->GetComponentLocation()) {
 			CalculateDirection(DeltaSeconds, lastLocation);
@@ -59,6 +79,11 @@ void ABirdPawn::Tick(float DeltaSeconds)
 			OnSpline = false;
 		}
 	}
+
+	float movespeed = GetCharacterMovement()->MaxWalkSpeed;
+
+	//GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, FString::Printf(TEXT("MaxSpeed: %f"), movespeed));
+
 	// Call any parent class Tick implementation
 	Super::Tick(DeltaSeconds);
 }
@@ -93,7 +118,7 @@ void ABirdPawn::CalculateFlight(float DeltaSeconds)
 	float ZRangeClamped;
 	// First convert Z velocity value to be within the correct range
 	FVector2D input = FVector2D(-500.0f, 0.0f);
-	FVector2D output = FVector2D(2.0f, 1.0f);
+	FVector2D output = FVector2D(1.5f, 1.0f);
 	// mapRangeClamped represents the difference in the Z velocity of the character, but clamped within reasonable values to be used for SpeedHoldAmount)
 	ZRangeClamped = FMath::GetMappedRangeValueClamped(input, output, GetCharacterMovement()->Velocity.Z);
 	// B) FInterp SpeedHoldAmount towards mapRangeClamped
@@ -148,6 +173,8 @@ void ABirdPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 	// Bind our control axis' to callback functions
 	PlayerInputComponent->BindAxis("PitchInput", this, &ABirdPawn::PitchInput);
 	PlayerInputComponent->BindAxis("YawInput", this, &ABirdPawn::YawInput);
+	PlayerInputComponent->BindAction("BuildBoost", IE_Pressed, this, &ABirdPawn::BuildBoost);
+	//PlayerInputComponent->BindAction("ReleaseBoost", IE_Released, this, &ABirdPawn::ReleaseBoost);
 }
 
 void ABirdPawn::PitchInput(float Val) {
@@ -159,3 +186,12 @@ void ABirdPawn::YawInput(float Val) {
 	YawAmount = FMath::FInterpTo(YawAmount, Val, deltatime, 4);
 	AddControllerYawInput(YawAmount);
 }
+
+void ABirdPawn::BuildBoost() {
+	Boosting = true;
+}
+
+//void ABirdPawn::ReleaseBoost() {
+//	Boosting = false;
+//	GetCharacterMovement()->MaxWalkSpeed = 325.0f;
+//}

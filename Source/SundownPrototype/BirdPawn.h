@@ -42,6 +42,9 @@ protected:
 	/** Bound to the control rotation yaw (camera too) */
 	void YawInput(float Val);
 	float YawAmount = 0.0f;
+	/** Bound to the boost ability */
+	void BuildBoost();
+	//void ReleaseBoost();
 
 	// Begin AActor overrides
 	virtual void BeginPlay();
@@ -50,39 +53,47 @@ protected:
 	// End AActor overrides
 
 private:
-
-	// FLYING MOVEMENT
+	// MOVEMENT FUNCTIONS / VARIABLES
+	/** Calculate flight function */
+	void CalculateFlight(float DeltaSeconds);
+	/** Calculate spline movement function with overloaded direction function */
+	void CalculateDirection(float DeltaSeconds);
+	//
+	/** This is used when calculating the inclination of the character (then used for Z velocity) */
+	float InclinationAmount;
+	/** This is used to control the lift of the bird (force against gravity) */
+	float LiftAmount;
+	/** This is the variable for handling acceleration and if desired momentum (default value is 1.0f) */
+	float SpeedHoldAmount = 1.0f;
+	/** The force of gravity */
+	UPROPERTY(EditDefaultsOnly, Category = Flight)
+		float GravityConstant = 9.8f;
 	/** Flight Velocity Lift Multiplier Curve */
 	UPROPERTY(EditAnywhere, Category = Flight)
 		UCurveFloat* VelCurve;
-
 	/** Flight Angle Lift Multiplier Curve */
 	UPROPERTY(EditAnywhere, Category = Flight)
 		UCurveFloat* AngCurve;
+	/** Boost bool for handling when to boost */
+	bool Boosting;
+	/** Speed to go to when boosting */
+	UPROPERTY(EditAnywhere, Category = Boost)
+		float BoostSpeed = 975.0f;
+	/** Amount to multiply MaxWalkSpeed by during boost each frame */
+	UPROPERTY(EditAnywhere, Category = Boost)
+		float BoostMultiplier = 1.05f;
+	/** Amount to multiply MaxWalkSpeed by after boosting each frame until speed is back to normal */
+	UPROPERTY(EditAnywhere, Category = Boost)
+		float SlowdownMultiplier = 0.985f;
 
-	/** The force of gravity */
-	UPROPERTY(EditDefaultsOnly, Category = Flight)
-		float GravityConstant;
-
-	// This is used when calculating the inclination of the character (then used for Z velocity)
-	float InclinationAmount;
-	// This is used to control the lift of the bird (force against gravity)
-	float LiftAmount;
-	// This is the flyspeedHold variable for handling movement (default value is 1.0f)
-	float SpeedHoldAmount = 1.0f;
-
-	// Calculate flight function
-	void CalculateFlight(float DeltaSeconds);
-
-	// Calculate spline movement function with overloaded direction function
-	void CalculateDirection(float DeltaSeconds);
-
-	// Overloaded function for spline movement (direction)
+	// SPLINE FUNCTIONS / VARIABLES
+	// Overloaded function for spline movement
 	void CalculateDirection(float DeltaSeconds, FVector SplineInterpLocation);
-
-	// FVector used to store the last location of important actors
+	//
+	// FVector used to store the last location of the spline movement mesh
 	FVector lastLocation;
 
+	// OTHER 
 	// Float for storing delta time
 	float deltatime;
 
