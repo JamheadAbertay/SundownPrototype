@@ -36,10 +36,10 @@ void ABirdPawn::BeginPlay()
 	GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Falling);
 	GetCharacterMovement()->AirControl = 1.0f;
 	GetCharacterMovement()->BrakingFrictionFactor = 1.0f;
+	GetCharacterMovement()->FallingLateralFriction = 1.0f;
 	GetCharacterMovement()->RotationRate = FRotator(0.0f, 180.0f, 90.0f);
 	GetCharacterMovement()->MaxAcceleration = 3000.0f;
 	GetCharacterMovement()->MaxWalkSpeed = 325.0f;
-	GetCharacterMovement()->FallingLateralFriction = 1.0f;
 }
 
 void ABirdPawn::Tick(float DeltaSeconds)
@@ -47,15 +47,18 @@ void ABirdPawn::Tick(float DeltaSeconds)
 	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("SpeedHoldAmount: %f"), SpeedHoldAmount));
 	deltatime = DeltaSeconds;
 	// Quick state machine for flight and spline movement
+	// NOT SPLINE
 	if (OnSpline == false) {
 		CalculateFlight(DeltaSeconds);
 		CalculateDirection(DeltaSeconds);
+		// BOOST
 		if (Boosting) {
 			GetCharacterMovement()->MaxWalkSpeed *= 1.05f;
-			if (GetCharacterMovement()->MaxWalkSpeed > 1000.0f) {
+			if (GetCharacterMovement()->MaxWalkSpeed > BoostSpeed) {
 				Boosting = false;
 			}
 		}
+		// NOT BOOST
 		else {
 			if (GetCharacterMovement()->MaxWalkSpeed > 325.0f) {
 				GetCharacterMovement()->MaxWalkSpeed *= 0.985f;
@@ -65,6 +68,7 @@ void ABirdPawn::Tick(float DeltaSeconds)
 				}
 			}
 		}
+	// SPLINE
 	else {
 		if (lastLocation != SplineBounds->GetComponentLocation()) {
 			CalculateDirection(DeltaSeconds, lastLocation);
@@ -78,10 +82,7 @@ void ABirdPawn::Tick(float DeltaSeconds)
 
 	float movespeed = GetCharacterMovement()->MaxWalkSpeed;
 
-	GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, FString::Printf(TEXT("MaxSpeed: %f"), movespeed));
-	//GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, FString::Printf(TEXT("Impact Point: %s"), *OutHit.ImpactPoint.ToString()));
-	//GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, FString::Printf(TEXT("Normal Point: %s"), *OutHit.ImpactNormal.ToString()));
-
+	//GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, FString::Printf(TEXT("MaxSpeed: %f"), movespeed));
 
 	// Call any parent class Tick implementation
 	Super::Tick(DeltaSeconds);
