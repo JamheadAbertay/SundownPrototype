@@ -42,6 +42,10 @@ protected:
 	/** Bound to the control rotation yaw (camera too) */
 	void YawInput(float Val);
 	float YawAmount = 0.0f;
+	/** Bound to the boost ability */
+	void BuildBoost();
+	//void ReleaseBoost();
+	bool Boosting;
 
 	// Begin AActor overrides
 	virtual void BeginPlay();
