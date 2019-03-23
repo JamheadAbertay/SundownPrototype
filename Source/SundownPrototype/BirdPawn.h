@@ -44,7 +44,8 @@ protected:
 	float YawAmount = 0.0f;
 	/** Bound to the boost ability */
 	void BuildBoost();
-	//void ReleaseBoost();
+	UFUNCTION(BlueprintCallable, Category = "Boost")
+		void BoostReady();
 
 	// Begin AActor overrides
 	virtual void BeginPlay();
@@ -78,13 +79,18 @@ private:
 	bool Boosting;
 	/** Speed to go to when boosting */
 	UPROPERTY(EditAnywhere, Category = Boost)
-		float BoostSpeed = 975.0f;
+		float BoostSpeed = 650.0f;
 	/** Amount to multiply MaxWalkSpeed by during boost each frame */
 	UPROPERTY(EditAnywhere, Category = Boost)
 		float BoostMultiplier = 1.05f;
 	/** Amount to multiply MaxWalkSpeed by after boosting each frame until speed is back to normal */
 	UPROPERTY(EditAnywhere, Category = Boost)
-		float SlowdownMultiplier = 0.985f;
+		float SlowdownMultiplier = 0.998f;
+	/** Time to delay between boosts (in seconds) */
+	UPROPERTY(EditAnywhere, Category = Boost)
+		float BoostDelaySeconds = 1.25f;
+	/** For using delay to create a boost cooldown */
+	FLatentActionInfo LatentActionInfo;
 
 	// SPLINE FUNCTIONS / VARIABLES
 	// Overloaded function for spline movement

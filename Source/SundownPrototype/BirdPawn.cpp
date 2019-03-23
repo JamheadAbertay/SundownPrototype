@@ -8,6 +8,7 @@
 #include "Engine/World.h"
 #include "Kismet/GameplayStatics.h"
 #include "Runtime/Engine/Classes/Kismet/KismetMathLibrary.h"
+#include "Runtime/Engine/Classes/Kismet/KismetSystemLibrary.h"
 #include "UnrealMath.h"
 #include "Engine.h"
 #include "EngineGlobals.h"
@@ -40,6 +41,12 @@ void ABirdPawn::BeginPlay()
 	GetCharacterMovement()->RotationRate = FRotator(0.0f, 180.0f, 90.0f);
 	GetCharacterMovement()->MaxAcceleration = 3000.0f;
 	GetCharacterMovement()->MaxWalkSpeed = 325.0f;
+
+	// For boost timing
+	LatentActionInfo.CallbackTarget = this;
+	LatentActionInfo.ExecutionFunction = "BoostReady";
+	LatentActionInfo.UUID = 123;
+	LatentActionInfo.Linkage = 0;
 }
 
 void ABirdPawn::Tick(float DeltaSeconds)
@@ -53,15 +60,17 @@ void ABirdPawn::Tick(float DeltaSeconds)
 		CalculateDirection(DeltaSeconds);
 		// BOOST
 		if (Boosting) {
-			GetCharacterMovement()->MaxWalkSpeed *= 1.05f;
-			if (GetCharacterMovement()->MaxWalkSpeed > BoostSpeed) {
-				Boosting = false;
+			if (GetCharacterMovement()->MaxWalkSpeed < BoostSpeed) {
+				GetCharacterMovement()->MaxWalkSpeed *= BoostMultiplier;
+			}
+			else {
+				GetCharacterMovement()->MaxWalkSpeed = BoostSpeed;
 			}
 		}
 		// NOT BOOST
 		else {
 			if (GetCharacterMovement()->MaxWalkSpeed > 325.0f) {
-				GetCharacterMovement()->MaxWalkSpeed *= 0.985f;
+				GetCharacterMovement()->MaxWalkSpeed *= SlowdownMultiplier;
 			}
 			else {
 				GetCharacterMovement()->MaxWalkSpeed = 325.0f;
@@ -79,8 +88,6 @@ void ABirdPawn::Tick(float DeltaSeconds)
 			OnSpline = false;
 		}
 	}
-
-	float movespeed = GetCharacterMovement()->MaxWalkSpeed;
 
 	//GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, FString::Printf(TEXT("MaxSpeed: %f"), movespeed));
 
@@ -189,9 +196,9 @@ void ABirdPawn::YawInput(float Val) {
 
 void ABirdPawn::BuildBoost() {
 	Boosting = true;
+	UKismetSystemLibrary::Delay(GetWorld(), BoostDelaySeconds, LatentActionInfo);
 }
 
-//void ABirdPawn::ReleaseBoost() {
-//	Boosting = false;
-//	GetCharacterMovement()->MaxWalkSpeed = 325.0f;
-//}
+void ABirdPawn::BoostReady() {
+	Boosting = false;
+}
