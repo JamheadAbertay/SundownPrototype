@@ -26,7 +26,7 @@ public:
 
 	/** Brazier mesh */
 	UPROPERTY(EditAnywhere, Category = Brazier)
-		UStaticMeshComponent* BrazierMesh;
+		AActor* Brazier;
 
 	//Overlap begin function
 	UFUNCTION()
@@ -65,4 +65,6 @@ public:
 	//New rotation to set the bird to (rotation of brazier)
 	UPROPERTY()
 		FRotator NewRotation;
+
+	bool inBrazierZone = false;
 };

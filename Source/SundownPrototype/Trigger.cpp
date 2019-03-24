@@ -1,3 +1,6 @@
+#define print(text) if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 1.5, FColor::Green,text)
+#define printFString(text, fstring) if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT(text), fstring))
+
 #include "Trigger.h"
 // include draw debug helpers header file
 #include "DrawDebugHelpers.h"
@@ -5,6 +8,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "TimerManager.h"
 #include "Runtime/CoreUObject/Public/UObject/ConstructorHelpers.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 ATrigger::ATrigger()
 {
@@ -15,24 +19,12 @@ ATrigger::ATrigger()
 	CollisionBox = CreateDefaultSubobject<UBoxComponent>(TEXT("Collision Box"));
 	CollisionBox->SetupAttachment(RootComponent);
 
-	//Setup brazier mesh
-	BrazierMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Brazier Mesh"));
-	static ConstructorHelpers::FObjectFinder<UStaticMesh> BrazierAsset(TEXT("StaticMesh'/Game/Assets/Brazier01.Brazier01'"));
-	if (BrazierAsset.Succeeded())
-	{
-		BrazierMesh->SetStaticMesh(BrazierAsset.Object);
-		BrazierMesh->SetupAttachment(RootComponent);
-	}
-
 	//Setup sequence
-	static ConstructorHelpers::FObjectFinder<ULevelSequence> SequenceAsset(TEXT("LevelSequence'/Game/Sequences/FadeOut.FadeOut'"));
+	static ConstructorHelpers::FObjectFinder<ULevelSequence> SequenceAsset(TEXT("LevelSequence'/Game/Sequences/FadeInFadeOut.FadeInFadeOut'"));
 	if (SequenceAsset.Succeeded())
 	{
 		FadeOut = SequenceAsset.Object;
 	}
-
-	NewLocation = FVector(BrazierMesh->GetComponentLocation().X, BrazierMesh->GetComponentLocation().Y, BrazierMesh->GetComponentLocation().Z + 100);
-	NewRotation = BrazierMesh->GetComponentRotation();
 }
 
 // Called when the game starts or when spawned
@@ -46,6 +38,19 @@ void ATrigger::OnOverlapBegin(class AActor* OverlappedActor, class AActor* Other
 {
 	if (OtherActor && (OtherActor->IsA(ACharacter::StaticClass())))
 	{
+		inBrazierZone = true;
+
+		Cinder = Cast<ACharacter>(OtherActor);
+
+		while (inBrazierZone)
+		{
+			Cinder->GetCharacterMovement()->Velocity = (FVector(0.0f, 0.0f, 0.0f));
+			//Cinder->GetCharacterMovement();
+		}
+
+		NewLocation = FVector(Brazier->GetActorLocation().X, Brazier->GetActorLocation().Y, Brazier->GetActorLocation().Z + 100);
+		NewRotation = Brazier->GetActorRotation();
+
 		SequencePlayer = ULevelSequencePlayer::CreateLevelSequencePlayer(GetWorld(), FadeOut, FMovieSceneSequencePlaybackSettings(), SequenceActor);
 
 		if (SequencePlayer)
@@ -53,15 +58,13 @@ void ATrigger::OnOverlapBegin(class AActor* OverlappedActor, class AActor* Other
 			SequencePlayer->Play();
 		}
 
-		//Cinder = Cast<ACharacter>(OtherActor);
-		GetWorld()->GetTimerManager().SetTimer(TimerHandle, this, &ATrigger::SitOnBrazier, 3.0f, false);
+		GetWorld()->GetTimerManager().SetTimer(TimerHandle, this, &ATrigger::SitOnBrazier, 2.0f, false);
 	}
 }
 
 void ATrigger::SitOnBrazier()
 {
-	//Cinder->SetActorLocation(NewLocation);
-	//Cinder->SetActorRotation(NewRotation);
-	//Cinder->SetActorLocationAndRotation(NewLocation, NewRotation, false, 0, ETeleportType::None);
-	//GetWorldTimerManager().ClearTimer(TimerHandle);
+	printFString("CinderVelocity: %s", *Cinder->GetVelocity().ToString());
+	Cinder->SetActorLocation(NewLocation);
+	GetWorldTimerManager().ClearTimer(TimerHandle);
 }
