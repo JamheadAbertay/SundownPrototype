@@ -15,55 +15,62 @@ AHoopCourseMember::AHoopCourseMember()
 	OnActorBeginOverlap.AddDynamic(this, &AHoopCourseMember::OnOverlapBegin);
 
 	//Setup hoop object
-	Hoop = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Hoop object"));
+	Hoop = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("RootComponent"));
 	Hoop->SetupAttachment(RootComponent);
 	Hoop->SetMobility(EComponentMobility::Static);
 
-	static ConstructorHelpers::FObjectFinder<UStaticMesh> HoopAsset(TEXT("StaticMesh'/Game/Assets/Landscape/SM_RockCircle.SM_RockCircle'"));
+	static ConstructorHelpers::FObjectFinder<UStaticMesh> HoopAsset(TEXT("StaticMesh'/Game/Assets/Props/Ring_Whole01_polySurface23.Ring_Whole01_polySurface23'"));
 	if (HoopAsset.Succeeded())
 	{
 		Hoop->SetStaticMesh(HoopAsset.Object);
 	}
 
+	RootComponent = Hoop;
+
+	//Setup glowing hoop object
+	GlowingHoop = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("GlowingHoop"));
+	GlowingHoop->SetupAttachment(RootComponent);
+	GlowingHoop->SetRelativeLocation(FVector(-38.0f, -15.0f, 129.0f));
+	GlowingHoop->SetRelativeRotation(FRotator(0.0f, 0.0f, 0.0f));
+	GlowingHoop->SetRelativeScale3D(FVector(1.0f, 1.0f, 1.0f));
+	GlowingHoop->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	GlowingHoop->SetMobility(EComponentMobility::Static);
+
+	static ConstructorHelpers::FObjectFinder<UStaticMesh> GlowingHoopAsset(TEXT("StaticMesh'/Game/Assets/Props/Ring_Whole01_polySurface31.Ring_Whole01_polySurface31'"));
+	if (GlowingHoopAsset.Succeeded())
+	{
+		GlowingHoop->SetStaticMesh(GlowingHoopAsset.Object);
+	}
+
 	//Setup collision box
-	CollisionBox = CreateDefaultSubobject<UBoxComponent>(TEXT("Collision Box"));
-	CollisionBox->SetupAttachment(Hoop);
-	CollisionBox->SetRelativeLocation(FVector(0.0f, 0.0f, 360.0f));
-	CollisionBox->SetRelativeRotation(FRotator(30.0f, 0.0f, 0.0f));
-	CollisionBox->SetRelativeScale3D(FVector(10.0f, 1.0f, 11.0f));
+	CollisionBox = CreateDefaultSubobject<UBoxComponent>(TEXT("CollisionBox"));
+	CollisionBox->SetupAttachment(RootComponent);
+	CollisionBox->SetRelativeLocation(FVector(-38.0f, -15.0f, 129.0f));
+	CollisionBox->SetRelativeRotation(FRotator(0.0f, 0.0f, 0.0f));
+	CollisionBox->SetRelativeScale3D(FVector(0.75f, 0.1f, 0.75f));
 	CollisionBox->SetMobility(EComponentMobility::Static);
 
-	//Initially set next hoop to hidden
-	//HoopToSpawn->SetActorHiddenInGame(true);
-
-	//Setup a particle system
-	HoopFire = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("Fire Particles"));
-	HoopFire->SetupAttachment(Hoop);
-	HoopFire->bAutoActivate = true;
-	HoopFire->SetVisibility(false);
-	HoopFire->SetRelativeLocation(FVector(0.0f, 0.0f, 360.0f));
-	HoopFire->SetRelativeRotation(FRotator(0.0f, 0.0f, 0.0f));
-	HoopFire->SetRelativeScale3D(FVector(15.0f, 15.0f, 20.0f));
-	static ConstructorHelpers::FObjectFinder<UParticleSystem> HoopFireAsset(TEXT("ParticleSystem'/Game/Characters/Creatures/Bavi/FairyParticle.FairyParticle'"));
-	if (HoopFireAsset.Succeeded())
-	{
-		HoopFire->SetTemplate(HoopFireAsset.Object);
-	}
+	//Setup hoops light
+	HoopLight = CreateDefaultSubobject<UPointLightComponent>(TEXT("HoopLight"));
+	HoopLight->SetupAttachment(RootComponent);
+	HoopLight->Activate();
+	HoopLight->bVisible = false;
+	HoopLight->IntensityUnits = ELightUnits::Candelas;
+	HoopLight->SetIntensity(1000.0f);
+	HoopLight->SetLightColor(FLinearColor(0.0f, 1.0f, 1.0f, 1.0f));
+	HoopLight->SetAttenuationRadius(500.0f);
+	HoopLight->SetRelativeLocation(FVector(-38.0f, -15.0f, 129.0f));
+	HoopLight->SetRelativeRotation(FRotator(0.0f, 0.0f, 0.0f));
+	HoopLight->SetRelativeScale3D(FVector(1.0f, 1.0f, 1.0f));
+	HoopLight->SetMobility(EComponentMobility::Stationary);
 
 	//Setup sound to play when bird flies through hoop
 	HoopSound = CreateDefaultSubobject<USoundCue>(TEXT("Hoop sound"));
+
 	static ConstructorHelpers::FObjectFinder<USoundCue> HoopSoundAsset(TEXT("SoundCue'/Game/Hoops/HoopSoundCue.HoopSoundCue'"));
 	if (HoopSoundAsset.Succeeded())
 	{
 		HoopSound = HoopSoundAsset.Object;
-	}
-
-	//Setup sound to play when fire starts
-	FireSound = CreateDefaultSubobject<USoundCue>(TEXT("Fire sound"));
-	static ConstructorHelpers::FObjectFinder<USoundCue> FireSoundAsset(TEXT("SoundCue'/Game/Hoops/HoopSoundCue.HoopSoundCue'"));
-	if (FireSoundAsset.Succeeded())
-	{
-		FireSound = FireSoundAsset.Object;
 	}
 }
 
@@ -72,15 +79,9 @@ void AHoopCourseMember::BeginPlay()
 {
 	Super::BeginPlay();
 
-	//If this hoop is not active, hide it in game
-    //Only start hoop will be active on begin play
-	if (!isHoopActive)
+	if (isHoopActive)
 	{
-		this->SetActorHiddenInGame(true);
-	}
-	else
-	{
-		this->SetActorHiddenInGame(false);
+		HoopLight->ToggleVisibility();
 	}
 }
 
@@ -102,24 +103,23 @@ void AHoopCourseMember::OnOverlapBegin(class AActor* OverlappedActor, class AAct
 			UE_LOG(LogTemp, Warning, TEXT("Hit the hoop"));
 
 			//If this hoop is the last in the course
-			if (HoopToSpawn == nullptr)
+			if (HoopToLight == nullptr)
 			{
 				//Print course is finished to log
 				UE_LOG(LogTemp, Warning, TEXT("Hoop course finished"));
 			}
+
 			//If there is another hoop after this one
 			else
 			{
 				//Set the next hoop to be active and not hidden
-				HoopToSpawn->isHoopActive = true;
-				HoopToSpawn->SetActorHiddenInGame(false);
+				HoopToLight->isHoopActive = true;
+				//Turn hoop to lights light on
+				HoopToLight->HoopLight->ToggleVisibility();
 			}
 			//Play hoop sound
 			UGameplayStatics::PlaySound2D(GetWorld(), HoopSound);
-			//Play fire sound
-			UGameplayStatics::PlaySound2D(GetWorld(), FireSound);
-			//Spawn particle system
-			HoopFire->SetVisibility(true);
+
 			//Set this hoop to be inactive
 			isHoopActive = false;
 		}

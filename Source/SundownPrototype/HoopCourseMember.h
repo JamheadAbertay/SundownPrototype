@@ -9,6 +9,7 @@
 #include "Runtime/Engine/Classes/Particles/ParticleSystemComponent.h"
 #include "GameFramework/Character.h"
 #include "Sound/SoundCue.h"
+#include "Runtime/Engine/Classes/Components/PointLightComponent.h"
 #include "HoopCourseMember.generated.h"
 
 UCLASS()
@@ -33,28 +34,31 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	//Hoop object
-	UPROPERTY()
+	UPROPERTY(EditAnywhere, Category = Hoop)
 		UStaticMeshComponent* Hoop;
 
+	//Glowing hoop inside main hoop
+	UPROPERTY(EditAnywhere, Category = GlowingHoop)
+		UStaticMeshComponent* GlowingHoop;
+
 	//Collision box that will trigger sequence
-	UPROPERTY()
+	UPROPERTY(EditAnywhere, Category = Box)
 		UBoxComponent* CollisionBox;
 
+	UPROPERTY(EditAnywhere, Category = HoopsLight)
+		UPointLightComponent* HoopLight;
+
+	//Whether this hoop is active on the course
+	UPROPERTY(EditAnywhere, Category = HoopsLight)
+		bool lightToggle = false;
+
 	//Next hoop actor to spawn when bird flies through current hoop
-	UPROPERTY(EditAnywhere, Category = HoopToSpawn)
-		AHoopCourseMember* HoopToSpawn;
+	UPROPERTY(EditAnywhere, Category = HoopToLight)
+		AHoopCourseMember* HoopToLight;
 
 	//Sound to play when bird flies through hoop
 	UPROPERTY()
 		USoundCue* HoopSound;
-
-	//Sound to play when fire starts
-	UPROPERTY()
-		USoundCue* FireSound;
-
-	//Fire particle system to spawn when bird flies through hoop
-	UPROPERTY()
-		UParticleSystemComponent* HoopFire;
 
 	//Whether this hoop is active on the course
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
