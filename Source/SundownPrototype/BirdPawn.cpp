@@ -40,7 +40,7 @@ void ABirdPawn::BeginPlay()
 	GetCharacterMovement()->FallingLateralFriction = 1.0f;
 	GetCharacterMovement()->RotationRate = FRotator(0.0f, 180.0f, 90.0f);
 	GetCharacterMovement()->MaxAcceleration = 3000.0f;
-	GetCharacterMovement()->MaxWalkSpeed = 325.0f;
+	GetCharacterMovement()->MaxWalkSpeed = DefaultSpeed;
 
 	// For boost timing
 	LatentActionInfo.CallbackTarget = this;
@@ -69,14 +69,14 @@ void ABirdPawn::Tick(float DeltaSeconds)
 		}
 		// NOT BOOST
 		else {
-			if (GetCharacterMovement()->MaxWalkSpeed > 325.0f) {
+			if (GetCharacterMovement()->MaxWalkSpeed > DefaultSpeed) {
 				GetCharacterMovement()->MaxWalkSpeed *= SlowdownMultiplier;
 			}
-			else {
-				GetCharacterMovement()->MaxWalkSpeed = 325.0f;
-				}
+			else if (GetCharacterMovement()->MaxWalkSpeed < DefaultSpeed) {
+				GetCharacterMovement()->MaxWalkSpeed = DefaultSpeed;
 			}
 		}
+	}
 	// SPLINE
 	else {
 		if (lastLocation != SplineBounds->GetComponentLocation()) {

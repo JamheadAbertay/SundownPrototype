@@ -80,6 +80,9 @@ private:
 	/** Speed to go to when boosting */
 	UPROPERTY(EditAnywhere, Category = Boost)
 		float BoostSpeed = 650.0f;
+	/** Defauly speed variable */
+	UPROPERTY(EditAnywhere, Category = MovementSpeed)
+		float DefaultSpeed = 325.0f;
 	/** Amount to multiply MaxWalkSpeed by during boost each frame */
 	UPROPERTY(EditAnywhere, Category = Boost)
 		float BoostMultiplier = 1.05f;
