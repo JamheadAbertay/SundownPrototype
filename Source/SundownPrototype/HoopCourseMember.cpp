@@ -17,6 +17,8 @@ AHoopCourseMember::AHoopCourseMember()
 	//Setup hoop object
 	Hoop = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("RootComponent"));
 	Hoop->SetupAttachment(RootComponent);
+	Hoop->bUseDefaultCollision = false;
+	Hoop->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 	Hoop->SetMobility(EComponentMobility::Static);
 
 	static ConstructorHelpers::FObjectFinder<UStaticMesh> HoopAsset(TEXT("StaticMesh'/Game/Assets/Props/Ring_Whole01_polySurface23.Ring_Whole01_polySurface23'"));
@@ -33,6 +35,7 @@ AHoopCourseMember::AHoopCourseMember()
 	GlowingHoop->SetRelativeLocation(FVector(-38.0f, -15.0f, 129.0f));
 	GlowingHoop->SetRelativeRotation(FRotator(0.0f, 0.0f, 0.0f));
 	GlowingHoop->SetRelativeScale3D(FVector(1.0f, 1.0f, 1.0f));
+	GlowingHoop->bUseDefaultCollision = false;
 	GlowingHoop->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	GlowingHoop->SetMobility(EComponentMobility::Static);
 

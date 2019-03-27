@@ -14,9 +14,11 @@ Setup a movement bounds system and integrate into the movement spline w/ speed c
 **/
 
 #include "BirdSpline.h"
-#include "UObject/ConstructorHelpers.h"
-#include "Kismet/GameplayStatics.h"
 #include "Engine/World.h"
+#include "Kismet/GameplayStatics.h"
+#include "Runtime/Engine/Classes/Kismet/KismetMathLibrary.h"
+#include "UObject/ConstructorHelpers.h"
+#include "UnrealMath.h"
 
 // Sets default values
 ABirdSpline::ABirdSpline()
@@ -28,14 +30,17 @@ ABirdSpline::ABirdSpline()
 	MovementSpline = CreateDefaultSubobject<USplineComponent>(TEXT("MovementSpline"));
 	MovementSpline->SetupAttachment(RootComponent);
 	
+	// Create mesh used to trigger spline
 	StartCylinder = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Collision Mesh"));
+	StartCylinder->SetupAttachment(RootComponent);
+
 	static ConstructorHelpers::FObjectFinder<UStaticMesh> CylinderMeshAsset(TEXT("StaticMesh'/Engine/EngineMeshes/Cylinder.Cylinder'"));
 	if (CylinderMeshAsset.Succeeded()) {
 		StartCylinder->SetStaticMesh(CylinderMeshAsset.Object);
-		StartCylinder->SetRelativeLocation(FVector(0.0f, 0.0f, 0.0f));
-		StartCylinder->SetRelativeRotation(FRotator(0.0f, 0.0f, 90.0f));
 		StartCylinder->SetWorldScale3D(FVector(1.0f));
 		StartCylinder->SetMobility(EComponentMobility::Movable);
+		StartCylinder->SetRelativeLocation(FVector(0.0f, 0.0f, 0.0f));
+		StartCylinder->SetRelativeRotation(FRotator(0.0f, 0.0f, 90.0f));
 		StartCylinder->bVisible = true;
 		StartCylinder->bCastDynamicShadow = false;
 	}
@@ -43,30 +48,68 @@ ABirdSpline::ABirdSpline()
 
 void ABirdSpline::BeginPlay() {
 	Super::BeginPlay();
+
+	CinderControllerRef = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+
+	if (CinderControllerRef) {
+		GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, FString::Printf(TEXT("Controller found!")));
+	}
 }
 
 void ABirdSpline::Tick(float DeltaSeconds) {
 	Super::Tick(DeltaSeconds);
 
-	if ((SplineStarted) && (SplineDistance < MovementSpline->GetDistanceAlongSplineAtSplinePoint(MovementSpline->GetNumberOfSplinePoints() - 1))) {
+	if ((SplineStarted) && (SplineDistance < MovementSpline->GetDistanceAlongSplineAtSplinePoint(MovementSpline->GetNumberOfSplinePoints() - 1) && (Cinder))) {
+		// temporary spline progress float - need a smoother way of doing this
 		SplineDistance += SplineSpeed;
-		//UE_LOG(LogTemp, Warning, TEXT("Spline should be moving!"));
-		StartCylinder->SetWorldLocation(MovementSpline->GetLocationAtDistanceAlongSpline(SplineDistance, ESplineCoordinateSpace::World), false);
-		StartCylinder->SetRelativeRotation(MovementSpline->GetRotationAtDistanceAlongSpline(SplineDistance, ESplineCoordinateSpace::World), false);
+
+		// store rotation and location on spline at this distance along it
+		FRotator SplineRotation = MovementSpline->GetRotationAtDistanceAlongSpline(SplineDistance, ESplineCoordinateSpace::World);
+		FVector SplineLocation = MovementSpline->GetLocationAtDistanceAlongSpline(SplineDistance, ESplineCoordinateSpace::World);
+		// get up vector for working out inclination of the character
+		FVector SplineUpVector = UKismetMathLibrary::GetUpVector(SplineRotation);
+
+		// control inclination ranges from -1 to 1 based on the rotational difference between spline up vector and actor forward vector (clamped to avoid total vertical up/down)
+		float SplineInclinationAmount = FVector::DotProduct(SplineUpVector, GetActorForwardVector());
+		SplineInclinationAmount = FMath::Clamp(SplineInclinationAmount, -0.95f, 0.95f);
+
+		// face the bird in the correct direction by changing the control rotation
+		CinderControllerRef->SetControlRotation(SplineRotation);
+
+		// calculation to work out an appropriate velocity for following the spline
+		FVector CurrentVelocity = CinderMoveCompRef->Velocity;
+		FVector FollowVelocity = SplineLocation - Cinder->GetActorLocation();
+		FVector NewVelocity = CurrentVelocity + FollowVelocity;
+
+		// using the movement component, set the velocity of cinder to NewVelocity - which is velocity in the direction of the splineff
+		Cinder->GetMovementComponent()->Velocity = NewVelocity;
+		Cinder->SetActorRotation(SplineRotation);
 		}
 	else {
+		// else, in other words when the spline is finished
 		SplineStarted = false;
 
-		/*SplineDistance = 0;
-		StartCylinder->SetWorldLocation(MovementSpline->GetLocationAtDistanceAlongSpline(SplineDistance, ESplineCoordinateSpace::World), false);
-		StartCylinder->SetRelativeRotation(MovementSpline->GetRotationAtDistanceAlongSpline(SplineDistance, ESplineCoordinateSpace::World), false);
+		// this code resets the spline
+		SplineDistance = 0;
 		StartCylinder->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
-		StartCylinder->SetCollisionProfileName(TEXT("BlockAllDynamic"));*/
+		StartCylinder->SetCollisionProfileName(TEXT("BlockAllDynamic"));
 	}
 }
 
-void ABirdSpline::NotifyHit(class UPrimitiveComponent* MyComp, class AActor* Other, class UPrimitiveComponent* OtherComp, bool bSelfMoved, FVector HitLocation, FVector HitNormal, FVector NormalImpulse, const FHitResult& Hit){
+void ABirdSpline::NotifyHit(class UPrimitiveComponent* MyComp, class AActor* Other, class UPrimitiveComponent* OtherComp, bool bSelfMoved, FVector HitLocation, FVector HitNormal, FVector NormalImpulse, const FHitResult& Hit)
+{
+	// Only if spline bool is false will we consider collision with the starting cylinder
 	if ((SplineStarted != true) && (Other->IsA(ACharacter::StaticClass()))) {
+		CinderActor = Other;
+		Cinder = Cast<ACharacter>(CinderActor);
+
+		// If the bird is found, display debug message and then get the movement component of the bird
+		if (Cinder) {
+			GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, FString::Printf(TEXT("Cinder found!")));
+			CinderMoveCompRef = Cinder->GetCharacterMovement();
+		}
+
+		// Initiate the spline sequence using a boolean
 		SplineStarted = true;
 		StartCylinder->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 		StartCylinder->SetCollisionProfileName(TEXT("OverlapAll"));

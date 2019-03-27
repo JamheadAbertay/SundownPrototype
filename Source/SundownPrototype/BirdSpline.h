@@ -6,6 +6,7 @@
 #include "GameFramework/Actor.h"
 #include "Classes/Components/SplineComponent.h"
 #include "Components/StaticMeshComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/Character.h"
 #include "Runtime/Engine/Classes/Engine/EngineTypes.h"
 #include "BirdSpline.generated.h"
@@ -26,6 +27,11 @@ public:
 	/** Starting cylinder to attach to spline */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = SplineSettings)
 		UStaticMeshComponent* StartCylinder;
+
+	AActor* CinderActor; // cinder's actor reference
+	ACharacter* Cinder; // cinder character functionality reference 
+	UCharacterMovementComponent* CinderMoveCompRef; // cinder's movement component reference
+	APlayerController* CinderControllerRef; // player controller reference
 
 	UPROPERTY(BlueprintReadOnly, Category = SplineSettings)
 		bool SplineStarted = false; // Whether spline is being travelled along based on collision with the StartCylinder
