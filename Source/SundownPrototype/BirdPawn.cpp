@@ -80,9 +80,9 @@ void ABirdPawn::Tick(float DeltaSeconds)
 	// SPLINE
 	else {
 		if (lastLocation != SplineBounds->GetComponentLocation()) {
-			CalculateDirection(DeltaSeconds, lastLocation);
+			//CalculateDirection(DeltaSeconds, lastLocation);
 			//CalculateFlight(DeltaSeconds);
-			lastLocation = SplineBounds->GetComponentLocation();
+			//lastLocation = SplineBounds->GetComponentLocation();
 		}
 		else {
 			OnSpline = false;
