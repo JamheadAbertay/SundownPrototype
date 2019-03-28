@@ -51,9 +51,9 @@ void ABirdSpline::BeginPlay() {
 
 	CinderControllerRef = UGameplayStatics::GetPlayerController(GetWorld(), 0);
 
-	if (CinderControllerRef) {
+	/*if (CinderControllerRef) {
 		GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, FString::Printf(TEXT("Controller found!")));
-	}
+	}*/
 }
 
 void ABirdSpline::Tick(float DeltaSeconds) {
@@ -62,30 +62,27 @@ void ABirdSpline::Tick(float DeltaSeconds) {
 	if ((SplineStarted) && (SplineDistance < MovementSpline->GetDistanceAlongSplineAtSplinePoint(MovementSpline->GetNumberOfSplinePoints() - 1) && (Cinder))) {
 		// temporary spline progress float - need a smoother way of doing this
 		SplineDistance += SplineSpeed;
-
 		// store rotation and location on spline at this distance along it
 		FRotator SplineRotation = MovementSpline->GetRotationAtDistanceAlongSpline(SplineDistance, ESplineCoordinateSpace::World);
-		FVector SplineLocation = MovementSpline->GetLocationAtDistanceAlongSpline(SplineDistance, ESplineCoordinateSpace::World);
-		// get up vector for working out inclination of the character
-		FVector SplineUpVector = UKismetMathLibrary::GetUpVector(SplineRotation);
-
-		// control inclination ranges from -1 to 1 based on the rotational difference between spline up vector and actor forward vector (clamped to avoid total vertical up/down)
-		float SplineInclinationAmount = FVector::DotProduct(SplineUpVector, GetActorForwardVector());
-		SplineInclinationAmount = FMath::Clamp(SplineInclinationAmount, -0.95f, 0.95f);
-
 		// face the bird in the correct direction by changing the control rotation
 		CinderControllerRef->SetControlRotation(SplineRotation);
 
-		// calculation to work out an appropriate velocity for following the spline
-		FVector CurrentVelocity = CinderMoveCompRef->Velocity;
-		FVector FollowVelocity = SplineLocation - Cinder->GetActorLocation();
-		FVector NewVelocity = CurrentVelocity + FollowVelocity;
 
+		//FVector SplineLocation = MovementSpline->GetLocationAtDistanceAlongSpline(SplineDistance, ESplineCoordinateSpace::World);
+		// get up vector for working out inclination of the character
+		//FVector SplineUpVector = UKismetMathLibrary::GetUpVector(SplineRotation);
+		//
+		// calculation to work out an appropriate velocity for following the spline
+		//FVector CurrentVelocity = CinderMoveCompRef->Velocity;
+		//FVector FollowVelocity = SplineLocation - Cinder->GetActorLocation();
+		//FVector NewVelocity = FollowVelocity + CurrentVelocity;
+		//
 		// using the movement component, set the velocity of cinder to NewVelocity - which is velocity in the direction of the splineff
-		Cinder->GetMovementComponent()->Velocity = NewVelocity;
-		Cinder->SetActorRotation(SplineRotation);
-		}
-	else {
+		//Cinder->GetMovementComponent()->Velocity.X = NewVelocity.X;
+		//Cinder->GetMovementComponent()->Velocity.Y = NewVelocity.Y;
+	} 
+	else 
+	{
 		// else, in other words when the spline is finished
 		SplineStarted = false;
 
@@ -103,9 +100,8 @@ void ABirdSpline::NotifyHit(class UPrimitiveComponent* MyComp, class AActor* Oth
 		CinderActor = Other;
 		Cinder = Cast<ACharacter>(CinderActor);
 
-		// If the bird is found, display debug message and then get the movement component of the bird
+		// If the bird is found, get the movement component
 		if (Cinder) {
-			GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, FString::Printf(TEXT("Cinder found!")));
 			CinderMoveCompRef = Cinder->GetCharacterMovement();
 		}
 
