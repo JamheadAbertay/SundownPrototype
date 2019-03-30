@@ -42,11 +42,10 @@ void ATrigger::OnOverlapBegin(class AActor* OverlappedActor, class AActor* Other
 
 		Cinder = Cast<ACharacter>(OtherActor);
 
-		while (inBrazierZone)
-		{
-			Cinder->GetCharacterMovement()->Velocity = (FVector(0.0f, 0.0f, 0.0f));
-			//Cinder->GetCharacterMovement();
-		}
+		//while (inBrazierZone)
+		//{
+		//	Cinder->GetCharacterMovement()->MaxWalkSpeed = 0.0f //(FVector(0.0f, 0.0f, 0.0f));
+		//}
 
 		NewLocation = FVector(Brazier->GetActorLocation().X, Brazier->GetActorLocation().Y, Brazier->GetActorLocation().Z + 100);
 		NewRotation = Brazier->GetActorRotation();
