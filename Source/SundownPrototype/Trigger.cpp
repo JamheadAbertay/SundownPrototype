@@ -40,24 +40,25 @@ void ATrigger::OnOverlapBegin(class AActor* OverlappedActor, class AActor* Other
 	{
 		inBrazierZone = true;
 
+		// Cast to Cinder
 		Cinder = Cast<ACharacter>(OtherActor);
 
-		//while (inBrazierZone)
-		//{
-		//	Cinder->GetCharacterMovement()->MaxWalkSpeed = 0.0f //(FVector(0.0f, 0.0f, 0.0f));
-		//}
+		// Deal with Cinder's acceleration
+		float AccelerationStored = Cinder->GetCharacterMovement()->MaxAcceleration;
+		Cinder->GetCharacterMovement()->MaxAcceleration = 0.0f;
 
-		NewLocation = FVector(Brazier->GetActorLocation().X, Brazier->GetActorLocation().Y, Brazier->GetActorLocation().Z + 100);
-		NewRotation = Brazier->GetActorRotation();
+		// Set the location of where to put Cinder (we are hiding him underground)
+		NewLocation = FVector(Brazier->GetActorLocation().X, Brazier->GetActorLocation().Y, Brazier->GetActorLocation().Z - 10000);
 
+		// Begin fade
 		SequencePlayer = ULevelSequencePlayer::CreateLevelSequencePlayer(GetWorld(), FadeOut, FMovieSceneSequencePlaybackSettings(), SequenceActor);
-
 		if (SequencePlayer)
 		{
 			SequencePlayer->Play();
 		}
 
-		GetWorld()->GetTimerManager().SetTimer(TimerHandle, this, &ATrigger::SitOnBrazier, 2.0f, false);
+		// Prepare to move Cinder
+		GetWorld()->GetTimerManager().SetTimer(TimerHandle, this, &ATrigger::SitOnBrazier, 4.0f, false);
 	}
 }
 

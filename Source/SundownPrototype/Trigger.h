@@ -41,7 +41,7 @@ public:
 
 	//Collision box that will trigger sequence
 	UPROPERTY()
-	UBoxComponent* CollisionBox;
+		UBoxComponent* CollisionBox;
 
 	//Level sequence player used to play fade out
 	UPROPERTY()
@@ -66,5 +66,6 @@ public:
 	UPROPERTY()
 		FRotator NewRotation;
 
-	bool inBrazierZone = false;
+	UPROPERTY(BlueprintReadWrite)
+		bool inBrazierZone = false;
 };

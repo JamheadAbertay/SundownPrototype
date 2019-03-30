@@ -91,7 +91,7 @@ void ABirdPawn::CalculateFlight(float DeltaSeconds)
 	FVector controlUpVec = UKismetMathLibrary::GetUpVector(FRotator(GetControlRotation()));
 	// control inclination ranges from -1 to 1 based on the rotational difference between camera up vector and actor forward vector (clamped to avoid total vertical up/down)
 	InclinationAmount = FVector::DotProduct(controlUpVec, GetActorForwardVector()); 
-	InclinationAmount = FMath::Clamp(InclinationAmount, -0.95f, 0.95f);
+	InclinationAmount = FMath::Clamp(InclinationAmount, -0.99f, 0.99f);
 	// B) Get value from angle curve using Inclination Amount (takeaway 90 degrees to get the correct angle)
 	float AngCurveVal = AngCurve->GetFloatValue(FMath::Acos(InclinationAmount) - 90.0f);
 	// C) Get value from velocity curve
