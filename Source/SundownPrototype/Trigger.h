@@ -3,6 +3,7 @@
 #include "CoreMinimal.h"
 #include "Engine/TriggerVolume.h"
 #include "GameFramework/Actor.h"
+#include "Runtime/CinematicCamera/Public/CineCameraActor.h"
 #include "Runtime/LevelSequence/Public/LevelSequence.h"
 #include "Runtime/LevelSequence/Public/LevelSequencePlayer.h"
 #include "GameFramework/Character.h"
@@ -28,6 +29,10 @@ public:
 	UPROPERTY(EditAnywhere, Category = Brazier)
 		AActor* Brazier;
 
+	// The new camera
+	UPROPERTY(EditAnywhere, Category = Camera)
+		class ACineCameraActor* BrazierCamera;
+
 	//Overlap begin function
 	UFUNCTION()
 		void OnOverlapBegin(class AActor* OverlappedActor, class AActor* OtherActor);
@@ -36,8 +41,22 @@ public:
 	UFUNCTION()
 		void SitOnBrazier();
 
+	UFUNCTION()
+		void LeaveBrazier();
+
+	UPROPERTY(BlueprintReadWrite)
+		bool inBrazierZone = false;
+
+private:
+
 	//Reference to cinder
 	ACharacter* Cinder;
+
+	// Reference to player controller
+	APlayerController* CinderControllerRef;
+
+	// Transition parameters
+	FViewTargetTransitionParams BrazierTransition;
 
 	//Collision box that will trigger sequence
 	UPROPERTY()
@@ -54,18 +73,21 @@ public:
 	//Level sequence asset played when pawn enters trigger box, can be set in trigger box details 
 	ULevelSequence* FadeOut;
 
-	//Set location timer handle
+	// Approach brazier timer handle
 	UPROPERTY()
-		FTimerHandle TimerHandle;
+		FTimerHandle BeginBrazierTimer;
 
-	//New location to set cinder to (location of brazier + Z value)
+	// Leave brazier timer handle
 	UPROPERTY()
-		FVector NewLocation;
+		FTimerHandle LeaveBrazierTimer;
+
+	//New location to set cinder to (location of brazier - Z value to hide Cinder underground)
+	FVector NewLocation;
 
 	//New rotation to set cinder to (rotation of brazier)
-	UPROPERTY()
+	UPROPERTY(EditAnywhere, Category = LeaveBrazierProperties)
 		FRotator NewRotation;
 
-	UPROPERTY(BlueprintReadWrite)
-		bool inBrazierZone = false;
+	// To safely store acceleration of Cinder for after brazier
+	float AccelerationStored;
 };

@@ -9,6 +9,7 @@
 #include "TimerManager.h"
 #include "Runtime/CoreUObject/Public/UObject/ConstructorHelpers.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "GameFramework/Controller.h"
 
 ATrigger::ATrigger()
 {
@@ -31,6 +32,13 @@ ATrigger::ATrigger()
 void ATrigger::BeginPlay()
 {
 	Super::BeginPlay();
+
+	CinderControllerRef = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+
+	BrazierTransition.BlendExp = 20.0f;
+	BrazierTransition.BlendFunction = EViewTargetBlendFunction::VTBlend_EaseInOut;
+	BrazierTransition.BlendTime = 0.1f;
+	BrazierTransition.bLockOutgoing = false;
 }
 
 //Called when character overlaps with collision box
@@ -44,10 +52,10 @@ void ATrigger::OnOverlapBegin(class AActor* OverlappedActor, class AActor* Other
 		Cinder = Cast<ACharacter>(OtherActor);
 
 		// Deal with Cinder's acceleration
-		float AccelerationStored = Cinder->GetCharacterMovement()->MaxAcceleration;
+		AccelerationStored = Cinder->GetCharacterMovement()->MaxAcceleration;
 		Cinder->GetCharacterMovement()->MaxAcceleration = 0.0f;
 
-		// Set the location of where to put Cinder (we are hiding him underground)
+		// Set the location of where to put Cinder during brazier interaction (we are hiding him underground)
 		NewLocation = FVector(Brazier->GetActorLocation().X, Brazier->GetActorLocation().Y, Brazier->GetActorLocation().Z - 10000);
 
 		// Begin fade
@@ -58,13 +66,34 @@ void ATrigger::OnOverlapBegin(class AActor* OverlappedActor, class AActor* Other
 		}
 
 		// Prepare to move Cinder
-		GetWorld()->GetTimerManager().SetTimer(TimerHandle, this, &ATrigger::SitOnBrazier, 4.0f, false);
+		GetWorld()->GetTimerManager().SetTimer(BeginBrazierTimer, this, &ATrigger::SitOnBrazier, 4.0f, false);
+
+		// Prepare to move Cinder
+		GetWorld()->GetTimerManager().SetTimer(LeaveBrazierTimer, this, &ATrigger::LeaveBrazier, 20.0f, false);
 	}
 }
 
 void ATrigger::SitOnBrazier()
 {
-	printFString("CinderVelocity: %s", *Cinder->GetVelocity().ToString());
+	//printFString("CinderVelocity: %s", *Cinder->GetVelocity().ToString());
 	Cinder->SetActorLocation(NewLocation);
-	GetWorldTimerManager().ClearTimer(TimerHandle);
+	//
+	CinderControllerRef->SetControlRotation(FRotator(0.0f, 0.0f, 0.0f));
+	CinderControllerRef->SetViewTarget(BrazierCamera, BrazierTransition);
+	//
+	GetWorldTimerManager().ClearTimer(BeginBrazierTimer);
+}
+
+void ATrigger::LeaveBrazier()
+{
+	// Set the location of where to put Cinder after brazier interaction (we are hiding him underground)
+	NewLocation = FVector(Brazier->GetActorLocation().X, Brazier->GetActorLocation().Y, Brazier->GetActorLocation().Z + 300);
+	//
+	Cinder->SetActorLocation(NewLocation);
+	Cinder->SetActorRotation(NewRotation);
+	Cinder->GetCharacterMovement()->MaxAcceleration = AccelerationStored;
+	//
+	CinderControllerRef->SetViewTarget(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0), BrazierTransition);
+
+	GetWorldTimerManager().ClearTimer(LeaveBrazierTimer);
 }
