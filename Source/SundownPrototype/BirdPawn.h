@@ -2,7 +2,6 @@
 
 #include "CoreMinimal.h"
 #include "Camera/CameraComponent.h"
-#include "Components/StaticMeshComponent.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "BirdPawn.generated.h"
