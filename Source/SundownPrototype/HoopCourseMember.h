@@ -4,12 +4,12 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "Runtime/Engine/Classes/Components/BoxComponent.h"
+#include "Components/BoxComponent.h"
 #include "Components/StaticMeshComponent.h"
-#include "Runtime/Engine/Classes/Particles/ParticleSystemComponent.h"
+#include "Particles/ParticleSystemComponent.h"
 #include "GameFramework/Character.h"
 #include "Sound/SoundCue.h"
-#include "Runtime/Engine/Classes/Components/PointLightComponent.h"
+#include "Components/PointLightComponent.h"
 #include "HoopCourseMember.generated.h"
 
 UCLASS()
@@ -48,15 +48,11 @@ public:
 	UPROPERTY(EditAnywhere, Category = HoopsLight)
 		UPointLightComponent* HoopLight;
 
-	//Whether this hoop is active on the course
-	UPROPERTY(EditAnywhere, Category = HoopsLight)
-		bool lightToggle = false;
-
-	//Next hoop actor to spawn when bird flies through current hoop
+	//Next hoop actor to spawn when cinder flies through current hoop
 	UPROPERTY(EditAnywhere, Category = HoopToLight)
 		AHoopCourseMember* HoopToLight;
 
-	//Sound to play when bird flies through hoop
+	//Sound to play when cinder flies through hoop
 	UPROPERTY()
 		USoundCue* HoopSound;
 

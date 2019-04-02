@@ -1,12 +1,9 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Camera/CameraComponent.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/SpringArmComponent.h"
-#include "Kismet/GameplayStatics.h"
-#include "Camera/CameraComponent.h"
-#include "Components/SplineComponent.h"
-#include "Components/StaticMeshComponent.h"
 #include "BirdPawn.generated.h"
 
 UCLASS()
@@ -17,12 +14,6 @@ class SUNDOWNPROTOTYPE_API ABirdPawn : public ACharacter
 public:
 	// Sets default values for this character's properties
 	ABirdPawn();
-
-	// Spline reference variables
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Spline)
-		TSubclassOf<class AActor>  SplineClassType;
-	USplineComponent* Spline; // the spline
-	UStaticMeshComponent* SplineBounds; // the spline bounds
 	
 	// Camera components
 	UPROPERTY(EditAnywhere)
@@ -31,7 +22,7 @@ public:
 		UCameraComponent* mCamera;
 
 	/** Spline movement bool, false by default */
-	UPROPERTY(BlueprintReadOnly, Category = Spline)
+	UPROPERTY(BlueprintReadWrite, Category = Spline)
 		bool OnSpline = false;
 
 protected:
@@ -50,16 +41,25 @@ protected:
 	// Begin AActor overrides
 	virtual void BeginPlay();
 	virtual void Tick(float DeltaSeconds) override;
-	virtual void NotifyHit(class UPrimitiveComponent* MyComp, class AActor* Other, class UPrimitiveComponent* OtherComp, bool bSelfMoved, FVector HitLocation, FVector HitNormal, FVector NormalImpulse, const FHitResult& Hit) override;
 	// End AActor overrides
 
 private:
 	// MOVEMENT FUNCTIONS / VARIABLES
+
 	/** Calculate flight function */
 	void CalculateFlight(float DeltaSeconds);
 	/** Calculate spline movement function with overloaded direction function */
 	void CalculateDirection(float DeltaSeconds);
-	//
+	
+	// TURNING SPEED
+	UPROPERTY(EditDefaultsOnly, Category = Turning)
+		float YawInterpSpeed = 5.0f;
+
+	UPROPERTY(EditDefaultsOnly, Category = Turning)
+		float PitchInterpSpeed = 3.5f;
+
+	// FLIGHT FLOATS
+
 	/** This is used when calculating the inclination of the character (then used for Z velocity) */
 	float InclinationAmount;
 	/** This is used to control the lift of the bird (force against gravity) */
@@ -69,17 +69,26 @@ private:
 	/** The force of gravity */
 	UPROPERTY(EditDefaultsOnly, Category = Flight)
 		float GravityConstant = 9.8f;
+
+	// FLIGHT MULTIPLIER CURVES
+
 	/** Flight Velocity Lift Multiplier Curve */
 	UPROPERTY(EditAnywhere, Category = Flight)
 		UCurveFloat* VelCurve;
 	/** Flight Angle Lift Multiplier Curve */
 	UPROPERTY(EditAnywhere, Category = Flight)
 		UCurveFloat* AngCurve;
+
+	// BOOSTING
+
 	/** Boost bool for handling when to boost */
 	bool Boosting;
-	/** Speed to go to when boosting */
+	/** Speed to go to when boosting (and also the speed you accelerate to when diving) */
 	UPROPERTY(EditAnywhere, Category = Boost)
-		float BoostSpeed = 650.0f;
+		float MaxSpeed = 700.0f;
+	/** Multiplier for pushing the max speed further through multiplication (eg. MaxSpeed 300 and BoostSpeedMultiplier 2 will make max boost speed 600 */
+	UPROPERTY(EditAnywhere, Category = Boost)
+		float BoostSpeedMultiplier = 1.0f;
 	/** Defauly speed variable */
 	UPROPERTY(EditAnywhere, Category = MovementSpeed)
 		float DefaultSpeed = 325.0f;
@@ -94,13 +103,6 @@ private:
 		float BoostDelaySeconds = 1.25f;
 	/** For using delay to create a boost cooldown */
 	FLatentActionInfo LatentActionInfo;
-
-	// SPLINE FUNCTIONS / VARIABLES
-	// Overloaded function for spline movement
-	void CalculateDirection(float DeltaSeconds, FVector SplineInterpLocation);
-	//
-	// FVector used to store the last location of the spline movement mesh
-	FVector lastLocation;
 
 	// OTHER 
 	// Float for storing delta time

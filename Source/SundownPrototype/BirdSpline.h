@@ -3,12 +3,10 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Actor.h"
 #include "Classes/Components/SplineComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/Character.h"
-#include "Runtime/Engine/Classes/Engine/EngineTypes.h"
 #include "BirdSpline.generated.h"
 
 UCLASS()

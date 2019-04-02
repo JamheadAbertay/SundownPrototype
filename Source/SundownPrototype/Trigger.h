@@ -3,11 +3,12 @@
 #include "CoreMinimal.h"
 #include "Engine/TriggerVolume.h"
 #include "GameFramework/Actor.h"
+#include "Runtime/CinematicCamera/Public/CineCameraActor.h"
 #include "Runtime/LevelSequence/Public/LevelSequence.h"
 #include "Runtime/LevelSequence/Public/LevelSequencePlayer.h"
 #include "GameFramework/Character.h"
-#include "Runtime/Engine/Classes/Engine/StaticMesh.h"
-#include "Runtime/Engine/Classes/Components/BoxComponent.h"
+#include "Engine/StaticMesh.h"
+#include "Components/BoxComponent.h"
 #include "Trigger.generated.h"
 
 UCLASS(Blueprintable)
@@ -24,24 +25,42 @@ public:
 	// constructor sets default values for this actor's properties
 	ATrigger();
 
-	/** Brazier mesh */
+	//Brazier mesh
 	UPROPERTY(EditAnywhere, Category = Brazier)
 		AActor* Brazier;
+
+	// The new camera
+	UPROPERTY(EditAnywhere, Category = Camera)
+		class ACineCameraActor* BrazierCamera;
 
 	//Overlap begin function
 	UFUNCTION()
 		void OnOverlapBegin(class AActor* OverlappedActor, class AActor* OtherActor);
 
-	//Function to make bird sit on the brazier
+	//Function to make cinder sit on the brazier
 	UFUNCTION()
 		void SitOnBrazier();
 
-	//Reference to player
+	UFUNCTION()
+		void LeaveBrazier();
+
+	UPROPERTY(BlueprintReadWrite)
+		bool inBrazierZone = false;
+
+private:
+
+	//Reference to cinder
 	ACharacter* Cinder;
+
+	// Reference to player controller
+	APlayerController* CinderControllerRef;
+
+	// Transition parameters
+	FViewTargetTransitionParams BrazierTransition;
 
 	//Collision box that will trigger sequence
 	UPROPERTY()
-	UBoxComponent* CollisionBox;
+		UBoxComponent* CollisionBox;
 
 	//Level sequence player used to play fade out
 	UPROPERTY()
@@ -54,17 +73,21 @@ public:
 	//Level sequence asset played when pawn enters trigger box, can be set in trigger box details 
 	ULevelSequence* FadeOut;
 
-	//Set location timer handle
+	// Approach brazier timer handle
 	UPROPERTY()
-		FTimerHandle TimerHandle;
+		FTimerHandle BeginBrazierTimer;
 
-	//New location to set the bird to (location of brazier)
+	// Leave brazier timer handle
 	UPROPERTY()
-		FVector NewLocation;
+		FTimerHandle LeaveBrazierTimer;
 
-	//New rotation to set the bird to (rotation of brazier)
-	UPROPERTY()
+	//New location to set cinder to (location of brazier - Z value to hide Cinder underground)
+	FVector NewLocation;
+
+	//New rotation to set cinder to (rotation of brazier)
+	UPROPERTY(EditAnywhere, Category = LeaveBrazierProperties)
 		FRotator NewRotation;
 
-	bool inBrazierZone = false;
+	// To safely store acceleration of Cinder for after brazier
+	float AccelerationStored;
 };
