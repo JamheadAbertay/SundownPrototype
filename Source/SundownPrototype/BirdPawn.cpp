@@ -18,7 +18,9 @@ ABirdPawn::ABirdPawn()
 	mCameraSpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("mCameraSpringArm"));
 	mCameraSpringArm->SetupAttachment(RootComponent);
 	mCameraSpringArm->bUsePawnControlRotation = true; // Rotate the arm based on the controller
-	mCameraSpringArm->bEnableCameraLag = false;
+	mCameraSpringArm->bEnableCameraLag = true;
+	mCameraSpringArm->TargetArmLength = DefaultSpringArmLength;
+
 
 	//// Create a follow camera
 	mCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
@@ -59,6 +61,8 @@ void ABirdPawn::Tick(float DeltaSeconds)
 	CalculateDirection(DeltaSeconds);
 	// Calculate the forward speed of the bird
 	CalculateSpeed();
+	// Calculate the camera's location
+	CalculateCamera();
 
 	// Call any parent class Tick implementation
 	Super::Tick(DeltaSeconds);
@@ -144,6 +148,16 @@ void ABirdPawn::CalculateSpeed() {
 			GetCharacterMovement()->MaxWalkSpeed = DefaultSpeed;
 		}
 	}
+}
+
+void ABirdPawn::CalculateCamera() {
+	// First convert Z velocity value to be within the correct range
+	FVector2D input = FVector2D(-750.0f, 0.0f);
+	FVector2D output = FVector2D(DiveSpringArmLength, DefaultSpringArmLength);
+
+	DiveRangeClamped = FMath::GetMappedRangeValueClamped(input, output, GetCharacterMovement()->Velocity.Z);
+
+	mCameraSpringArm->TargetArmLength = UKismetMathLibrary::FInterpTo(mCameraSpringArm->TargetArmLength, DiveRangeClamped, deltatime, DiveCameraInterpSpeed);
 }
 
 // Called to bind functionality to input

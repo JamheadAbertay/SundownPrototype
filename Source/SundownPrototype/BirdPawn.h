@@ -52,6 +52,8 @@ private:
 	void CalculateDirection(float DeltaSeconds);
 	/** Calculate speed of the bird */
 	void CalculateSpeed();
+	/** Calculate the camera position */
+	void CalculateCamera();
 	
 	// TURNING SPEED
 	UPROPERTY(EditDefaultsOnly, Category = Turning)
@@ -103,6 +105,19 @@ private:
 	UPROPERTY(EditAnywhere, Category = Boost)
 		float BoostDelaySeconds = 1.25f;
 
+	// CAMERA MANIPULATION (DIVE)
+	UPROPERTY(EditAnywhere, Category = Camera)
+		float DefaultSpringArmLength = 100.0f;
+	UPROPERTY(EditAnywhere, Category = Camera)
+		float DiveSpringArmLength = 50.0f;
+	UPROPERTY(EditAnywhere, Category = Camera)
+		float DiveCameraInterpSpeed = 0.85f;
+	
+public:
+	UPROPERTY(BlueprintReadWrite)
+		float DiveRangeClamped = 100.0f;
+
+private:
 	/** For using delay to create cooldowns */
 	FLatentActionInfo BoostLTI;
 
