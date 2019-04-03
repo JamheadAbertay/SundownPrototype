@@ -49,9 +49,9 @@ ABirdSpline::ABirdSpline()
 		StartCylinder->bCastDynamicShadow = false;
 	}
 
-	MomentTransitionParams.BlendExp = 20.0f;
+	MomentTransitionParams.BlendExp = 1.5f;
 	MomentTransitionParams.BlendFunction = EViewTargetBlendFunction::VTBlend_EaseInOut;
-	MomentTransitionParams.BlendTime = 0.1f;
+	MomentTransitionParams.BlendTime = 1.5f;
 	MomentTransitionParams.bLockOutgoing = false;
 }
 

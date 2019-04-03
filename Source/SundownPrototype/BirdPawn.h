@@ -66,9 +66,9 @@ private:
 	
 	// TURNING SPEED
 	UPROPERTY(EditDefaultsOnly, Category = Turning)
-		float YawTurnRate = 30.0f;
+		float YawTurnRate = 35.0f;
 	UPROPERTY(EditDefaultsOnly, Category = Turning)
-		float PitchTurnRate = 30.0f;
+		float PitchTurnRate = 35.0f;
 
 	// FLIGHT FLOATS
 
@@ -118,9 +118,9 @@ private:
 	UPROPERTY(EditAnywhere, Category = Camera)
 		float DefaultSpringArmLength = 100.0f;
 	UPROPERTY(EditAnywhere, Category = Camera)
-		float DiveSpringArmLength = 50.0f;
+		float DiveSpringArmLength = 75.0f;
 	UPROPERTY(EditAnywhere, Category = Camera)
-		float DiveCameraInterpSpeed = 0.85f;
+		float DiveCameraInterpSpeed = 0.75f;
 	
 public:
 	UPROPERTY(BlueprintReadWrite)
