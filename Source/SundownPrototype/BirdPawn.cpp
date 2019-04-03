@@ -21,8 +21,7 @@ ABirdPawn::ABirdPawn()
 	mCameraSpringArm->bEnableCameraLag = true;
 	mCameraSpringArm->TargetArmLength = DefaultSpringArmLength;
 
-
-	//// Create a follow camera
+	// Create a follow camera
 	mCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
 	mCamera->SetupAttachment(mCameraSpringArm, USpringArmComponent::SocketName); // Attach the camera to the end of the boom and let the boom adjust to match the controller orientation
 	mCamera->bUsePawnControlRotation = true;
@@ -55,17 +54,28 @@ void ABirdPawn::Tick(float DeltaSeconds)
 	// Store deltatime for other functions
 	deltatime = DeltaSeconds;
 	
-	// Calculate the flight movement (Z velocity and forward speed)
-	CalculateFlight(DeltaSeconds);
-	// Calculate the direction of the bird (turning left/right is independent of the Z velocity and forward speed)
-	CalculateDirection(DeltaSeconds);
-	// Calculate the forward speed of the bird
-	CalculateSpeed();
-	// Calculate the camera's location
-	CalculateCamera();
+	if (!OnSpline) {
+		// Calculate the flight movement (Z velocity and forward speed)
+		CalculateFlight(DeltaSeconds);
+		// Calculate the direction of the bird (turning left/right is independent of the Z velocity and forward speed)
+		CalculateDirection(DeltaSeconds);
+		// Calculate the forward speed of the bird
+		CalculateSpeed();
+		// Calculate the camera's location
+		CalculateCamera();
+	}
 
 	// Call any parent class Tick implementation
 	Super::Tick(DeltaSeconds);
+}
+
+void ABirdPawn::NotifyHit(class UPrimitiveComponent* MyComp, class AActor* Other, class UPrimitiveComponent* OtherComp, bool bSelfMoved, FVector HitLocation, FVector HitNormal, FVector NormalImpulse, const FHitResult& Hit)
+{
+	Super::NotifyHit(MyComp, Other, OtherComp, bSelfMoved, HitLocation, HitNormal, NormalImpulse, Hit);
+
+	if (Other->GetClass()->IsChildOf(SplineClassType)) {
+		OnSpline = true;
+	}
 }
 
 void ABirdPawn::CalculateFlight(float DeltaSeconds) 

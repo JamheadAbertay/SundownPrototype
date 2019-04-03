@@ -14,7 +14,12 @@ class SUNDOWNPROTOTYPE_API ABirdPawn : public ACharacter
 public:
 	// Sets default values for this character's properties
 	ABirdPawn();
-	
+
+	// Spline reference variables
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Spline)
+		TSubclassOf<class AActor>  SplineClassType;
+	UStaticMeshComponent* SplineBounds; // the spline bounds
+
 	// Camera components
 	UPROPERTY(EditAnywhere)
 		USpringArmComponent* mCameraSpringArm;
@@ -41,9 +46,13 @@ protected:
 	// Begin AActor overrides
 	virtual void BeginPlay();
 	virtual void Tick(float DeltaSeconds) override;
+	virtual void NotifyHit(class UPrimitiveComponent* MyComp, class AActor* Other, class UPrimitiveComponent* OtherComp, bool bSelfMoved, FVector HitLocation, FVector HitNormal, FVector NormalImpulse, const FHitResult& Hit) override;
 	// End AActor overrides
 
 private:
+	// SPLINE LAST LOCATION FOR CHECKING IF SPLINE IS FINISHED
+	FVector LastLocation;
+
 	// MOVEMENT FUNCTIONS / VARIABLES
 
 	/** Calculate flight function */
