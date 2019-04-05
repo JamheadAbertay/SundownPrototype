@@ -29,6 +29,10 @@ ABirdSpline::ABirdSpline()
 	// Create spline component
 	MovementSpline = CreateDefaultSubobject<USplineComponent>(TEXT("MovementSpline"));
 	MovementSpline->SetupAttachment(RootComponent);
+
+	// Camera Spline
+	CameraSpline = CreateDefaultSubobject<USplineComponent>(TEXT("CameraSpline"));
+	CameraSpline->SetupAttachment(RootComponent);
 	
 	// Create mesh used to trigger spline
 	StartCylinder = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Collision Mesh"));
@@ -44,6 +48,11 @@ ABirdSpline::ABirdSpline()
 		StartCylinder->bVisible = true;
 		StartCylinder->bCastDynamicShadow = false;
 	}
+
+	MomentTransitionParams.BlendExp = 1.5f;
+	MomentTransitionParams.BlendFunction = EViewTargetBlendFunction::VTBlend_EaseInOut;
+	MomentTransitionParams.BlendTime = 1.5f;
+	MomentTransitionParams.bLockOutgoing = false;
 }
 
 void ABirdSpline::BeginPlay() {
@@ -53,6 +62,11 @@ void ABirdSpline::BeginPlay() {
 
 	if (CinderControllerRef) {
 		GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, FString::Printf(TEXT("Controller found!")));
+	}
+
+	if (MomentCam) {
+		MomentCam->SetActorLocation(CameraSpline->GetLocationAtDistanceAlongSpline(0.0f, ESplineCoordinateSpace::World));
+		
 	}
 }
 
@@ -84,9 +98,14 @@ void ABirdSpline::Tick(float DeltaSeconds) {
 		// using the movement component, set the velocity of cinder to NewVelocity - which is velocity in the direction of the splineff
 		Cinder->GetMovementComponent()->Velocity = NewVelocity;
 		Cinder->SetActorRotation(SplineRotation);
+
+		// CAMERA
+		FVector CameraLocation = CameraSpline->GetLocationAtDistanceAlongSpline(SplineDistance, ESplineCoordinateSpace::World);
+		MomentCam->SetActorLocation(CameraLocation);
 		}
 	else {
 		// else, in other words when the spline is finished
+		CinderControllerRef->SetViewTarget(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0), MomentTransitionParams);
 		SplineStarted = false;
 
 		// this code resets the spline
@@ -107,6 +126,7 @@ void ABirdSpline::NotifyHit(class UPrimitiveComponent* MyComp, class AActor* Oth
 		if (Cinder) {
 			GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, FString::Printf(TEXT("Cinder found!")));
 			CinderMoveCompRef = Cinder->GetCharacterMovement();
+			CinderControllerRef->SetViewTarget(MomentCam, MomentTransitionParams);
 		}
 
 		// Initiate the spline sequence using a boolean

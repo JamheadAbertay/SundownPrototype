@@ -14,7 +14,12 @@ class SUNDOWNPROTOTYPE_API ABirdPawn : public ACharacter
 public:
 	// Sets default values for this character's properties
 	ABirdPawn();
-	
+
+	// Spline reference variables
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Spline)
+		TSubclassOf<class AActor>  SplineClassType;
+	UStaticMeshComponent* SplineBounds; // the spline bounds
+
 	// Camera components
 	UPROPERTY(EditAnywhere)
 		USpringArmComponent* mCameraSpringArm;
@@ -37,26 +42,33 @@ protected:
 	void BuildBoost();
 	UFUNCTION(BlueprintCallable, Category = "Boost")
 		void BoostReady();
-
+	
 	// Begin AActor overrides
 	virtual void BeginPlay();
 	virtual void Tick(float DeltaSeconds) override;
+	virtual void NotifyHit(class UPrimitiveComponent* MyComp, class AActor* Other, class UPrimitiveComponent* OtherComp, bool bSelfMoved, FVector HitLocation, FVector HitNormal, FVector NormalImpulse, const FHitResult& Hit) override;
 	// End AActor overrides
 
 private:
+	// SPLINE LAST LOCATION FOR CHECKING IF SPLINE IS FINISHED
+	FVector LastLocation;
+
 	// MOVEMENT FUNCTIONS / VARIABLES
 
 	/** Calculate flight function */
 	void CalculateFlight(float DeltaSeconds);
 	/** Calculate spline movement function with overloaded direction function */
 	void CalculateDirection(float DeltaSeconds);
+	/** Calculate speed of the bird */
+	void CalculateSpeed();
+	/** Calculate the camera position */
+	void CalculateCamera();
 	
 	// TURNING SPEED
 	UPROPERTY(EditDefaultsOnly, Category = Turning)
-		float YawInterpSpeed = 5.0f;
-
+		float YawTurnRate = 35.0f;
 	UPROPERTY(EditDefaultsOnly, Category = Turning)
-		float PitchInterpSpeed = 3.5f;
+		float PitchTurnRate = 35.0f;
 
 	// FLIGHT FLOATS
 
@@ -79,19 +91,19 @@ private:
 	UPROPERTY(EditAnywhere, Category = Flight)
 		UCurveFloat* AngCurve;
 
-	// BOOSTING
+	// DEFAULT SPEEDS
+
+	/** Speed to go to when boosting (and also the speed you accelerate to when diving) */
+	UPROPERTY(EditAnywhere, Category = Boost)
+		float MaxSpeed = 600.0f;
+	/** Default speed variable */
+	UPROPERTY(EditAnywhere, Category = MovementSpeed)
+		float DefaultSpeed = 325.0f;
+
+	// BOOSTING (FORWARD FLAP THING)
 
 	/** Boost bool for handling when to boost */
 	bool Boosting;
-	/** Speed to go to when boosting (and also the speed you accelerate to when diving) */
-	UPROPERTY(EditAnywhere, Category = Boost)
-		float MaxSpeed = 700.0f;
-	/** Multiplier for pushing the max speed further through multiplication (eg. MaxSpeed 300 and BoostSpeedMultiplier 2 will make max boost speed 600 */
-	UPROPERTY(EditAnywhere, Category = Boost)
-		float BoostSpeedMultiplier = 1.0f;
-	/** Defauly speed variable */
-	UPROPERTY(EditAnywhere, Category = MovementSpeed)
-		float DefaultSpeed = 325.0f;
 	/** Amount to multiply MaxWalkSpeed by during boost each frame */
 	UPROPERTY(EditAnywhere, Category = Boost)
 		float BoostMultiplier = 1.05f;
@@ -101,8 +113,22 @@ private:
 	/** Time to delay between boosts (in seconds) */
 	UPROPERTY(EditAnywhere, Category = Boost)
 		float BoostDelaySeconds = 1.25f;
-	/** For using delay to create a boost cooldown */
-	FLatentActionInfo LatentActionInfo;
+
+	// CAMERA MANIPULATION (DIVE)
+	UPROPERTY(EditAnywhere, Category = Camera)
+		float DefaultSpringArmLength = 100.0f;
+	UPROPERTY(EditAnywhere, Category = Camera)
+		float DiveSpringArmLength = 75.0f;
+	UPROPERTY(EditAnywhere, Category = Camera)
+		float DiveCameraInterpSpeed = 0.75f;
+	
+public:
+	UPROPERTY(BlueprintReadWrite)
+		float DiveRangeClamped = 100.0f;
+
+private:
+	/** For using delay to create cooldowns */
+	FLatentActionInfo BoostLTI;
 
 	// OTHER 
 	// Float for storing delta time

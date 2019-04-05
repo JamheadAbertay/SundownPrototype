@@ -7,6 +7,7 @@
 #include "Components/StaticMeshComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/Character.h"
+#include "Runtime/CinematicCamera/Public/CineCameraActor.h"
 #include "BirdSpline.generated.h"
 
 UCLASS()
@@ -22,9 +23,20 @@ public:
 	UPROPERTY(EditAnywhere, Category = SplineSettings)
 		USplineComponent* MovementSpline;
 
+	UPROPERTY(EditAnywhere, Category = SplineSettings)
+		USplineComponent* CameraSpline;
+
 	/** Starting cylinder to attach to spline */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = SplineSettings)
 		UStaticMeshComponent* StartCylinder;
+
+	// The new camera
+	UPROPERTY(EditAnywhere, Category = Camera)
+		class ACineCameraActor* MomentCam;
+
+	// Transition parameters for camera
+	UPROPERTY(EditAnywhere, Category = CamTransition)
+		FViewTargetTransitionParams MomentTransitionParams;
 
 	AActor* CinderActor; // cinder's actor reference
 	ACharacter* Cinder; // cinder character functionality reference 

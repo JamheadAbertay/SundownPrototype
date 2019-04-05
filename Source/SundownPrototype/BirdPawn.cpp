@@ -18,9 +18,10 @@ ABirdPawn::ABirdPawn()
 	mCameraSpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("mCameraSpringArm"));
 	mCameraSpringArm->SetupAttachment(RootComponent);
 	mCameraSpringArm->bUsePawnControlRotation = true; // Rotate the arm based on the controller
-	mCameraSpringArm->bEnableCameraLag = false;
+	mCameraSpringArm->bEnableCameraLag = true;
+	mCameraSpringArm->TargetArmLength = DefaultSpringArmLength;
 
-	//// Create a follow camera
+	// Create a follow camera
 	mCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
 	mCamera->SetupAttachment(mCameraSpringArm, USpringArmComponent::SocketName); // Attach the camera to the end of the boom and let the boom adjust to match the controller orientation
 	mCamera->bUsePawnControlRotation = true;
@@ -40,10 +41,10 @@ void ABirdPawn::BeginPlay()
 	GetCharacterMovement()->MaxWalkSpeed = DefaultSpeed;
 
 	// For boost timing
-	LatentActionInfo.CallbackTarget = this;
-	LatentActionInfo.ExecutionFunction = "BoostReady";
-	LatentActionInfo.UUID = 123;
-	LatentActionInfo.Linkage = 0;
+	BoostLTI.CallbackTarget = this;
+	BoostLTI.ExecutionFunction = "BoostReady";
+	BoostLTI.UUID = 123;
+	BoostLTI.Linkage = 0;
 }
 
 void ABirdPawn::Tick(float DeltaSeconds)
@@ -53,31 +54,28 @@ void ABirdPawn::Tick(float DeltaSeconds)
 	// Store deltatime for other functions
 	deltatime = DeltaSeconds;
 	
-	// Calculate the flight movement (Z velocity and forward speed)
-	CalculateFlight(DeltaSeconds);
-	// Calculate the direction of the bird (turning left/right is independent of the Z velocity and forward speed)
-	CalculateDirection(DeltaSeconds);
-	// BOOST
-	if (Boosting) {
-		if (GetCharacterMovement()->MaxWalkSpeed < MaxSpeed * BoostSpeedMultiplier) {
-			GetCharacterMovement()->MaxWalkSpeed *= BoostMultiplier;
-		}
-		else {
-			GetCharacterMovement()->MaxWalkSpeed = MaxSpeed;
-		}
-	}
-	// NOT BOOST
-	else {
-		if (GetCharacterMovement()->MaxWalkSpeed > DefaultSpeed) {
-			GetCharacterMovement()->MaxWalkSpeed *= SlowdownMultiplier;
-		}
-		else if (GetCharacterMovement()->MaxWalkSpeed < DefaultSpeed) {
-			GetCharacterMovement()->MaxWalkSpeed = DefaultSpeed;
-		}
+	if (!OnSpline) {
+		// Calculate the flight movement (Z velocity and forward speed)
+		CalculateFlight(DeltaSeconds);
+		// Calculate the direction of the bird (turning left/right is independent of the Z velocity and forward speed)
+		CalculateDirection(DeltaSeconds);
+		// Calculate the forward speed of the bird
+		CalculateSpeed();
+		// Calculate the camera's location
+		CalculateCamera();
 	}
 
 	// Call any parent class Tick implementation
 	Super::Tick(DeltaSeconds);
+}
+
+void ABirdPawn::NotifyHit(class UPrimitiveComponent* MyComp, class AActor* Other, class UPrimitiveComponent* OtherComp, bool bSelfMoved, FVector HitLocation, FVector HitNormal, FVector NormalImpulse, const FHitResult& Hit)
+{
+	Super::NotifyHit(MyComp, Other, OtherComp, bSelfMoved, HitLocation, HitNormal, NormalImpulse, Hit);
+
+	if (Other->GetClass()->IsChildOf(SplineClassType)) {
+		OnSpline = true;
+	}
 }
 
 void ABirdPawn::CalculateFlight(float DeltaSeconds) 
@@ -141,6 +139,37 @@ void ABirdPawn::CalculateDirection(float DeltaSeconds) {
 	GetCharacterMovement()->Velocity.SetComponentForAxis(EAxis::Z, newVel.Z);
 }
 
+void ABirdPawn::CalculateSpeed() {
+	// BOOST
+	if (Boosting) {
+		if (GetCharacterMovement()->MaxWalkSpeed < MaxSpeed) {
+			GetCharacterMovement()->MaxWalkSpeed *= BoostMultiplier;
+		}
+		else {
+			GetCharacterMovement()->MaxWalkSpeed = MaxSpeed;
+		}
+	}
+	// NOT BOOST
+	else {
+		if (GetCharacterMovement()->MaxWalkSpeed > DefaultSpeed) {
+			GetCharacterMovement()->MaxWalkSpeed *= SlowdownMultiplier;
+		}
+		else if (GetCharacterMovement()->MaxWalkSpeed < DefaultSpeed) {
+			GetCharacterMovement()->MaxWalkSpeed = DefaultSpeed;
+		}
+	}
+}
+
+void ABirdPawn::CalculateCamera() {
+	// First convert Z velocity value to be within the correct range
+	FVector2D input = FVector2D(-750.0f, 0.0f);
+	FVector2D output = FVector2D(DiveSpringArmLength, DefaultSpringArmLength);
+
+	DiveRangeClamped = FMath::GetMappedRangeValueClamped(input, output, GetCharacterMovement()->Velocity.Z);
+
+	mCameraSpringArm->TargetArmLength = UKismetMathLibrary::FInterpTo(mCameraSpringArm->TargetArmLength, DiveRangeClamped, deltatime, DiveCameraInterpSpeed);
+}
+
 // Called to bind functionality to input
 void ABirdPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
@@ -154,18 +183,18 @@ void ABirdPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 }
 
 void ABirdPawn::PitchInput(float Val) {
-	PitchAmount = FMath::FInterpTo(PitchAmount, Val, deltatime, PitchInterpSpeed);
+	PitchAmount = deltatime * PitchTurnRate * Val;
 	AddControllerPitchInput(PitchAmount);
 }
 
 void ABirdPawn::YawInput(float Val) {
-	YawAmount = FMath::FInterpTo(YawAmount, Val, deltatime, YawInterpSpeed);
+	YawAmount = deltatime * YawTurnRate * Val;
 	AddControllerYawInput(YawAmount);
 }
 
 void ABirdPawn::BuildBoost() {
 	Boosting = true;
-	UKismetSystemLibrary::Delay(GetWorld(), BoostDelaySeconds, LatentActionInfo);
+	UKismetSystemLibrary::Delay(GetWorld(), BoostDelaySeconds, BoostLTI);
 }
 
 void ABirdPawn::BoostReady() {
