@@ -183,12 +183,12 @@ void ABirdPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 }
 
 void ABirdPawn::PitchInput(float Val) {
-	PitchAmount = deltatime * PitchTurnRate * Val;
+	PitchAmount = UGameplayStatics::GetWorldDeltaSeconds(GetWorld()) * PitchTurnRate * Val;
 	AddControllerPitchInput(PitchAmount);
 }
 
 void ABirdPawn::YawInput(float Val) {
-	YawAmount = deltatime * YawTurnRate * Val;
+	YawAmount = UGameplayStatics::GetWorldDeltaSeconds(GetWorld()) * YawTurnRate * Val;
 	AddControllerYawInput(YawAmount);
 }
 
