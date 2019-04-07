@@ -53,7 +53,9 @@ void ABirdPawn::Tick(float DeltaSeconds)
 
 	// Store deltatime for other functions
 	deltatime = DeltaSeconds;
-	
+
+	//GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, FString::Printf(TEXT("Speed: %f"), GetCharacterMovement()->MaxWalkSpeed));
+
 	if (!OnSpline) {
 		// Calculate the flight movement (Z velocity and forward speed)
 		CalculateFlight(DeltaSeconds);
@@ -64,6 +66,8 @@ void ABirdPawn::Tick(float DeltaSeconds)
 		// Calculate the camera's location
 		CalculateCamera();
 	}
+
+
 
 	// Call any parent class Tick implementation
 	Super::Tick(DeltaSeconds);
@@ -182,9 +186,28 @@ void ABirdPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 	PlayerInputComponent->BindAction("BuildBoost", IE_Pressed, this, &ABirdPawn::BuildBoost);
 }
 
+/*
+//
+		FRotator ControlRotator = GetController()->GetControlRotation();
+
+		if (ControlRotator.GetComponentForAxis(EAxis::Y) > MinYRot && ControlRotator.GetComponentForAxis(EAxis::Y) < 360.0f) {
+			ControlRotator.SetComponentForAxis(EAxis::Y, UKismetMathLibrary::Clamp(GetController()->GetControlRotation().GetComponentForAxis(EAxis::Y), MinYRot, 360.0f));
+		}
+		else if (ControlRotator.GetComponentForAxis(EAxis::Y) < MaxYRot && ControlRotator.GetComponentForAxis(EAxis::Y) > 0.0f) {
+			ControlRotator.SetComponentForAxis(EAxis::Y, UKismetMathLibrary::Clamp(GetController()->GetControlRotation().GetComponentForAxis(EAxis::Y), 0.0f, MaxYRot));
+		}
+
+		GetController()->SetControlRotation(ControlRotator);
+*/
+
 void ABirdPawn::PitchInput(float Val) {
-	PitchAmount = UGameplayStatics::GetWorldDeltaSeconds(GetWorld()) * PitchTurnRate * Val;
-	AddControllerPitchInput(PitchAmount);
+	/*if (GetController()->GetControlRotation().GetComponentForAxis(EAxis::Y) > MinYRot || GetController()->GetControlRotation().GetComponentForAxis(EAxis::Y) < MaxYRot) {*/
+		PitchAmount = UGameplayStatics::GetWorldDeltaSeconds(GetWorld()) * PitchTurnRate * Val;
+		AddControllerPitchInput(PitchAmount);
+	/*}
+	else {
+		
+	}*/
 }
 
 void ABirdPawn::YawInput(float Val) {
