@@ -121,6 +121,12 @@ private:
 		float DiveSpringArmLength = 75.0f;
 	UPROPERTY(EditAnywhere, Category = Camera)
 		float DiveCameraInterpSpeed = 0.75f;
+
+	// CAMERA MANIPULATION (CLAMP Y AXIS)
+	UPROPERTY(EditAnywhere, Category = Camera)
+		float MaxYRot = 45.0f;
+	UPROPERTY(EditAnywhere, Category = Camera)
+		float MinYRot = 300.0f;
 	
 public:
 	UPROPERTY(BlueprintReadWrite)
