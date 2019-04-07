@@ -66,7 +66,6 @@ void ABirdSpline::BeginPlay() {
 
 	if (MomentCam) {
 		MomentCam->SetActorLocation(CameraSpline->GetLocationAtDistanceAlongSpline(0.0f, ESplineCoordinateSpace::World));
-		
 	}
 }
 

@@ -13,9 +13,7 @@ UCLASS()
 class SUNDOWNPROTOTYPE_API ABirdCameraManager : public APlayerCameraManager
 {
 	GENERATED_BODY()
-	
-protected:
-	virtual void BeginPlay();
+
 	
 	
 };

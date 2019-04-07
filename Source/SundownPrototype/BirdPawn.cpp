@@ -51,23 +51,14 @@ void ABirdPawn::Tick(float DeltaSeconds)
 {
 	//GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, FString::Printf(TEXT("Speed: %f"), GetCharacterMovement()->MaxWalkSpeed));
 
-	// Store deltatime for other functions
-	deltatime = DeltaSeconds;
-
-	//GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, FString::Printf(TEXT("Speed: %f"), GetCharacterMovement()->MaxWalkSpeed));
-
-	if (!OnSpline) {
-		// Calculate the flight movement (Z velocity and forward speed)
-		CalculateFlight(DeltaSeconds);
-		// Calculate the direction of the bird (turning left/right is independent of the Z velocity and forward speed)
-		CalculateDirection(DeltaSeconds);
-		// Calculate the forward speed of the bird
-		CalculateSpeed();
-		// Calculate the camera's location
-		CalculateCamera();
-	}
-
-
+	// Calculate the flight movement (Z velocity and forward speed)
+	CalculateFlight(DeltaSeconds);
+	// Calculate the direction of the bird (turning left/right is independent of the Z velocity and forward speed)
+	CalculateDirection(DeltaSeconds);
+	// Calculate the forward speed of the bird
+	CalculateSpeed();
+	// Calculate the camera's location
+	CalculateCamera();
 
 	// Call any parent class Tick implementation
 	Super::Tick(DeltaSeconds);
