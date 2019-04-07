@@ -30,6 +30,10 @@ public:
 	UPROPERTY(BlueprintReadWrite, Category = Spline)
 		bool OnSpline = false;
 
+	/** Boost bool for handling when to boost */
+	UPROPERTY(BlueprintReadWrite)
+		bool Boosting;
+
 protected:
 
 	/** Bound to the control rotation pitch (camera too) */
@@ -102,8 +106,6 @@ private:
 
 	// BOOSTING (FORWARD FLAP THING)
 
-	/** Boost bool for handling when to boost */
-	bool Boosting;
 	/** Amount to multiply MaxWalkSpeed by during boost each frame */
 	UPROPERTY(EditAnywhere, Category = Boost)
 		float BoostMultiplier = 1.05f;
