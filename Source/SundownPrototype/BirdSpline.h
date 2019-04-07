@@ -38,12 +38,7 @@ public:
 	UPROPERTY(EditAnywhere, Category = CamTransition)
 		FViewTargetTransitionParams MomentTransitionParams;
 
-	AActor* CinderActor; // cinder's actor reference
-	ACharacter* Cinder; // cinder character functionality reference 
-	UCharacterMovementComponent* CinderMoveCompRef; // cinder's movement component reference
-	APlayerController* CinderControllerRef; // player controller reference
-
-	UPROPERTY(BlueprintReadOnly, Category = SplineSettings)
+	UPROPERTY(BlueprintReadOnly)
 		bool SplineStarted = false; // Whether spline is being travelled along based on collision with the StartCylinder
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = SplineSettings)
@@ -51,6 +46,16 @@ public:
 
 	UPROPERTY(BlueprintReadOnly)
 		float SplineDistance = 0.0f; // Distance along spline
+
+private:
+	
+	AActor* CinderActor; // cinder's actor reference
+	ACharacter* Cinder; // cinder character functionality reference 
+	UCharacterMovementComponent* CinderMoveCompRef; // cinder's movement component reference
+	APlayerController* CinderControllerRef; // player controller reference
+
+	UPROPERTY(EditAnywhere, Category = SplineSettings)
+		bool bSplineRepeat = false;
 
 protected:
 

@@ -8,7 +8,7 @@ PART 1
 Create the spline itself (the spline shape) (DONE)
 Create tools so that designers can place/edit points on the spline (DONE)
 Get bird to follow spline, experiment with changing bird speed (DONE)
-Setup a cinematic camera system for the spline (WORKING ON WITH CAVAN IN BLUEPRINT)
+Setup a cinematic camera system for the spline (DONE)
 Setup a movement bounds system and integrate into the movement spline w/ speed control (UNFINISHED)
 
 **/
@@ -45,7 +45,7 @@ ABirdSpline::ABirdSpline()
 		StartCylinder->SetMobility(EComponentMobility::Movable);
 		StartCylinder->SetRelativeLocation(FVector(0.0f, 0.0f, 0.0f));
 		StartCylinder->SetRelativeRotation(FRotator(0.0f, 0.0f, 90.0f));
-		StartCylinder->bVisible = true;
+		StartCylinder->bVisible = false;
 		StartCylinder->bCastDynamicShadow = false;
 	}
 
@@ -60,9 +60,9 @@ void ABirdSpline::BeginPlay() {
 
 	CinderControllerRef = UGameplayStatics::GetPlayerController(GetWorld(), 0);
 
-	if (CinderControllerRef) {
-		GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, FString::Printf(TEXT("Controller found!")));
-	}
+	//if (CinderControllerRef) {
+	//	GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, FString::Printf(TEXT("Controller found!")));
+	//}
 
 	if (MomentCam) {
 		MomentCam->SetActorLocation(CameraSpline->GetLocationAtDistanceAlongSpline(0.0f, ESplineCoordinateSpace::World));
@@ -105,12 +105,15 @@ void ABirdSpline::Tick(float DeltaSeconds) {
 	else {
 		// else, in other words when the spline is finished
 		CinderControllerRef->SetViewTarget(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0), MomentTransitionParams);
-		SplineStarted = false;
 
 		// this code resets the spline
 		SplineDistance = 0;
 		StartCylinder->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 		StartCylinder->SetCollisionProfileName(TEXT("BlockAllDynamic"));
+
+		if (bSplineRepeat) {
+			SplineStarted = false;
+		}
 	}
 }
 
@@ -123,7 +126,7 @@ void ABirdSpline::NotifyHit(class UPrimitiveComponent* MyComp, class AActor* Oth
 
 		// If the bird is found, display debug message and then get the movement component of the bird
 		if (Cinder) {
-			GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, FString::Printf(TEXT("Cinder found!")));
+			//GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, FString::Printf(TEXT("Cinder found!")));
 			CinderMoveCompRef = Cinder->GetCharacterMovement();
 			CinderControllerRef->SetViewTarget(MomentCam, MomentTransitionParams);
 		}

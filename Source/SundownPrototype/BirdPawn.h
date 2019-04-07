@@ -99,7 +99,7 @@ private:
 
 	/** Speed to go to when boosting (and also the speed you accelerate to when diving) */
 	UPROPERTY(EditAnywhere, Category = Boost)
-		float MaxSpeed = 600.0f;
+		float MaxSpeed = 650.0f;
 	/** Default speed variable */
 	UPROPERTY(EditAnywhere, Category = MovementSpeed)
 		float DefaultSpeed = 325.0f;

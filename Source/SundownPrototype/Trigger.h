@@ -6,6 +6,7 @@
 #include "Runtime/CinematicCamera/Public/CineCameraActor.h"
 #include "Runtime/LevelSequence/Public/LevelSequence.h"
 #include "Runtime/LevelSequence/Public/LevelSequencePlayer.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/Character.h"
 #include "Engine/StaticMesh.h"
 #include "Components/BoxComponent.h"
@@ -31,7 +32,7 @@ public:
 
 	// The new camera
 	UPROPERTY(EditAnywhere, Category = Camera)
-		class ACineCameraActor* BrazierCamera;
+		ACineCameraActor* BrazierCamera;
 
 	//Overlap begin function
 	UFUNCTION()
