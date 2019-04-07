@@ -15,4 +15,7 @@ class SUNDOWNPROTOTYPE_API ABirdPlayerController : public APlayerController
 {
 	GENERATED_BODY()
 	
+protected:
+	virtual void BeginPlay();
+
 };
