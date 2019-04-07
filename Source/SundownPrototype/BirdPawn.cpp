@@ -142,6 +142,7 @@ void ABirdPawn::CalculateSpeed() {
 		}
 		else {
 			GetCharacterMovement()->MaxWalkSpeed = MaxSpeed;
+			Boosting = false;
 		}
 	}
 	// NOT BOOST
@@ -149,7 +150,7 @@ void ABirdPawn::CalculateSpeed() {
 		if (GetCharacterMovement()->MaxWalkSpeed > DefaultSpeed) {
 			GetCharacterMovement()->MaxWalkSpeed *= SlowdownMultiplier;
 		}
-		else if (GetCharacterMovement()->MaxWalkSpeed < DefaultSpeed) {
+		if (GetCharacterMovement()->MaxWalkSpeed < DefaultSpeed) {
 			GetCharacterMovement()->MaxWalkSpeed = DefaultSpeed;
 		}
 	}
@@ -177,28 +178,9 @@ void ABirdPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 	PlayerInputComponent->BindAction("BuildBoost", IE_Pressed, this, &ABirdPawn::BuildBoost);
 }
 
-/*
-//
-		FRotator ControlRotator = GetController()->GetControlRotation();
-
-		if (ControlRotator.GetComponentForAxis(EAxis::Y) > MinYRot && ControlRotator.GetComponentForAxis(EAxis::Y) < 360.0f) {
-			ControlRotator.SetComponentForAxis(EAxis::Y, UKismetMathLibrary::Clamp(GetController()->GetControlRotation().GetComponentForAxis(EAxis::Y), MinYRot, 360.0f));
-		}
-		else if (ControlRotator.GetComponentForAxis(EAxis::Y) < MaxYRot && ControlRotator.GetComponentForAxis(EAxis::Y) > 0.0f) {
-			ControlRotator.SetComponentForAxis(EAxis::Y, UKismetMathLibrary::Clamp(GetController()->GetControlRotation().GetComponentForAxis(EAxis::Y), 0.0f, MaxYRot));
-		}
-
-		GetController()->SetControlRotation(ControlRotator);
-*/
-
 void ABirdPawn::PitchInput(float Val) {
-	/*if (GetController()->GetControlRotation().GetComponentForAxis(EAxis::Y) > MinYRot || GetController()->GetControlRotation().GetComponentForAxis(EAxis::Y) < MaxYRot) {*/
-		PitchAmount = UGameplayStatics::GetWorldDeltaSeconds(GetWorld()) * PitchTurnRate * Val;
-		AddControllerPitchInput(PitchAmount);
-	/*}
-	else {
-		
-	}*/
+	PitchAmount = UGameplayStatics::GetWorldDeltaSeconds(GetWorld()) * PitchTurnRate * Val;
+	AddControllerPitchInput(PitchAmount);
 }
 
 void ABirdPawn::YawInput(float Val) {
@@ -207,10 +189,13 @@ void ABirdPawn::YawInput(float Val) {
 }
 
 void ABirdPawn::BuildBoost() {
-	Boosting = true;
-	UKismetSystemLibrary::Delay(GetWorld(), BoostDelaySeconds, BoostLTI);
+	if (bBoostReady) {
+		Boosting = true;
+		bBoostReady = false;
+		UKismetSystemLibrary::Delay(GetWorld(), BoostDelaySeconds, BoostLTI);
+	}
 }
 
 void ABirdPawn::BoostReady() {
-	Boosting = false;
+	bBoostReady = true;
 }

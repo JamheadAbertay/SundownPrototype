@@ -70,7 +70,7 @@ private:
 	
 	// TURNING SPEED
 	UPROPERTY(EditDefaultsOnly, Category = Turning)
-		float YawTurnRate = 35.0f;
+		float YawTurnRate = 25.0f;
 	UPROPERTY(EditDefaultsOnly, Category = Turning)
 		float PitchTurnRate = 35.0f;
 
@@ -106,21 +106,23 @@ private:
 
 	// BOOSTING (FORWARD FLAP THING)
 
+	/** Bool for knowing when player can boost again */
+	bool bBoostReady = true;
 	/** Amount to multiply MaxWalkSpeed by during boost each frame */
 	UPROPERTY(EditAnywhere, Category = Boost)
-		float BoostMultiplier = 1.05f;
+		float BoostMultiplier = 1.035f;
 	/** Amount to multiply MaxWalkSpeed by after boosting each frame until speed is back to normal */
 	UPROPERTY(EditAnywhere, Category = Boost)
 		float SlowdownMultiplier = 0.998f;
 	/** Time to delay between boosts (in seconds) */
 	UPROPERTY(EditAnywhere, Category = Boost)
-		float BoostDelaySeconds = 1.25f;
+		float BoostDelaySeconds = 2.0f;
 
 	// CAMERA MANIPULATION (DIVE)
 	UPROPERTY(EditAnywhere, Category = Camera)
 		float DefaultSpringArmLength = 100.0f;
 	UPROPERTY(EditAnywhere, Category = Camera)
-		float DiveSpringArmLength = 75.0f;
+		float DiveSpringArmLength = 50.0f;
 	UPROPERTY(EditAnywhere, Category = Camera)
 		float DiveCameraInterpSpeed = 0.75f;
 
