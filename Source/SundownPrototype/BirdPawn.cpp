@@ -45,6 +45,10 @@ void ABirdPawn::BeginPlay()
 	BoostLTI.ExecutionFunction = "BoostReady";
 	BoostLTI.UUID = 123;
 	BoostLTI.Linkage = 0;
+
+	// For turning at speed
+	MaxYawTurnRate = YawTurnRate * YawRateMultiplier;
+	MaxPitchTurnRate = PitchTurnRate * PitchRateMultiplier;
 }
 
 void ABirdPawn::Tick(float DeltaSeconds)
@@ -59,6 +63,8 @@ void ABirdPawn::Tick(float DeltaSeconds)
 	CalculateSpeed();
 	// Calculate the camera's location
 	CalculateCamera();
+	// Calculate the turn rate of Cinder ;)
+	CalculateTurnRate();
 
 	// Call any parent class Tick implementation
 	Super::Tick(DeltaSeconds);
@@ -164,6 +170,15 @@ void ABirdPawn::CalculateCamera() {
 	DiveRangeClamped = FMath::GetMappedRangeValueClamped(input, output, GetCharacterMovement()->Velocity.Z);
 
 	mCameraSpringArm->TargetArmLength = UKismetMathLibrary::FInterpTo(mCameraSpringArm->TargetArmLength, DiveRangeClamped, UGameplayStatics::GetWorldDeltaSeconds(GetWorld()), DiveCameraInterpSpeed);
+}
+
+void ABirdPawn::CalculateTurnRate() {
+	FVector2D input = FVector2D(DefaultSpeed, MaxSpeed);
+	FVector2D yawOutput = FVector2D(YawTurnRate, MaxYawTurnRate);
+	FVector2D pitchOutput = FVector2D(PitchTurnRate, MaxPitchTurnRate);
+
+	YawTurnRate = UKismetMathLibrary::FInterpTo(YawTurnRate, MaxYawTurnRate, UGameplayStatics::GetWorldDeltaSeconds(GetWorld()), 0.6f);
+	PitchTurnRate = UKismetMathLibrary::FInterpTo(PitchTurnRate, MaxPitchTurnRate, UGameplayStatics::GetWorldDeltaSeconds(GetWorld()), 0.66f);
 }
 
 // Called to bind functionality to input

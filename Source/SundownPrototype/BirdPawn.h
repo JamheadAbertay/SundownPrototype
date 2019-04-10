@@ -67,12 +67,23 @@ private:
 	void CalculateSpeed();
 	/** Calculate the camera position */
 	void CalculateCamera();
+	/** Calculate the turn rate */
+	void CalculateTurnRate();
 	
 	// TURNING SPEED
-	UPROPERTY(EditDefaultsOnly, Category = Turning)
+	UPROPERTY(EditAnywhere, Category = Turning)
 		float YawTurnRate = 25.0f;
-	UPROPERTY(EditDefaultsOnly, Category = Turning)
+	UPROPERTY(EditAnywhere, Category = Turning)
 		float PitchTurnRate = 35.0f;
+	/* Faster speed - max yaw rate = yaw rate * this **/
+	UPROPERTY(EditAnywhere, Category = Turning)
+		float YawRateMultiplier = 1.25;
+	/* Faster speed - max pitch rate = pitch rate * this **/
+	UPROPERTY(EditAnywhere, Category = Turning)
+		float PitchRateMultiplier = 1.35;
+	// floats for storing max turn rate
+	float MaxYawTurnRate;
+	float MaxPitchTurnRate;
 
 	// FLIGHT FLOATS
 

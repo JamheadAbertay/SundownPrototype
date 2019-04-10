@@ -45,7 +45,7 @@ ABirdSpline::ABirdSpline()
 		StartCylinder->SetMobility(EComponentMobility::Movable);
 		StartCylinder->SetRelativeLocation(FVector(0.0f, 0.0f, 0.0f));
 		StartCylinder->SetRelativeRotation(FRotator(0.0f, 0.0f, 90.0f));
-		StartCylinder->bVisible = false;
+		StartCylinder->bVisible = true;
 		StartCylinder->bCastDynamicShadow = false;
 	}
 
@@ -101,18 +101,21 @@ void ABirdSpline::Tick(float DeltaSeconds) {
 		// CAMERA
 		FVector CameraLocation = CameraSpline->GetLocationAtDistanceAlongSpline(SplineDistance, ESplineCoordinateSpace::World);
 		MomentCam->SetActorLocation(CameraLocation);
-		}
+	}
 	else {
 		// else, in other words when the spline is finished
-		CinderControllerRef->SetViewTarget(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0), MomentTransitionParams);
-
-		// this code resets the spline
-		SplineDistance = 0;
-		StartCylinder->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
-		StartCylinder->SetCollisionProfileName(TEXT("BlockAllDynamic"));
+		if (bCameraOnSpline) {
+			CinderControllerRef->SetViewTarget(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0), MomentTransitionParams);
+			bCameraOnSpline = false;
+		}
 
 		if (bSplineRepeat) {
 			SplineStarted = false;
+
+			// this code resets the spline
+			SplineDistance = 0;
+			StartCylinder->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+			StartCylinder->SetCollisionProfileName(TEXT("BlockAllDynamic"));
 		}
 	}
 }
@@ -129,6 +132,7 @@ void ABirdSpline::NotifyHit(class UPrimitiveComponent* MyComp, class AActor* Oth
 			//GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, FString::Printf(TEXT("Cinder found!")));
 			CinderMoveCompRef = Cinder->GetCharacterMovement();
 			CinderControllerRef->SetViewTarget(MomentCam, MomentTransitionParams);
+			bCameraOnSpline = true;
 		}
 
 		// Initiate the spline sequence using a boolean

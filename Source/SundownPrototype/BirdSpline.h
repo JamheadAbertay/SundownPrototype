@@ -57,6 +57,8 @@ private:
 	UPROPERTY(EditAnywhere, Category = SplineSettings)
 		bool bSplineRepeat = false;
 
+	bool bCameraOnSpline = false;
+
 protected:
 
 	/** Override tick */
