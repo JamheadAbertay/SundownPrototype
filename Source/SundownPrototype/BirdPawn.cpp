@@ -158,12 +158,12 @@ void ABirdPawn::CalculateSpeed() {
 
 void ABirdPawn::CalculateCamera() {
 	// First convert Z velocity value to be within the correct range
-	FVector2D input = FVector2D(-750.0f, 0.0f);
+	FVector2D input = FVector2D(-500.0f, 0.0f);
 	FVector2D output = FVector2D(DiveSpringArmLength, DefaultSpringArmLength);
 
 	DiveRangeClamped = FMath::GetMappedRangeValueClamped(input, output, GetCharacterMovement()->Velocity.Z);
 
-	mCameraSpringArm->TargetArmLength = UKismetMathLibrary::FInterpTo(mCameraSpringArm->TargetArmLength, DiveRangeClamped, deltatime, DiveCameraInterpSpeed);
+	mCameraSpringArm->TargetArmLength = UKismetMathLibrary::FInterpTo(mCameraSpringArm->TargetArmLength, DiveRangeClamped, UGameplayStatics::GetWorldDeltaSeconds(GetWorld()), DiveCameraInterpSpeed);
 }
 
 // Called to bind functionality to input
