@@ -19,16 +19,16 @@ ATrigger::ATrigger()
 	BrazierMesh->SetupAttachment(RootComponent);
 
 	// Setup collision box
-	CollisionBox = CreateDefaultSubobject<USphereComponent>(TEXT("Collision Sphere"));
-	CollisionBox->SetupAttachment(BrazierMesh);
-	CollisionBox->SetRelativeLocation(FVector(0.0f, 0.0f, 100.0f));
-	CollisionBox->SetRelativeScale3D(FVector(10.0f, 10.0f, 10.0f));
+	CollisionSphere = CreateDefaultSubobject<USphereComponent>(TEXT("Collision Sphere"));
+	CollisionSphere->SetupAttachment(BrazierMesh);
+	CollisionSphere->SetRelativeLocation(FVector(0.0f, 0.0f, 100.0f));
+	CollisionSphere->SetRelativeScale3D(FVector(10.0f, 10.0f, 10.0f));
 
 	// Setup particle system component
 	FireParticles = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("Brazier Particles"));
 	FireParticles->SetupAttachment(BrazierMesh);
 	FireParticles->SetRelativeLocation(FVector(0.0f, 0.0f, 75.0f));
-	static ConstructorHelpers::FObjectFinder<UParticleSystem> FireAsset(TEXT("ParticleSystem'/Game/Particles/BrazierFire.BrazierFire'"));
+	static ConstructorHelpers::FObjectFinder<UParticleSystem> FireAsset(TEXT("ParticleSystem'/Game/BlueprintMechanics/MechanicsAssets/BrazierFire.BrazierFire'"));
 	if (FireAsset.Succeeded())
 	{
 		FireParticles->SetTemplate(FireAsset.Object);

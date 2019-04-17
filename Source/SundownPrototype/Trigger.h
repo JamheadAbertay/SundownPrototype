@@ -37,7 +37,7 @@ public:
 
 	// Collision box that will trigger sequence
 	UPROPERTY(EditAnywhere, Category = Trigger)
-		USphereComponent* CollisionBox;
+		USphereComponent* CollisionSphere;
 
 	// Fire particle effect
 	UPROPERTY(EditAnywhere, Category = Brazier)
