@@ -34,10 +34,11 @@ ABirdSpline::ABirdSpline()
 	CameraSpline = CreateDefaultSubobject<USplineComponent>(TEXT("CameraSpline"));
 	CameraSpline->SetupAttachment(RootComponent);
 	
-	// Create mesh used to trigger spline
+	// Create mesh used to trigger spline attach/detach
 	StartCylinder = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Collision Mesh"));
 	StartCylinder->SetupAttachment(RootComponent);
 
+	// Setup the mesh
 	static ConstructorHelpers::FObjectFinder<UStaticMesh> CylinderMeshAsset(TEXT("StaticMesh'/Engine/EngineMeshes/Cylinder.Cylinder'"));
 	if (CylinderMeshAsset.Succeeded()) {
 		StartCylinder->SetStaticMesh(CylinderMeshAsset.Object);
@@ -49,6 +50,7 @@ ABirdSpline::ABirdSpline()
 		StartCylinder->bCastDynamicShadow = false;
 	}
 
+	// Setup default camera transition paramaters
 	MomentTransitionParams.BlendExp = 1.5f;
 	MomentTransitionParams.BlendFunction = EViewTargetBlendFunction::VTBlend_EaseInOut;
 	MomentTransitionParams.BlendTime = 1.5f;
@@ -58,78 +60,70 @@ ABirdSpline::ABirdSpline()
 void ABirdSpline::BeginPlay() {
 	Super::BeginPlay();
 
+	// Get the player controller
 	CinderControllerRef = UGameplayStatics::GetPlayerController(GetWorld(), 0);
-
-	//if (CinderControllerRef) {
-	//	GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, FString::Printf(TEXT("Controller found!")));
-	//}
-
-	if (MomentCam) {
-		MomentCam->SetActorLocation(CameraSpline->GetLocationAtDistanceAlongSpline(0.0f, ESplineCoordinateSpace::World));
-	}
 }
 
 void ABirdSpline::Tick(float DeltaSeconds) {
 	Super::Tick(DeltaSeconds);
 
 	if ((SplineStarted) && (SplineDistance < MovementSpline->GetDistanceAlongSplineAtSplinePoint(MovementSpline->GetNumberOfSplinePoints() - 1) && (Cinder))) {
-		// temporary spline progress float - need a smoother way of doing this
+		// Temporary spline progress float - need a more enjoyable way of doing this
 		SplineDistance += SplineSpeed;
 
-		// store rotation and location on spline at this distance along it
+		// Store rotation and location on spline at this distance along it
 		FRotator SplineRotation = MovementSpline->GetRotationAtDistanceAlongSpline(SplineDistance, ESplineCoordinateSpace::World);
 		FVector SplineLocation = MovementSpline->GetLocationAtDistanceAlongSpline(SplineDistance, ESplineCoordinateSpace::World);
-		// get up vector for working out inclination of the character
-		FVector SplineUpVector = UKismetMathLibrary::GetUpVector(SplineRotation);
 
-		// control inclination ranges from -1 to 1 based on the rotational difference between spline up vector and actor forward vector (clamped to avoid total vertical up/down)
-		float SplineInclinationAmount = FVector::DotProduct(SplineUpVector, GetActorForwardVector());
-		SplineInclinationAmount = FMath::Clamp(SplineInclinationAmount, -0.95f, 0.95f);
-
-		// face the bird in the correct direction by changing the control rotation
+		// Face the bird in the correct direction by changing the control rotation
 		CinderControllerRef->SetControlRotation(SplineRotation);
 
-		// calculation to work out an appropriate velocity for following the spline
+		// Calculation to work out an appropriate velocity for following the spline
 		FVector CurrentVelocity = CinderMoveCompRef->Velocity;
 		FVector FollowVelocity = SplineLocation - Cinder->GetActorLocation();
 		FVector NewVelocity = CurrentVelocity + FollowVelocity;
 
-		// using the movement component, set the velocity of cinder to NewVelocity - which is velocity in the direction of the splineff
+		// Using the movement component, set the velocity of cinder to NewVelocity - which is velocity in the direction of the next spline point
 		Cinder->GetMovementComponent()->Velocity = NewVelocity;
 		Cinder->SetActorRotation(SplineRotation);
 
-		// CAMERA
+		// Set camera to new point along camera spline
 		FVector CameraLocation = CameraSpline->GetLocationAtDistanceAlongSpline(SplineDistance, ESplineCoordinateSpace::World);
 		MomentCam->SetActorLocation(CameraLocation);
 	}
-	else {
-		// else, in other words when the spline is finished
+	else if (SplineStarted) { // In other words, after the spline has started, and after the above if condition is no longer being met
+		
+		// Set view target back to Cinder and set the "camera on camera spline?" bool to false (only once, which is what the if(bCameraOnSpline) is for)
 		if (bCameraOnSpline) {
 			CinderControllerRef->SetViewTarget(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0), MomentTransitionParams);
 			bCameraOnSpline = false;
 		}
 
+		// If this spline is repeatable - reset distance to 0, and set the start cylinder back to its default position
 		if (bSplineRepeat) {
-			SplineStarted = false;
-
-			// this code resets the spline
 			SplineDistance = 0;
-			StartCylinder->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
-			StartCylinder->SetCollisionProfileName(TEXT("BlockAllDynamic"));
+			StartCylinder->SetWorldLocation(MovementSpline->GetLocationAtSplinePoint(0, ESplineCoordinateSpace::World));
 		}
+		// Else (if spline is not repeatable) - just disable collision on the cylinder asset
+		else {
+			StartCylinder->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+			StartCylinder->SetCollisionProfileName(TEXT("OverlapAll"));
+		}
+
+		// Set the spline started bool to false so this code won't repeat
+		SplineStarted = false;
 	}
 }
 
 void ABirdSpline::NotifyHit(class UPrimitiveComponent* MyComp, class AActor* Other, class UPrimitiveComponent* OtherComp, bool bSelfMoved, FVector HitLocation, FVector HitNormal, FVector NormalImpulse, const FHitResult& Hit)
 {
-	// Only if spline bool is false will we consider collision with the starting cylinder
+	// Only if spline started bool is false will we consider collision with the starting cylinder
 	if ((SplineStarted != true) && (Other->IsA(ACharacter::StaticClass()))) {
 		CinderActor = Other;
 		Cinder = Cast<ACharacter>(CinderActor);
 
-		// If the bird is found, display debug message and then get the movement component of the bird
+		// If the bird is found, get the movement component, set the view target to the moment cam, and set the "camera on camera spline?" bool to true
 		if (Cinder) {
-			//GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, FString::Printf(TEXT("Cinder found!")));
 			CinderMoveCompRef = Cinder->GetCharacterMovement();
 			CinderControllerRef->SetViewTarget(MomentCam, MomentTransitionParams);
 			bCameraOnSpline = true;
@@ -137,7 +131,9 @@ void ABirdSpline::NotifyHit(class UPrimitiveComponent* MyComp, class AActor* Oth
 
 		// Initiate the spline sequence using a boolean
 		SplineStarted = true;
-		StartCylinder->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-		StartCylinder->SetCollisionProfileName(TEXT("OverlapAll"));
+		// Place the moment cam at the start of this moment's camera spline
+		MomentCam->SetActorLocation(CameraSpline->GetLocationAtDistanceAlongSpline(0.0f, ESplineCoordinateSpace::World));
+		// Set the start cylinder location to the end of the spline to trigger Cinder's detachment (bool in BirdPawn class)
+		StartCylinder->SetWorldLocation(MovementSpline->GetLocationAtSplinePoint(MovementSpline->GetNumberOfSplinePoints() - 1, ESplineCoordinateSpace::World));
 	}
 }
