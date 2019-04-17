@@ -1,15 +1,16 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Components/SphereComponent.h"
+#include "Components/StaticMeshComponent.h"
 #include "Engine/TriggerVolume.h"
 #include "GameFramework/Actor.h"
+#include "GameFramework/CharacterMovementComponent.h"
+#include "GameFramework/Character.h"
 #include "Runtime/CinematicCamera/Public/CineCameraActor.h"
 #include "Runtime/LevelSequence/Public/LevelSequence.h"
 #include "Runtime/LevelSequence/Public/LevelSequencePlayer.h"
-#include "GameFramework/CharacterMovementComponent.h"
-#include "GameFramework/Character.h"
-#include "Engine/StaticMesh.h"
-#include "Components/BoxComponent.h"
+#include "Runtime/Engine/Classes/Particles/ParticleSystemComponent.h"
 #include "Trigger.generated.h"
 
 UCLASS(Blueprintable)
@@ -23,16 +24,24 @@ protected:
 
 public:
 
-	// constructor sets default values for this actor's properties
+	// Constructor sets default values for this actor's properties
 	ATrigger();
 
 	//Brazier mesh
-	UPROPERTY(EditAnywhere, Category = Brazier)
-		AActor* Brazier;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Brazier)
+		UStaticMeshComponent* BrazierMesh;
 
 	// The new camera
 	UPROPERTY(EditAnywhere, Category = Camera)
 		ACineCameraActor* BrazierCamera;
+
+	// Collision box that will trigger sequence
+	UPROPERTY(EditAnywhere, Category = Trigger)
+		USphereComponent* CollisionBox;
+
+	// Fire particle effect
+	UPROPERTY(EditAnywhere, Category = Brazier)
+		UParticleSystemComponent* FireParticles;
 
 	//Overlap begin function
 	UFUNCTION()
@@ -58,10 +67,6 @@ private:
 
 	// Transition parameters
 	FViewTargetTransitionParams BrazierTransition;
-
-	//Collision box that will trigger sequence
-	UPROPERTY()
-		UBoxComponent* CollisionBox;
 
 	//Level sequence player used to play fade out
 	UPROPERTY()

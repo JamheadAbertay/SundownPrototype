@@ -6,21 +6,35 @@
 #include "DrawDebugHelpers.h"
 #include "Engine/World.h"
 #include "Kismet/GameplayStatics.h"
-#include "TimerManager.h"
 #include "Runtime/CoreUObject/Public/UObject/ConstructorHelpers.h"
-#include "GameFramework/CharacterMovementComponent.h"
-#include "GameFramework/Controller.h"
+#include "TimerManager.h"
 
 ATrigger::ATrigger()
 {
 	//Register Events
 	OnActorBeginOverlap.AddDynamic(this, &ATrigger::OnOverlapBegin);
 
-	//Setup collision box
-	CollisionBox = CreateDefaultSubobject<UBoxComponent>(TEXT("Collision Box"));
-	CollisionBox->SetupAttachment(RootComponent);
+	// Setup brazier mesh
+	BrazierMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Brazier Mesh"));
+	BrazierMesh->SetupAttachment(RootComponent);
 
-	//Setup sequence
+	// Setup collision box
+	CollisionBox = CreateDefaultSubobject<USphereComponent>(TEXT("Collision Sphere"));
+	CollisionBox->SetupAttachment(BrazierMesh);
+	CollisionBox->SetRelativeLocation(FVector(0.0f, 0.0f, 100.0f));
+	CollisionBox->SetRelativeScale3D(FVector(10.0f, 10.0f, 10.0f));
+
+	// Setup particle system component
+	FireParticles = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("Brazier Particles"));
+	FireParticles->SetupAttachment(BrazierMesh);
+	FireParticles->SetRelativeLocation(FVector(0.0f, 0.0f, 75.0f));
+	static ConstructorHelpers::FObjectFinder<UParticleSystem> FireAsset(TEXT("ParticleSystem'/Game/Particles/BrazierFire.BrazierFire'"));
+	if (FireAsset.Succeeded())
+	{
+		FireParticles->SetTemplate(FireAsset.Object);
+	}
+	
+	// Setup sequence
 	static ConstructorHelpers::FObjectFinder<ULevelSequence> SequenceAsset(TEXT("LevelSequence'/Game/Sequences/FadeInFadeOut.FadeInFadeOut'"));
 	if (SequenceAsset.Succeeded())
 	{
@@ -56,7 +70,7 @@ void ATrigger::OnOverlapBegin(class AActor* OverlappedActor, class AActor* Other
 		Cinder->GetCharacterMovement()->MaxAcceleration = 0.0f;
 
 		// Set the location of where to put Cinder during brazier interaction (we are hiding him underground)
-		NewLocation = FVector(Brazier->GetActorLocation().X, Brazier->GetActorLocation().Y, Brazier->GetActorLocation().Z - 10000);
+		NewLocation = FVector(BrazierMesh->GetComponentLocation().X, BrazierMesh->GetComponentLocation().Y, BrazierMesh->GetComponentLocation().Z - 10000);
 
 		// Begin fade
 		SequencePlayer = ULevelSequencePlayer::CreateLevelSequencePlayer(GetWorld(), FadeOut, FMovieSceneSequencePlaybackSettings(), SequenceActor);
@@ -87,13 +101,14 @@ void ATrigger::SitOnBrazier()
 void ATrigger::LeaveBrazier()
 {
 	// Set the location of where to put Cinder after brazier interaction (we are hiding him underground)
-	NewLocation = FVector(Brazier->GetActorLocation().X, Brazier->GetActorLocation().Y, Brazier->GetActorLocation().Z + 300);
+	NewLocation = FVector(BrazierMesh->GetComponentLocation().X, BrazierMesh->GetComponentLocation().Y, BrazierMesh->GetComponentLocation().Z + 300);
 	//
 	Cinder->SetActorLocation(NewLocation);
 	Cinder->SetActorRotation(NewRotation);
 	Cinder->GetCharacterMovement()->MaxAcceleration = AccelerationStored;
 	//
 	CinderControllerRef->SetViewTarget(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0), BrazierTransition);
+	CinderControllerRef->SetControlRotation(Cinder->GetActorRotation());
 
 	GetWorldTimerManager().ClearTimer(LeaveBrazierTimer);
 }
