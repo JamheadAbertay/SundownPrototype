@@ -27,7 +27,7 @@ public:
 		USplineComponent* CameraSpline;
 
 	/** Starting cylinder to attach to spline */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = SplineSettings)
+	UPROPERTY(EditAnywhere, Category = SplineSettings)
 		UStaticMeshComponent* StartCylinder;
 
 	// The new camera
@@ -38,17 +38,19 @@ public:
 	UPROPERTY(EditAnywhere, Category = CamTransition)
 		FViewTargetTransitionParams MomentTransitionParams;
 
+	// Whether spline is being travelled along based on collision with the StartCylinder
 	UPROPERTY(BlueprintReadOnly)
-		bool SplineStarted = false; // Whether spline is being travelled along based on collision with the StartCylinder
+		bool SplineStarted = false; 
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = SplineSettings)
-		float SplineSpeed; // Speed at which to move along spline - note that this can be edited/viewed in blueprint too so level blueprint can access
-
+	// Distance along spline
 	UPROPERTY(BlueprintReadOnly)
-		float SplineDistance = 0.0f; // Distance along spline
+		float SplineDistance = 0.0f;
+
+	// Speed at which to move along spline - note that this can be edited/viewed in blueprint too so level blueprint can access
+	UPROPERTY(EditAnywhere, Category = SplineSettings)
+		float SplineSpeed = 10.0f;
 
 private:
-	
 	AActor* CinderActor; // cinder's actor reference
 	ACharacter* Cinder; // cinder character functionality reference 
 	UCharacterMovementComponent* CinderMoveCompRef; // cinder's movement component reference
