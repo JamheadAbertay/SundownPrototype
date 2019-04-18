@@ -55,16 +55,26 @@ void ABirdPawn::Tick(float DeltaSeconds)
 {
 	//GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, FString::Printf(TEXT("PitchTurnRate: %f"), PitchTurnRate));
 
-	// Calculate the flight movement (Z velocity and forward speed)
-	CalculateFlight(DeltaSeconds);
-	// Calculate the direction of the bird (turning left/right is independent of the Z velocity and forward speed)
-	CalculateDirection(DeltaSeconds);
-	// Calculate the forward speed of the bird
-	CalculateSpeed();
-	// Calculate the camera's location
-	CalculateCamera();
-	// Calculate the turn rate of Cinder ;)
-	CalculateTurnRate();
+	if (!OnSpline) {
+		// Calculate the flight movement (Z velocity and forward speed)
+		CalculateFlight(DeltaSeconds);
+		// Calculate the direction of the bird (turning left/right is independent of the Z velocity and forward speed)
+		CalculateDirection(DeltaSeconds);
+		// Calculate the forward speed of the bird
+		CalculateSpeed();
+		// Calculate the camera's location
+		CalculateCamera();
+		// Calculate the turn rate of Cinder ;)
+		CalculateTurnRate();
+	}
+	else {
+		// Calculate the flight movement (Z velocity and forward speed)
+		CalculateFlight(DeltaSeconds);
+		// Calculate the direction of the bird (turning left/right is independent of the Z velocity and forward speed)
+		CalculateDirection(DeltaSeconds);
+		// Calculate the camera's location
+		CalculateCamera();
+	}
 
 	// Call any parent class Tick implementation
 	Super::Tick(DeltaSeconds);
@@ -74,8 +84,11 @@ void ABirdPawn::NotifyHit(class UPrimitiveComponent* MyComp, class AActor* Other
 {
 	Super::NotifyHit(MyComp, Other, OtherComp, bSelfMoved, HitLocation, HitNormal, NormalImpulse, Hit);
 
-	if (Other->GetClass()->IsChildOf(SplineClassType)) {
+	if (Other->GetClass()->IsChildOf(SplineClassType) && !OnSpline) {
 		OnSpline = true;
+	}
+	else if (Other->GetClass()->IsChildOf(SplineClassType) && OnSpline) {
+		OnSpline = false;
 	}
 }
 
@@ -148,7 +161,6 @@ void ABirdPawn::CalculateSpeed() {
 		}
 		else {
 			GetCharacterMovement()->MaxWalkSpeed = MaxSpeed;
-			Boosting = false;
 		}
 	}
 	// NOT BOOST
@@ -207,7 +219,7 @@ void ABirdPawn::YawInput(float Val) {
 }
 
 void ABirdPawn::BuildBoost() {
-	if (bBoostReady) {
+	if (bBoostReady && !OnSpline) {
 		Boosting = true;
 		bBoostReady = false;
 		UKismetSystemLibrary::Delay(GetWorld(), BoostDelaySeconds, BoostLTI);
@@ -215,12 +227,13 @@ void ABirdPawn::BuildBoost() {
 }
 
 void ABirdPawn::BoostReady() {
+	Boosting = false;
 	bBoostReady = true;
 }
 
 void ABirdPawn::TurnFaster(float Val) {
 	if (Val > 0) {
-		TurnRateFloat += 0.02f;
+		TurnRateFloat += 0.1f;
 	} else {
 		TurnRateFloat = 0.0f;
 	}
