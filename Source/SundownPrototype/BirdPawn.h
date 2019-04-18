@@ -46,6 +46,8 @@ protected:
 	void BuildBoost();
 	UFUNCTION(BlueprintCallable, Category = "Boost")
 		void BoostReady();
+	/** Bound to the faster turning button */
+	void TurnFaster(float Val);
 	
 	// Begin AActor overrides
 	virtual void BeginPlay();
@@ -70,20 +72,21 @@ private:
 	/** Calculate the turn rate */
 	void CalculateTurnRate();
 	
-	// TURNING SPEED
+	// TURNING FLOATS
+
 	UPROPERTY(EditAnywhere, Category = Turning)
 		float YawTurnRate = 25.0f;
 	UPROPERTY(EditAnywhere, Category = Turning)
-		float PitchTurnRate = 35.0f;
-	/* Faster speed - max yaw rate = yaw rate * this **/
+		float PitchTurnRate = 25.0f;
 	UPROPERTY(EditAnywhere, Category = Turning)
-		float YawRateMultiplier = 1.25;
-	/* Faster speed - max pitch rate = pitch rate * this **/
+		float MaxYawTurnRate = 35.0f;
 	UPROPERTY(EditAnywhere, Category = Turning)
-		float PitchRateMultiplier = 1.35;
-	// floats for storing max turn rate
-	float MaxYawTurnRate;
-	float MaxPitchTurnRate;
+		float MaxPitchTurnRate = 45.0f;
+	// For increasing turn rate based on input
+	float TurnRateFloat = 0.0f;
+	//
+	float DefaultPitchRate;
+	float DefaultYawRate;
 
 	// FLIGHT FLOATS
 
@@ -150,10 +153,6 @@ public:
 private:
 	/** For using delay to create cooldowns */
 	FLatentActionInfo BoostLTI;
-
-	// OTHER 
-	// Float for storing delta time
-	float deltatime;
 
 protected:
 	// Called to bind functionality to input

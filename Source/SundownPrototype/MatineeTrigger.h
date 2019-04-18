@@ -7,6 +7,9 @@
 #include "Matinee/MatineeActor.h"
 #include "GameFramework/Character.h"
 #include "Components/BoxComponent.h"
+#include "Runtime/LevelSequence/Public/LevelSequence.h"
+#include "Runtime/LevelSequence/Public/LevelSequencePlayer.h"
+#include "Runtime/CoreUObject/Public/UObject/ConstructorHelpers.h"
 #include "MatineeTrigger.generated.h"
 
 UCLASS()
@@ -34,10 +37,15 @@ public:
 	UPROPERTY()
 		UBoxComponent* CollisionBox;
 
-	//Matinee to play when bird enters trigger box
-	UPROPERTY(EditDefaultsOnly, Category = MatineeToPlay) 
-		AMatineeActor* MatineeToPlay;
+	//Level sequence player used to play fade out
+	UPROPERTY()
+		ULevelSequencePlayer* SequencePlayer;
 
-	
-	
+	//Actor used to play fade out
+	UPROPERTY()
+		ALevelSequenceActor* SequenceActor;
+
+	//Level sequence asset played when pawn enters trigger box, can be set in trigger box details 
+	UPROPERTY(EditAnywhere, Category = SequenceToPlay)
+	    ULevelSequence* SequenceToPlay;
 };

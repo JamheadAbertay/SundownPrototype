@@ -37,7 +37,12 @@ void AMatineeTrigger::OnOverlapBegin(class AActor* OverlappedActor, class AActor
 {
 	if (OtherActor && (OtherActor->IsA(ACharacter::StaticClass())))
 	{
-		MatineeToPlay->Play();
+		// Begin fade
+		SequencePlayer = ULevelSequencePlayer::CreateLevelSequencePlayer(GetWorld(), SequenceToPlay, FMovieSceneSequencePlaybackSettings(), SequenceActor);
+		if (SequencePlayer)
+		{
+			SequencePlayer->Play();
+		}
 	}
 }
 

@@ -40,20 +40,20 @@ void ABirdPawn::BeginPlay()
 	GetCharacterMovement()->MaxAcceleration = 3000.0f;
 	GetCharacterMovement()->MaxWalkSpeed = DefaultSpeed;
 
+	// For changing turn rate
+	DefaultPitchRate = PitchTurnRate;
+	DefaultYawRate = YawTurnRate;
+
 	// For boost timing
 	BoostLTI.CallbackTarget = this;
 	BoostLTI.ExecutionFunction = "BoostReady";
 	BoostLTI.UUID = 123;
 	BoostLTI.Linkage = 0;
-
-	// For turning at speed
-	MaxYawTurnRate = YawTurnRate * YawRateMultiplier;
-	MaxPitchTurnRate = PitchTurnRate * PitchRateMultiplier;
 }
 
 void ABirdPawn::Tick(float DeltaSeconds)
 {
-	//GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, FString::Printf(TEXT("Speed: %f"), GetCharacterMovement()->MaxWalkSpeed));
+	//GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, FString::Printf(TEXT("PitchTurnRate: %f"), PitchTurnRate));
 
 	// Calculate the flight movement (Z velocity and forward speed)
 	CalculateFlight(DeltaSeconds);
@@ -173,12 +173,12 @@ void ABirdPawn::CalculateCamera() {
 }
 
 void ABirdPawn::CalculateTurnRate() {
-	FVector2D input = FVector2D(DefaultSpeed, MaxSpeed);
-	FVector2D yawOutput = FVector2D(YawTurnRate, MaxYawTurnRate);
-	FVector2D pitchOutput = FVector2D(PitchTurnRate, MaxPitchTurnRate);
+	FVector2D input = FVector2D(0.0f, 1.0f);
+	FVector2D yawOutput = FVector2D(DefaultYawRate, MaxYawTurnRate);
+	FVector2D pitchOutput = FVector2D(DefaultPitchRate, MaxPitchTurnRate);
 
-	YawTurnRate = UKismetMathLibrary::FInterpTo(YawTurnRate, MaxYawTurnRate, UGameplayStatics::GetWorldDeltaSeconds(GetWorld()), 0.6f);
-	PitchTurnRate = UKismetMathLibrary::FInterpTo(PitchTurnRate, MaxPitchTurnRate, UGameplayStatics::GetWorldDeltaSeconds(GetWorld()), 0.66f);
+	YawTurnRate = FMath::GetMappedRangeValueClamped(input, yawOutput, TurnRateFloat);
+	PitchTurnRate = FMath::GetMappedRangeValueClamped(input, pitchOutput, TurnRateFloat);
 }
 
 // Called to bind functionality to input
@@ -190,7 +190,10 @@ void ABirdPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 	// Bind our control axis' to callback functions
 	PlayerInputComponent->BindAxis("PitchInput", this, &ABirdPawn::PitchInput);
 	PlayerInputComponent->BindAxis("YawInput", this, &ABirdPawn::YawInput);
+	// Bind our boost action
 	PlayerInputComponent->BindAction("BuildBoost", IE_Pressed, this, &ABirdPawn::BuildBoost);
+	// Bind our turn faster function to the right trigger
+	PlayerInputComponent->BindAxis("TurnFaster", this, &ABirdPawn::TurnFaster);
 }
 
 void ABirdPawn::PitchInput(float Val) {
@@ -213,4 +216,13 @@ void ABirdPawn::BuildBoost() {
 
 void ABirdPawn::BoostReady() {
 	bBoostReady = true;
+}
+
+void ABirdPawn::TurnFaster(float Val) {
+	if (Val > 0) {
+		TurnRateFloat += 0.02f;
+	} else {
+		TurnRateFloat = 0.0f;
+	}
+	TurnRateFloat = FMath::Clamp(TurnRateFloat, 0.0f, 1.0f);
 }
