@@ -35,13 +35,14 @@ void AMatineeTrigger::Tick(float DeltaTime)
 //Called when character overlaps with collision box
 void AMatineeTrigger::OnOverlapBegin(class AActor* OverlappedActor, class AActor* OtherActor)
 {
-	if (OtherActor && (OtherActor->IsA(ACharacter::StaticClass())))
+	if (bOnASpline && !bFinished && OtherActor && (OtherActor->IsA(ACharacter::StaticClass())))
 	{
 		// Begin fade
 		SequencePlayer = ULevelSequencePlayer::CreateLevelSequencePlayer(GetWorld(), SequenceToPlay, FMovieSceneSequencePlaybackSettings(), SequenceActor);
 		if (SequencePlayer)
 		{
 			SequencePlayer->Play();
+			bFinished = true;
 		}
 	}
 }

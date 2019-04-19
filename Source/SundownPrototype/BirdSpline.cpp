@@ -92,7 +92,6 @@ void ABirdSpline::Tick(float DeltaSeconds) {
 		MomentCam->SetActorLocation(CameraLocation);
 	}
 	else if (SplineStarted) { // In other words, after the spline has started, and after the above if condition is no longer being met
-		
 		// Set view target back to Cinder and set the "camera on camera spline?" bool to false (only once, which is what the if(bCameraOnSpline) is for)
 		if (bCameraOnSpline) {
 			CinderControllerRef->SetViewTarget(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0), MomentTransitionParams);
@@ -103,11 +102,8 @@ void ABirdSpline::Tick(float DeltaSeconds) {
 		if (bSplineRepeat) {
 			SplineDistance = 0;
 			StartCylinder->SetWorldLocation(MovementSpline->GetLocationAtSplinePoint(0, ESplineCoordinateSpace::World));
-		}
-		// Else (if spline is not repeatable) - just disable collision on the cylinder asset
-		else {
-			StartCylinder->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-			StartCylinder->SetCollisionProfileName(TEXT("OverlapAll"));
+			StartCylinder->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+			StartCylinder->SetCollisionProfileName(TEXT("BlockAllDynamic"));
 		}
 
 		// Set the spline started bool to false so this code won't repeat
@@ -133,7 +129,11 @@ void ABirdSpline::NotifyHit(class UPrimitiveComponent* MyComp, class AActor* Oth
 		SplineStarted = true;
 		// Place the moment cam at the start of this moment's camera spline
 		MomentCam->SetActorLocation(CameraSpline->GetLocationAtDistanceAlongSpline(0.0f, ESplineCoordinateSpace::World));
+		// Remove collision on spline trigger cylinder
+		StartCylinder->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		StartCylinder->SetCollisionProfileName(TEXT("OverlapAll"));
+
 		// Set the start cylinder location to the end of the spline to trigger Cinder's detachment (bool in BirdPawn class)
-		StartCylinder->SetWorldLocation(MovementSpline->GetLocationAtSplinePoint(MovementSpline->GetNumberOfSplinePoints() - 1, ESplineCoordinateSpace::World));
+		//StartCylinder->SetWorldLocation(MovementSpline->GetLocationAtSplinePoint(MovementSpline->GetNumberOfSplinePoints() - 1, ESplineCoordinateSpace::World));
 	}
 }
