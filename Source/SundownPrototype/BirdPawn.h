@@ -102,7 +102,7 @@ private:
 	float SpeedHoldAmount = 1.0f;
 	/** The force of gravity */
 	UPROPERTY(EditDefaultsOnly, Category = Flight)
-		float GravityConstant = 9.8f;
+		float GravityConstant = -980.0f;
 
 	// FLIGHT MULTIPLIER CURVES
 

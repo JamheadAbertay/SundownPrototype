@@ -65,9 +65,6 @@ void ABirdPawn::Tick(float DeltaSeconds)
 	CalculateCamera();
 	// Calculate the turn rate of Cinder
 	CalculateTurnRate();
-	
-
-	
 
 	// Call any parent class Tick implementation
 	Super::Tick(DeltaSeconds);
@@ -106,8 +103,7 @@ void ABirdPawn::CalculateFlight(float DeltaSeconds)
 	float VelCurveVal = VelCurve->GetFloatValue(VelocityVec.Size());
 	// E) Calculate lift normalized by multiplying the flight angle curve and velocity curve values
 	LiftAmount = VelCurveVal * AngCurveVal;
-	GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, FString::Printf(TEXT("AngleCurveValue: %f"), Time));
-
+	
 	// Step 2: GRAVITY!
 
 	// A) Create force against gravity
