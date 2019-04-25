@@ -49,6 +49,14 @@ void ABirdPawn::BeginPlay()
 	BoostLTI.ExecutionFunction = "BoostReady";
 	BoostLTI.UUID = 123;
 	BoostLTI.Linkage = 0;
+
+	// Invert-Y
+	if (bInvertCamY) {
+		YCamMultiplier = -1.0f;
+	}
+	else if (!bInvertCamY) {
+		YCamMultiplier = 1.0f;
+	}
 }
 
 void ABirdPawn::Tick(float DeltaSeconds)
