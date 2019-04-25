@@ -34,6 +34,10 @@ public:
 	UPROPERTY(BlueprintReadWrite)
 		bool Boosting;
 
+	/** Invert camera bool */
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+		bool bInvertCamY;
+
 protected:
 
 	/** Bound to the control rotation pitch (camera too) */
@@ -145,6 +149,8 @@ private:
 		float MaxYRot = 45.0f;
 	UPROPERTY(EditAnywhere, Category = Camera)
 		float MinYRot = 300.0f;
+
+	float YCamMultiplier = 1.0f;
 	
 public:
 	UPROPERTY(BlueprintReadWrite)

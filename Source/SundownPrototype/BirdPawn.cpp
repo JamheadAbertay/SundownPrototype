@@ -67,6 +67,8 @@ void ABirdPawn::Tick(float DeltaSeconds)
 	CalculateTurnRate();
 	
 
+	
+
 	// Call any parent class Tick implementation
 	Super::Tick(DeltaSeconds);
 }
@@ -75,11 +77,14 @@ void ABirdPawn::NotifyHit(class UPrimitiveComponent* MyComp, class AActor* Other
 {
 	Super::NotifyHit(MyComp, Other, OtherComp, bSelfMoved, HitLocation, HitNormal, NormalImpulse, Hit);
 
-	if (Other->GetClass()->IsChildOf(SplineClassType) && !OnSpline) {
+	if (Other->GetClass()->IsChildOf(SplineClassType) && !OnSpline) { // If hit spline and not on spline
 		OnSpline = true;
+		//GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, FString::Printf(TEXT("Spline found!")));
 	}
-	else if (Other->GetClass()->IsChildOf(SplineClassType) && OnSpline) {
+	else if (Other->GetClass()->IsChildOf(SplineClassType) && OnSpline) { // If hit spline and on spine
 		OnSpline = false;
+		Other->SetActorEnableCollision(false);  // disable collision on spline
+		//GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, FString::Printf(TEXT("Spline left!")));
 	}
 }
 
@@ -91,9 +96,9 @@ void ABirdPawn::CalculateFlight(float DeltaSeconds)
 	FVector controlUpVec = UKismetMathLibrary::GetUpVector(FRotator(GetControlRotation()));
 	// control inclination ranges from -1 to 1 based on the rotational difference between camera up vector and actor forward vector (clamped to avoid total vertical up/down)
 	InclinationAmount = FVector::DotProduct(controlUpVec, GetActorForwardVector()); 
-	InclinationAmount = FMath::Clamp(InclinationAmount, -0.99f, 0.99f);
 	// B) Get value from angle curve using Inclination Amount (takeaway 90 degrees to get the correct angle)
-	float AngCurveVal = AngCurve->GetFloatValue(FMath::Acos(InclinationAmount) - 90.0f);
+	float AngCurveVal = AngCurve->GetFloatValue(FMath::Acos(InclinationAmount));
+	float Time = FMath::Acos(InclinationAmount);
 	// C) Get value from velocity curve
 	FVector VelocityVec = GetCharacterMovement()->Velocity;
 	// Clamp Z within appropriate velocity as this deal with downwards movement - change the negative value to allow higher "down" velocity amounts to influence LiftAmount
@@ -101,12 +106,13 @@ void ABirdPawn::CalculateFlight(float DeltaSeconds)
 	float VelCurveVal = VelCurve->GetFloatValue(VelocityVec.Size());
 	// E) Calculate lift normalized by multiplying the flight angle curve and velocity curve values
 	LiftAmount = VelCurveVal * AngCurveVal;
+	GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, FString::Printf(TEXT("AngleCurveValue: %f"), Time));
 
 	// Step 2: GRAVITY!
 
 	// A) Create force against gravity
 	float x = GetCharacterMovement()->Mass * GravityConstant * LiftAmount;
-	FVector force = FVector(0.0f, 0.0f, x);
+	FVector force = FVector(0.0f, 0.0f, -x); // x 1.3 to give more lift
 	// B) Add force
 	GetCharacterMovement()->AddForce(force);
 
@@ -195,7 +201,7 @@ void ABirdPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 
 void ABirdPawn::PitchInput(float Val) {
 	PitchAmount = UGameplayStatics::GetWorldDeltaSeconds(GetWorld()) * PitchTurnRate * Val;
-	AddControllerPitchInput(PitchAmount);
+	AddControllerPitchInput(PitchAmount * YCamMultiplier);
 }
 
 void ABirdPawn::YawInput(float Val) {

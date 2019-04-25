@@ -1,18 +1,5 @@
 // Sundown Movement Spline
 
-/** 
-TO-DO...
-
-PART 1
-
-Create the spline itself (the spline shape) (DONE)
-Create tools so that designers can place/edit points on the spline (DONE)
-Get bird to follow spline, experiment with changing bird speed (DONE)
-Setup a cinematic camera system for the spline (DONE)
-Setup a movement bounds system and integrate into the movement spline w/ speed control (UNFINISHED)
-
-**/
-
 #include "BirdSpline.h"
 #include "Engine/World.h"
 #include "Kismet/GameplayStatics.h"
@@ -127,13 +114,11 @@ void ABirdSpline::NotifyHit(class UPrimitiveComponent* MyComp, class AActor* Oth
 
 		// Initiate the spline sequence using a boolean
 		SplineStarted = true;
+
 		// Place the moment cam at the start of this moment's camera spline
 		MomentCam->SetActorLocation(CameraSpline->GetLocationAtDistanceAlongSpline(0.0f, ESplineCoordinateSpace::World));
-		// Remove collision on spline trigger cylinder
-		StartCylinder->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-		StartCylinder->SetCollisionProfileName(TEXT("OverlapAll"));
-
+		
 		// Set the start cylinder location to the end of the spline to trigger Cinder's detachment (bool in BirdPawn class)
-		//StartCylinder->SetWorldLocation(MovementSpline->GetLocationAtSplinePoint(MovementSpline->GetNumberOfSplinePoints() - 1, ESplineCoordinateSpace::World));
+		StartCylinder->SetWorldLocation(MovementSpline->GetLocationAtSplinePoint(MovementSpline->GetNumberOfSplinePoints() - 1, ESplineCoordinateSpace::World));
 	}
 }
