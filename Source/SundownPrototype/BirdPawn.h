@@ -98,8 +98,6 @@ private:
 	float InclinationAmount;
 	/** This is used to control the lift of the bird (force against gravity) */
 	float LiftAmount;
-	/** This is the variable for handling acceleration and if desired momentum (default value is 1.0f) */
-	float SpeedHoldAmount = 1.0f;
 	/** The force of gravity */
 	UPROPERTY(EditDefaultsOnly, Category = Flight)
 		float GravityConstant = -980.0f;

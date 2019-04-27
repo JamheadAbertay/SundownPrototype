@@ -37,7 +37,7 @@ void ABirdPawn::BeginPlay()
 	GetCharacterMovement()->BrakingFrictionFactor = 1.0f;
 	GetCharacterMovement()->FallingLateralFriction = 1.0f;
 	GetCharacterMovement()->RotationRate = FRotator(0.0f, 180.0f, 90.0f);
-	GetCharacterMovement()->MaxAcceleration = 3000.0f;
+	GetCharacterMovement()->MaxAcceleration = 220.0f;
 	GetCharacterMovement()->MaxWalkSpeed = DefaultSpeed;
 
 	// For changing turn rate
@@ -137,7 +137,7 @@ void ABirdPawn::CalculateFlight(float DeltaSeconds)
 	// C) Get direction to fly in
 	FVector flyForwardVector = UKismetMathLibrary::GetForwardVector(GetControlRotation());
 	// D) Add the movement input in the correct direction, using flyspeedHold as weighting
-	AddMovementInput(flyForwardVector, 2.0f);
+	AddMovementInput(flyForwardVector, 1.0f);
 }
 
 void ABirdPawn::CalculateDirection(float DeltaSeconds) {
@@ -171,7 +171,7 @@ void ABirdPawn::CalculateSpeed() {
 
 void ABirdPawn::CalculateCamera() {
 	// First convert Z velocity value to be within the correct range
-	FVector2D input = FVector2D(-375.0f, 0.0f);
+	FVector2D input = FVector2D(-350.0f, 0.0f);
 	FVector2D output = FVector2D(DiveSpringArmLength, DefaultSpringArmLength);
 
 	DiveRangeClamped = FMath::GetMappedRangeValueClamped(input, output, GetCharacterMovement()->Velocity.Z);
