@@ -79,13 +79,13 @@ private:
 	// TURNING FLOATS
 
 	UPROPERTY(EditAnywhere, Category = Turning)
-		float YawTurnRate = 25.0f;
+		float YawTurnRate = 15.0f;
 	UPROPERTY(EditAnywhere, Category = Turning)
-		float PitchTurnRate = 25.0f;
+		float PitchTurnRate = 22.5f;
 	UPROPERTY(EditAnywhere, Category = Turning)
-		float MaxYawTurnRate = 35.0f;
+		float MaxYawTurnRate = 25.0f;
 	UPROPERTY(EditAnywhere, Category = Turning)
-		float MaxPitchTurnRate = 45.0f;
+		float MaxPitchTurnRate = 25.0f;
 	// For increasing turn rate based on input
 	float TurnRateFloat = 0.0f;
 	//
@@ -131,16 +131,18 @@ private:
 		float BoostMultiplier = 1.035f;
 	/** Amount to multiply MaxWalkSpeed by after boosting each frame until speed is back to normal */
 	UPROPERTY(EditAnywhere, Category = Boost)
-		float SlowdownMultiplier = 0.9975f;
+		float SlowdownMultiplier = 0.998f;
 	/** Time to delay between boosts (in seconds) */
 	UPROPERTY(EditAnywhere, Category = Boost)
 		float BoostDelaySeconds = 0.875f;
 
 	// CAMERA MANIPULATION (DIVE)
-	UPROPERTY(EditAnywhere, Category = Camera)
+public:
+	UPROPERTY(BlueprintReadWrite, Category = Camera)
 		float DefaultSpringArmLength = 125.0f;
-	UPROPERTY(EditAnywhere, Category = Camera)
+	UPROPERTY(BlueprintReadWrite, Category = Camera)
 		float DiveSpringArmLength = 100.0f;
+private:
 	UPROPERTY(EditAnywhere, Category = Camera)
 		float DiveCameraInterpSpeed = 0.75f;
 
