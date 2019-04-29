@@ -26,6 +26,10 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 		UCameraComponent* mCamera;
 
+	// Collision cone
+	UPROPERTY(EditAnywhere)
+		UStaticMeshComponent* mCollisionCone;
+
 	/** Spline movement bool, false by default */
 	UPROPERTY(BlueprintReadWrite, Category = Spline)
 		bool OnSpline = false;
@@ -59,7 +63,13 @@ protected:
 	virtual void NotifyHit(class UPrimitiveComponent* MyComp, class AActor* Other, class UPrimitiveComponent* OtherComp, bool bSelfMoved, FVector HitLocation, FVector HitNormal, FVector NormalImpulse, const FHitResult& Hit) override;
 	// End AActor overrides
 
+	// Line trace function for collision
+	void PerformLineTrace(); // called on tick
+
 private:
+	// FORWARD VECTOR FOR COLLISION AND FLYING
+	FVector flyForwardVector;
+
 	// SPLINE LAST LOCATION FOR CHECKING IF SPLINE IS FINISHED
 	FVector LastLocation;
 
