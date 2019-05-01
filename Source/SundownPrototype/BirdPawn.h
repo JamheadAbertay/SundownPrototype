@@ -26,6 +26,10 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 		UCameraComponent* mCamera;
 
+	// Collision cone
+	UPROPERTY(EditAnywhere)
+		UStaticMeshComponent* mCollisionCone;
+
 	/** Spline movement bool, false by default */
 	UPROPERTY(BlueprintReadWrite, Category = Spline)
 		bool OnSpline = false;
@@ -33,6 +37,10 @@ public:
 	/** Boost bool for handling when to boost */
 	UPROPERTY(BlueprintReadWrite)
 		bool Boosting;
+
+	/** Invert camera bool */
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+		bool bInvertCamY;
 
 protected:
 
@@ -55,7 +63,13 @@ protected:
 	virtual void NotifyHit(class UPrimitiveComponent* MyComp, class AActor* Other, class UPrimitiveComponent* OtherComp, bool bSelfMoved, FVector HitLocation, FVector HitNormal, FVector NormalImpulse, const FHitResult& Hit) override;
 	// End AActor overrides
 
+	// Line trace function for collision
+	void PerformLineTrace(); // called on tick
+
 private:
+	// FORWARD VECTOR FOR COLLISION AND FLYING
+	FVector flyForwardVector;
+
 	// SPLINE LAST LOCATION FOR CHECKING IF SPLINE IS FINISHED
 	FVector LastLocation;
 
@@ -75,13 +89,13 @@ private:
 	// TURNING FLOATS
 
 	UPROPERTY(EditAnywhere, Category = Turning)
-		float YawTurnRate = 25.0f;
+		float YawTurnRate = 15.0f;
 	UPROPERTY(EditAnywhere, Category = Turning)
-		float PitchTurnRate = 25.0f;
+		float PitchTurnRate = 22.5f;
 	UPROPERTY(EditAnywhere, Category = Turning)
-		float MaxYawTurnRate = 35.0f;
+		float MaxYawTurnRate = 25.0f;
 	UPROPERTY(EditAnywhere, Category = Turning)
-		float MaxPitchTurnRate = 45.0f;
+		float MaxPitchTurnRate = 25.0f;
 	// For increasing turn rate based on input
 	float TurnRateFloat = 0.0f;
 	//
@@ -94,11 +108,9 @@ private:
 	float InclinationAmount;
 	/** This is used to control the lift of the bird (force against gravity) */
 	float LiftAmount;
-	/** This is the variable for handling acceleration and if desired momentum (default value is 1.0f) */
-	float SpeedHoldAmount = 1.0f;
 	/** The force of gravity */
 	UPROPERTY(EditDefaultsOnly, Category = Flight)
-		float GravityConstant = 9.8f;
+		float GravityConstant = -980.0f;
 
 	// FLIGHT MULTIPLIER CURVES
 
@@ -116,7 +128,7 @@ private:
 		float MaxSpeed = 650.0f;
 	/** Default speed variable */
 	UPROPERTY(EditAnywhere, Category = MovementSpeed)
-		float DefaultSpeed = 325.0f;
+		float DefaultSpeed = 375.0f;
 
 	// BOOSTING (FORWARD FLAP THING)
 
@@ -130,13 +142,15 @@ private:
 		float SlowdownMultiplier = 0.998f;
 	/** Time to delay between boosts (in seconds) */
 	UPROPERTY(EditAnywhere, Category = Boost)
-		float BoostDelaySeconds = 2.0f;
+		float BoostDelaySeconds = 0.875f;
 
 	// CAMERA MANIPULATION (DIVE)
-	UPROPERTY(EditAnywhere, Category = Camera)
-		float DefaultSpringArmLength = 100.0f;
-	UPROPERTY(EditAnywhere, Category = Camera)
-		float DiveSpringArmLength = 50.0f;
+public:
+	UPROPERTY(BlueprintReadWrite, Category = Camera)
+		float DefaultSpringArmLength = 125.0f;
+	UPROPERTY(BlueprintReadWrite, Category = Camera)
+		float DiveSpringArmLength = 100.0f;
+private:
 	UPROPERTY(EditAnywhere, Category = Camera)
 		float DiveCameraInterpSpeed = 0.75f;
 
@@ -145,6 +159,8 @@ private:
 		float MaxYRot = 45.0f;
 	UPROPERTY(EditAnywhere, Category = Camera)
 		float MinYRot = 300.0f;
+
+	float YCamMultiplier = 1.0f;
 	
 public:
 	UPROPERTY(BlueprintReadWrite)

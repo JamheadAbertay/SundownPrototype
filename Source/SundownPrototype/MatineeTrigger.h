@@ -48,4 +48,11 @@ public:
 	//Level sequence asset played when pawn enters trigger box, can be set in trigger box details 
 	UPROPERTY(EditAnywhere, Category = SequenceToPlay)
 	    ULevelSequence* SequenceToPlay;
+
+	// Spline bool - don't start if not true
+	UPROPERTY(BlueprintReadWrite)
+		bool bOnASpline = false;
+
+	// To stop moment repeating 
+	bool bFinished = false;
 };
