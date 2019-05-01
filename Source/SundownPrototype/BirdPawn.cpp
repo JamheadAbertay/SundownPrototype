@@ -2,6 +2,8 @@
 
 #include "BirdPawn.h"
 #include "Components/InputComponent.h"
+#include "Components/StaticMeshComponent.h"
+#include "DrawDebugHelpers.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/Controller.h"
 #include "Engine/World.h"
@@ -25,6 +27,21 @@ ABirdPawn::ABirdPawn()
 	mCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
 	mCamera->SetupAttachment(mCameraSpringArm, USpringArmComponent::SocketName); // Attach the camera to the end of the boom and let the boom adjust to match the controller orientation
 	mCamera->bUsePawnControlRotation = true;
+
+	// Setup the collision cone
+	mCollisionCone = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Collision Cone"));
+	mCollisionCone->SetupAttachment(RootComponent);
+
+	static ConstructorHelpers::FObjectFinder<UStaticMesh> ConeMeshAsset(TEXT("StaticMesh'/Game/Characters/PlayerCharacter/Meshes/CollisionCone.CollisionCone'"));
+	if (ConeMeshAsset.Succeeded()) {
+		mCollisionCone->SetStaticMesh(ConeMeshAsset.Object);
+		mCollisionCone->SetWorldScale3D(FVector(1.0f));
+		mCollisionCone->SetMobility(EComponentMobility::Movable);
+		mCollisionCone->SetRelativeLocation(FVector(0.0f, 0.0f, 0.0f));
+		mCollisionCone->SetRelativeRotation(FRotator(0.0f, 0.0f, 90.0f));
+		mCollisionCone->bVisible = true;
+		mCollisionCone->bCastDynamicShadow = false;
+	}
 }
 
 void ABirdPawn::BeginPlay()
@@ -73,9 +90,40 @@ void ABirdPawn::Tick(float DeltaSeconds)
 	CalculateCamera();
 	// Calculate the turn rate of Cinder
 	CalculateTurnRate();
+	//
+	PerformLineTrace();
 
 	// Call any parent class Tick implementation
 	Super::Tick(DeltaSeconds);
+}
+
+
+void ABirdPawn::PerformLineTrace() {
+	FHitResult OutHit;
+	FVector Start = GetActorLocation();
+
+	FVector End = ((flyForwardVector * 1000.0f) + Start);
+	FCollisionQueryParams CollisionParams;
+
+	CollisionParams.AddIgnoredActor(this);
+	//DrawDebugLine(GetWorld(), Start, End, FColor::Blue, false, 1.0, 0, 1);
+
+	if (GetWorld()->LineTraceSingleByChannel(OutHit, Start, End, ECC_WorldStatic, CollisionParams))
+	{
+		if (OutHit.bBlockingHit)
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, FString::Printf(TEXT("You are hitting: %s"), *OutHit.GetActor()->GetName()));
+			GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, FString::Printf(TEXT("Impact Point: %s"), *OutHit.ImpactPoint.ToString()));
+			GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, FString::Printf(TEXT("Normal Point: %s"), *OutHit.ImpactNormal.ToString()));
+
+			APlayerController* CinderController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+
+			if (OutHit.ImpactNormal.Z > 0.0f) {
+				FRotator NewRotation = FRotator(GetControlRotation().Pitch + 45.0f, GetControlRotation().Yaw, GetControlRotation().Roll);
+				CinderController->SetControlRotation(UKismetMathLibrary::RInterpTo(GetControlRotation(), NewRotation, UGameplayStatics::GetWorldDeltaSeconds(GetWorld()), 1.0f));
+			}
+		}
+	}
 }
 
 void ABirdPawn::NotifyHit(class UPrimitiveComponent* MyComp, class AActor* Other, class UPrimitiveComponent* OtherComp, bool bSelfMoved, FVector HitLocation, FVector HitNormal, FVector NormalImpulse, const FHitResult& Hit)
@@ -135,7 +183,7 @@ void ABirdPawn::CalculateFlight(float DeltaSeconds)
 	}
 	GetCharacterMovement()->MaxWalkSpeed = FMath::Clamp(GetCharacterMovement()->MaxWalkSpeed, DefaultSpeed, MaxSpeed);
 	// C) Get direction to fly in
-	FVector flyForwardVector = UKismetMathLibrary::GetForwardVector(GetControlRotation());
+	flyForwardVector = UKismetMathLibrary::GetForwardVector(GetControlRotation());
 	// D) Add the movement input in the correct direction, using flyspeedHold as weighting
 	AddMovementInput(flyForwardVector, 1.0f);
 }
