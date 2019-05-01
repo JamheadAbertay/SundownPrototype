@@ -91,7 +91,7 @@ void ABirdPawn::Tick(float DeltaSeconds)
 	// Calculate the turn rate of Cinder
 	CalculateTurnRate();
 	//
-	PerformLineTrace();
+	//PerformLineTrace();
 
 	// Call any parent class Tick implementation
 	Super::Tick(DeltaSeconds);
