@@ -11,6 +11,7 @@
 #include "Runtime/LevelSequence/Public/LevelSequence.h"
 #include "Runtime/LevelSequence/Public/LevelSequencePlayer.h"
 #include "Runtime/Engine/Classes/Particles/ParticleSystemComponent.h"
+#include "Runtime/UMG/Public/Blueprint/UserWidget.h"
 #include "Trigger.generated.h"
 
 UCLASS(Blueprintable)
@@ -93,6 +94,13 @@ private:
 	//New rotation to set cinder to (rotation of brazier)
 	UPROPERTY(EditAnywhere, Category = LeaveBrazierProperties)
 		FRotator NewRotation;
+
+	// Reference UMG Asset in the Editor
+	UPROPERTY(EditAnywhere, Category = WidgetToShow)
+		TSubclassOf<class UUserWidget> Widget;
+
+	// Variable to hold the widget After Creating it.
+	UUserWidget* WidgetToShow;
 
 	// To safely store acceleration of Cinder for after brazier
 	float AccelerationStored;

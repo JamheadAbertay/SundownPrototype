@@ -94,6 +94,21 @@ void ATrigger::SitOnBrazier()
 	//
 	CinderControllerRef->SetControlRotation(FRotator(0.0f, 0.0f, 0.0f));
 	CinderControllerRef->SetViewTarget(BrazierCamera, BrazierTransition);
+
+	if (Widget) // Check if the Asset is assigned in the blueprint.
+	{
+		// Create the widget and store it.
+		WidgetToShow = CreateWidget<UUserWidget>(UGameplayStatics::GetPlayerController(GetWorld(), 0), Widget);
+
+		// now you can use the widget directly since you have a referance for it.
+		// Extra check to  make sure the pointer holds the widget.
+		if (WidgetToShow)
+		{
+			//let add it to the view port
+			WidgetToShow->AddToViewport();
+		}
+	}
+
 	//
 	GetWorldTimerManager().ClearTimer(BeginBrazierTimer);
 }
@@ -109,6 +124,8 @@ void ATrigger::LeaveBrazier()
 	//
 	CinderControllerRef->SetViewTarget(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0), BrazierTransition);
 	CinderControllerRef->SetControlRotation(Cinder->GetActorRotation());
+
+	WidgetToShow->RemoveFromParent();
 
 	GetWorldTimerManager().ClearTimer(LeaveBrazierTimer);
 }
