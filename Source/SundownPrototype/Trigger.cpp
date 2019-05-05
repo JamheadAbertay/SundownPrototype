@@ -116,7 +116,7 @@ void ATrigger::SitOnBrazier()
 void ATrigger::LeaveBrazier()
 {
 	// Set the location of where to put Cinder after brazier interaction (we are hiding him underground)
-	NewLocation = FVector(BrazierMesh->GetComponentLocation().X, BrazierMesh->GetComponentLocation().Y, BrazierMesh->GetComponentLocation().Z + 600);
+	NewLocation = FVector(BrazierMesh->GetComponentLocation().X, BrazierMesh->GetComponentLocation().Y, BrazierMesh->GetComponentLocation().Z + 900);
 	//
 	Cinder->SetActorLocation(NewLocation);
 	Cinder->SetActorRotation(NewRotation);
