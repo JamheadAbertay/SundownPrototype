@@ -1,0 +1,2187 @@
+commit 12130fcd008e511b36c1dcec655262689d2394d3
+Author: Gary <GaryWhittle19@gmail.com>
+Date:   Sat May 4 18:02:48 2019 +0100
+
+    Added a new narrative "book" mechanic as requested by designers. Removed some old classes. Made some quick changes to level two and placed example of narrative spline in level three.
+    
+    Narrative spline - set points along a spline for a narrative object to follow and rest at until the bird catches up to each resting point. Example is in level three, flaming boat style. Narrator audio cues can be added easily.
+    BP should be straightforward enough to use - set the points for the book to go to for story points 1, 2 and 3. After player reaching the third point of resting, book will travel to end of spline so maybe have it travel somewhere out of sight/ towards the end of the level.
+    Be sure to set the spline points that represent the correct places you want the book to rest, in the correct order (1, then 2, then 3). Also remember to set static mesh and particle system.
+
+commit b745fbe1d21fdeb46cf9e2ab4686db71b80388b0
+Author: Gary <GaryWhittle19@gmail.com>
+Date:   Thu May 2 11:09:42 2019 +0100
+
+    Updated level three with recent changes.
+
+commit 0ba15d45e07b717402eb6e7ff79a8c1e6a5e9f3e
+Author: smd96 <scottmichaeldouglas@gmail.com>
+Date:   Thu May 2 11:01:32 2019 +0100
+
+    Updated braziers to display story image
+
+commit 682fd46fe49b60d24e993a716c3e99739726009f
+Author: ryanmcd98 <callmemcd@hotmail.co.uk>
+Date:   Wed May 1 23:08:41 2019 +0100
+
+    Updated level three!
+
+commit abd1052650371d5b7fe27ae2ebfa1c3f35b19a8b
+Author: STEPHEN REILLY <1803300@uad.ac.uk>
+Date:   Wed May 1 19:49:29 2019 +0100
+
+    Ensuring the cave rails stay.
+
+commit 061ea68f4d6acd806330360d599aec872f8ad695
+Merge: 8049848 9271eb7
+Author: STEPHEN REILLY <1803300@uad.ac.uk>
+Date:   Wed May 1 19:43:42 2019 +0100
+
+    Merge
+
+commit 8049848c907b2082a6c094c83a1578dd3a3759a9
+Author: STEPHEN REILLY <1803300@uad.ac.uk>
+Date:   Wed May 1 19:39:36 2019 +0100
+
+    Added Minecart Audio & Cleaned Up Material Names
+
+commit 3ad43dd4f98f874dfe8c7d26c51a4f8f33129817
+Author: STEPHEN REILLY <1803300@uad.ac.uk>
+Date:   Wed May 1 18:43:09 2019 +0100
+
+    Second level updates
+
+commit 9271eb7c4ec1d168f8858bb4905854b6da034b57
+Author: ZOE HOUSTON <1603120@uad.ac.uk>
+Date:   Wed May 1 18:35:44 2019 +0100
+
+    Added church bells sounds to level one, imported music for level 3 and also changed the music for level 2.
+
+commit bba24998f52a74d93c21c06df7bc2f1b88c56cb2
+Merge: 2522df2 11c733e
+Author: ALEX MILNE <1503218@uad.ac.uk>
+Date:   Wed May 1 16:56:23 2019 +0100
+
+    Merge branch 'master' of https://github.com/JamheadAbertay/SundownPrototype
+
+commit 2522df224d59cf303a7dbfb2700e4ed046bda73e
+Author: ALEX MILNE <1503218@uad.ac.uk>
+Date:   Wed May 1 16:56:17 2019 +0100
+
+    Movement Value Changes / boost and max speed   -   Seagull Moment Camera and actor changes / camera distance and seagull end animation
+
+commit 11c733e1793342b4ad801cb6c32da762014608ea
+Merge: 8fa7183 11fb3e7
+Author: CAVAN BRYCE <1601214@uad.ac.uk>
+Date:   Wed May 1 16:13:47 2019 +0100
+
+    Merge branch 'master' of https://github.com/JamheadAbertay/SundownPrototype
+
+commit 8fa71836bbdd4f341b694f887c3fd268d366f9dc
+Author: CAVAN BRYCE <1601214@uad.ac.uk>
+Date:   Wed May 1 16:13:40 2019 +0100
+
+    Added a volumetric fog
+
+commit 11fb3e71b9cff1bc217669a809f040e31a6d25ab
+Merge: 292ac37 54ae256
+Author: STEPHEN REILLY <1803300@uad.ac.uk>
+Date:   Wed May 1 15:41:27 2019 +0100
+
+    Merge branch 'master' of https://github.com/JamheadAbertay/SundownPrototype
+
+commit 292ac37a512d8c5cb4cce73810b19aaee45bccc8
+Author: STEPHEN REILLY <1803300@uad.ac.uk>
+Date:   Wed May 1 15:41:07 2019 +0100
+
+    Changes to the minecart track
+
+commit 54ae2569b2e4896049653c111b93a7ba21acec14
+Author: ALEX MILNE <1503218@uad.ac.uk>
+Date:   Wed May 1 15:22:41 2019 +0100
+
+    Altered animation values and movement values to make animation work and boost speed
+
+commit b40a27b7cf89c93c17f4968291dae5c2ab0fd168
+Merge: 329e363 50e4eae
+Author: CAVAN BRYCE <1601214@uad.ac.uk>
+Date:   Wed May 1 14:37:17 2019 +0100
+
+    Merge branch 'master' of https://github.com/JamheadAbertay/SundownPrototype
+
+commit 329e36378d7e37c7dbdd692fde5449b7b4757277
+Author: CAVAN BRYCE <1601214@uad.ac.uk>
+Date:   Wed May 1 14:37:00 2019 +0100
+
+    Added Bell animations
+
+commit 50e4eae31383652caa883131e79cfe564a4285f2
+Merge: 774c617 94f5941
+Author: STEPHEN REILLY <1803300@uad.ac.uk>
+Date:   Wed May 1 14:23:33 2019 +0100
+
+    Merge branch 'master' of https://github.com/JamheadAbertay/SundownPrototype
+
+commit 774c617ac4745f7769ddf2b424f9aa3e8386d08d
+Author: STEPHEN REILLY <1803300@uad.ac.uk>
+Date:   Wed May 1 14:22:48 2019 +0100
+
+    Added rail + minecarts moving system for level 2.
+
+commit 94f594159e47619f2dbe5272f2d4b46f2ec68bce
+Author: ZOE HOUSTON <1603120@uad.ac.uk>
+Date:   Wed May 1 14:21:59 2019 +0100
+
+    Made pullup line shorter.
+
+commit ec814895778e39c840659f7a9dc447ead7d4b20c
+Merge: ffbe35a 5f007b5
+Author: RYAN MCDONALD <1602861@uad.ac.uk>
+Date:   Wed May 1 14:09:47 2019 +0100
+
+    Merge branch 'master' of https://github.com/JamheadAbertay/SundownPrototype
+    
+    # Conflicts:
+    #       Content/Characters/PlayerCharacter/Blueprints/MyBirdPawnBP.uasset
+
+commit ffbe35a23c923586ea071b50096bcbe802779c3e
+Author: RYAN MCDONALD <1602861@uad.ac.uk>
+Date:   Wed May 1 13:57:57 2019 +0100
+
+    Ryans third level
+
+commit 5f007b5ba4cd32eed16bf5a4774f1b43b5403d32
+Merge: 564a06c d799b62
+Author: ZOE HOUSTON <1603120@uad.ac.uk>
+Date:   Wed May 1 13:29:37 2019 +0100
+
+    Merge remote-tracking branch 'origin/master'
+    
+    # Conflicts:
+    #       Content/Levels/Gameplay/FirstSection.umap
+
+commit 564a06c5603de249021e32419b1864b71b1caa72
+Author: ZOE HOUSTON <1603120@uad.ac.uk>
+Date:   Wed May 1 13:27:21 2019 +0100
+
+    no message
+
+commit 3d625002e0421b290b629c76d89899d4c0db2383
+Author: ZOE HOUSTON <1603120@uad.ac.uk>
+Date:   Wed May 1 13:25:40 2019 +0100
+
+    Added sounds and music to level 2 and mad changes to the music in level 1 and the main menu. Music is now high quality with their original copies in place of the compressed versions.
+
+commit d799b622787701012f0f518de238cd537e025440
+Author: Gary Whittle <garywhittle19@gmail.com>
+Date:   Mon Apr 29 19:45:01 2019 +0100
+
+    Added collision cone to character for future use, and line trace for preventing ground-nosediving. Added rough blueprint framework for story content.
+
+commit ea1ecb15a326bcbbd4b987c039b38df18e04df2a
+Author: Gary Whittle Jr <garywhittle19@gmail.com>
+Date:   Sat Apr 27 17:48:50 2019 +0100
+
+    Corrected acceleration (again?), removed unused variables, changed camera dive weighting slightly, changed the devlevel so it can run 60fps on my laptop.
+    
+    BUGS NEEDING FIXED:
+    - Spline camera goes back to start the transitions! SOLUTION: Use a delay and set it back to the start after a few seconds.
+    - FPS's less than 60 have a significant impact on how the moments spline works, as well as character turning (speeds up on slower FPS's). SOLUTION: Investigate making movement more frame-safe.
+    - I'm on a train, woooooo
+
+commit f86e91d1cc1ff0d5e3195bffbb666424318a65d4
+Author: Gary Whittle <garywhittle19@gmail.com>
+Date:   Sat Apr 27 05:43:54 2019 +0100
+
+    - Added back-button camera distance button (back button or V)
+    - Corrected acceleration
+    - Re-enabled camera lag and rotation lag (10.0f and 7.5f respectively for best results)
+    - Copied in engine cone to use for collision cone
+    - Made lava look a little better (I think)
+
+commit d35725aec62cd08a92b37cb5df0a02e64b10201c
+Author: Gary Whittle <garywhittle19@gmail.com>
+Date:   Fri Apr 26 22:04:54 2019 +0100
+
+    Put level one music in level one. Changed bird yaw rate slightly to allow smoother movement.
+
+commit f7c7b01c11617a8ba78bd70bfa68caf8e1acaac8
+Author: Gary Whittle <garywhittle19@gmail.com>
+Date:   Fri Apr 26 21:51:25 2019 +0100
+
+    Added more bamboo to the jungle so it feels like an actual jungle. Added pause to level two. Removed old level three test map.
+
+commit 7b395b5aac928848f55d257240adb09f68c375f6
+Author: Gary Whittle <garywhittle19@gmail.com>
+Date:   Fri Apr 26 19:03:49 2019 +0100
+
+    Added beach to level one to hide ugly geometry and make water nicer + refined the jungle area by adding dense foliage to block some blocky geometry and more overhanging leaves.
+
+commit a73f9c88b7de906bc755c394b25ab96b8abfeac1
+Author: Gary Whittle <garywhittle19@gmail.com>
+Date:   Fri Apr 26 02:29:13 2019 +0100
+
+    Added pause menu functionality.
+
+commit d25bcae0887bc7a11a1c9ad4eae4360e26ff1612
+Author: Gary Whittle <garywhittle19@gmail.com>
+Date:   Thu Apr 25 23:53:26 2019 +0100
+
+    Added bell ding mini-moment and some new level one atmospheric fog - fog needs looked over, bell needs sound,
+
+commit 2a93eb420a08cea44ff828e42c8633f49ddf8b71
+Author: Gary <GaryWhittle19@gmail.com>
+Date:   Thu Apr 25 20:57:00 2019 +0100
+
+    Updated cave level.
+
+commit 980abc3ba0030b0bf12c9afab9b90264db62aaa8
+Author: Gary <GaryWhittle19@gmail.com>
+Date:   Thu Apr 25 19:38:32 2019 +0100
+
+    Changed gravity constant in BirdPawnBP to match new, actual proper gravity...
+
+commit 1a4e4e20bfa22a0094280c623e6ad1d92a2f1b04
+Merge: d135022 994da33
+Author: CAVAN BRYCE <1601214@uad.ac.uk>
+Date:   Thu Apr 25 18:13:48 2019 +0100
+
+    Merge branch 'master' of https://github.com/JamheadAbertay/SundownPrototype
+
+commit d135022ec9653990179e4e2c9326594eea75e523
+Author: CAVAN BRYCE <1601214@uad.ac.uk>
+Date:   Thu Apr 25 18:13:41 2019 +0100
+
+    Fixed gravity so it isn't -9.8 millimetres.
+
+commit 994da33bcedaaabe296e8f7139b491f265c9a9cd
+Author: STEPHEN REILLY <1803300@uad.ac.uk>
+Date:   Thu Apr 25 16:58:16 2019 +0100
+
+    Made changes to level 2 and added dynamic cart path
+
+commit bd0f943c2fd582e4a373a8ede26c007058762022
+Author: ETHAN SAWERS <1502474@uad.ac.uk>
+Date:   Thu Apr 25 13:43:22 2019 +0100
+
+    Added Third Level for use
+
+commit f46a05745edaddaa72cce23d31c6d342ee747163
+Author: Gary Whittle <garywhittle19@gmail.com>
+Date:   Wed Apr 24 15:37:09 2019 +0100
+
+    Fixed level boundaries (a bit, they need looked at as they sometimes don't work). Added menu music.
+
+commit 1f6e31586bede180e06b791be209f50424d21916
+Author: Gary Whittle <garywhittle19@gmail.com>
+Date:   Sat Apr 20 16:51:06 2019 +0100
+
+    Updated seagul flying around lighthouse to use level sequence instead.
+
+commit 70bf7a6d3891ee852ea197ae607ed829b714449f
+Author: Gary Whittle <garywhittle19@gmail.com>
+Date:   Sat Apr 20 14:13:00 2019 +0100
+
+    Removed trails as they were causing a game breaking bug where viewport is completely blocked.
+
+commit d0c620025e28079bd804dccf6c8d85a7bbefa9ed
+Author: Gary <GaryWhittle19@gmail.com>
+Date:   Fri Apr 19 20:07:32 2019 +0100
+
+    Implemented Moment #01. Disabled boosting for Puny - easily enabled again, but we should reconsider how the mechanic works. Level pace is much better without boosting...
+    Moments (BirdSplineBP) work alongside SequenceTriggerBP. They will only work if the player is on a spline, currently.
+    Polished first level for uploading to Puny's drive.
+
+commit 3d61ea437797aec6db58353773047f4eef8548a3
+Author: Gary Whittle <garywhittle19@gmail.com>
+Date:   Thu Apr 18 18:25:59 2019 +0100
+
+    Minor tweaks to level 2 (added brazier, closed cave entrance...)
+
+commit 26f152629e82b7c16c68e845432a7313c80402ca
+Merge: 5a51eea e6c680f
+Author: STEPHEN REILLY <1803300@uad.ac.uk>
+Date:   Thu Apr 18 16:55:34 2019 +0100
+
+    Merge branch 'master' of https://github.com/JamheadAbertay/SundownPrototype
+
+commit 5a51eeacced61baac32a21d84ffc2f9b28fd384d
+Author: STEPHEN REILLY <1803300@uad.ac.uk>
+Date:   Thu Apr 18 16:55:09 2019 +0100
+
+    Updated second level, added a bunch of stuff.
+
+commit e6c680fa5914f4dcbe118c6dc25dda803334d8ff
+Author: Gary <GaryWhittle19@gmail.com>
+Date:   Thu Apr 18 16:53:28 2019 +0100
+
+    Combined twirl and turn faster into one input - A button! Press A to boost, hold if you want to turn faster.
+
+commit 72825b75e8bbcd009c307a08bd600b5afa1b9c1d
+Author: Gary <GaryWhittle19@gmail.com>
+Date:   Thu Apr 18 14:51:47 2019 +0100
+
+    Some minor fixes in level two - placed open level trigger and removed the level blueprint version. Game now plays - main menu to level one to level two (repeat).
+
+commit d32e62c84dfbaafc5a25d6542566bcaa33f61c91
+Merge: d335c40 c6d0549
+Author: Gary <GaryWhittle19@gmail.com>
+Date:   Thu Apr 18 14:31:11 2019 +0100
+
+    Merge branch 'master' of https://www.github.com/jamheadabertay/sundownprototype
+    
+    # Conflicts:
+    #       Content/Assets/CaveRocks/Cave3.uasset
+    #       Content/Assets/Props/ribcage.uasset
+
+commit d335c40edb47deff476abf7a31e51dd978c91ec2
+Author: Gary <GaryWhittle19@gmail.com>
+Date:   Thu Apr 18 14:29:59 2019 +0100
+
+    Added moment sequence + trigger. Could add a version to the spline class itself for spline moments. Added X to turn faster. Turning is slower/smoother by default now. Fixed collision on a bunch of assets. Organized the folders in BlueprintMechanics a bit (added triggers folder). Edited Ythen's trail particle slightly (Cavan).
+
+commit c6d0549a0e7953f19f7ea1a3e9c44b3e643f80a0
+Author: STEPHEN REILLY <1803300@uad.ac.uk>
+Date:   Thu Apr 18 13:49:51 2019 +0100
+
+    Level2 Tweaks
+
+commit d7c60bbd8b207241c35380a09e1b11d50b62c5ef
+Author: Gary <GaryWhittle19@gmail.com>
+Date:   Wed Apr 17 21:04:03 2019 +0100
+
+    Fixed Brazier Bubble collision
+
+commit a6d6d7b9227321a9d8384a4dd196441780c5996c
+Merge: a0e8cb1 03e90fc
+Author: CAVAN BRYCE <1601214@uad.ac.uk>
+Date:   Wed Apr 17 20:56:41 2019 +0100
+
+    Merge branch 'master' of https://github.com/JamheadAbertay/SundownPrototype
+
+commit a0e8cb1cad2ad502b9fb2f8ae3e56d1f51a9561c
+Author: CAVAN BRYCE <1601214@uad.ac.uk>
+Date:   Wed Apr 17 20:55:36 2019 +0100
+
+    Added a bubble for the collision of the brazier
+
+commit 03e90fc4498e4105f7c1cf814cd59d50c6a50983
+Author: Gary <GaryWhittle19@gmail.com>
+Date:   Wed Apr 17 20:51:22 2019 +0100
+
+    Polished spline class.
+
+commit 15a5a4998fb62c78f871b9174364404f5ad4ca96
+Author: Gary <GaryWhittle19@gmail.com>
+Date:   Wed Apr 17 19:06:43 2019 +0100
+
+    Placed new drag/drop brazier in level. Sound/light has been attached manually within the world but can add these in C++ if desired.
+
+commit d0a1dff27445ffb6964ba7629059d9c4fdf8b98a
+Author: Gary <GaryWhittle19@gmail.com>
+Date:   Wed Apr 17 18:02:01 2019 +0100
+
+    Updated Brazier class to be drag and drop w/ mesh, sphere trigger and particles.
+
+commit 73e2e24e1349f4beac56ca6c50dd519b582e6754
+Author: Gary <GaryWhittle19@gmail.com>
+Date:   Wed Apr 17 14:40:31 2019 +0100
+
+    Began work on collision trigger box.
+
+commit 121727779a367f83e64b9172f88c8bdcc9afd3e2
+Author: Gary Whittle <garywhittle19@gmail.com>
+Date:   Thu Apr 11 16:29:14 2019 +0100
+
+    Made lighting moveable to get rid of preview text all over the place.
+
+commit 35700fd9f3d7c213ddee71dd6ef5cc26e98bc843
+Author: Gary Whittle <garywhittle19@gmail.com>
+Date:   Wed Apr 10 16:45:09 2019 +0100
+
+    UPDATES: Camera turn rate can now be increased in relation to max forward speed. Look for YawRateMultiplier and PitchRateMultiplier in BirdPawnBP to fiddle about - be cautious, high values make the camera move too fast.
+    FIXES: Cavan worked out that the reason we couldn't switch camera to a brazier or place more than one moments spline in the level is because in the spline tick I was constantly setting the view target to the character if the character wasn't on *that* particular spline - meaning two would cancel out as one would always be setting the view target to Cinder. Fixed now!
+
+commit 7749b36fd81b89247a6106e8dfa56125bbb3f6f5
+Author: Gary Whittle <garywhittle19@gmail.com>
+Date:   Wed Apr 10 01:00:25 2019 +0100
+
+    More minor changes to collision on some assets, Cinder's scale and camera properties, and fixed camera pull-in when diving.
+
+commit c16e203f8bbf7b8dd9e22d630e0d5689820276a1
+Author: ythen1011 <ythen1995@hotmail.co.uk>
+Date:   Wed Apr 10 00:03:23 2019 +0100
+
+    seaguls orientation is correct need to fix animationbp
+
+commit 01ce4c07831653d608f87579e86c01ec52838351
+Author: ythen1011 <ythen1995@hotmail.co.uk>
+Date:   Tue Apr 9 23:56:48 2019 +0100
+
+    forgot to make it 0.15 instead of 0.25
+
+commit 84b7ab6644bd92e808ed366930b4d444a157116f
+Author: ythen1011 <ythen1995@hotmail.co.uk>
+Date:   Tue Apr 9 23:55:26 2019 +0100
+
+    seaguls front axis forced x
+
+commit e71a4121cc3bd0fbfab20186952b23e5f2735dbb
+Author: ythen1011 <ythen1995@hotmail.co.uk>
+Date:   Tue Apr 9 23:18:40 2019 +0100
+
+    minor changes
+
+commit 0dd0b3426b49fa702b744740a76c1c10020e02a7
+Author: ythen1011 <ythen1995@hotmail.co.uk>
+Date:   Tue Apr 9 22:20:15 2019 +0100
+
+    update on trail render and fixed flying up animation
+
+commit d34728041685b1dd3a45e8fe439629f8c01aa999
+Author: ythen1011 <ythen1995@hotmail.co.uk>
+Date:   Tue Apr 9 21:52:40 2019 +0100
+
+    updating trail renders
+
+commit d5558f9606d35bccb6b6487e2da9d0dfbc1d1a76
+Author: ythen1011 <ythen1995@hotmail.co.uk>
+Date:   Tue Apr 9 21:02:15 2019 +0100
+
+    added partcles to player need to update some more
+
+commit b7157cefc99849b3ca84300f7c8bfda3f284f185
+Author: Gary Whittle <garywhittle19@gmail.com>
+Date:   Tue Apr 9 05:06:00 2019 +0100
+
+    Placed seagull near lighthouse. Needs remimported with correct scale/orientation.
+
+commit f10d109c02d49068e633b8289e37c438e52a710d
+Author: ythen1011 <ythen1995@hotmail.co.uk>
+Date:   Mon Apr 8 20:21:38 2019 +0100
+
+    saguls added
+
+commit 7d1d0c41d541b3f406f106aa650d9d0817e6eb0f
+Author: Gary Whittle <garywhittle19@gmail.com>
+Date:   Sun Apr 7 21:54:13 2019 +0100
+
+    Fixed some settings
+
+commit b8903c94be6c8febb39f209c39cc94890146ccd6
+Author: Gary Whittle <garywhittle19@gmail.com>
+Date:   Sun Apr 7 21:41:40 2019 +0100
+
+    Check log.
+
+commit efaae1155c71af5e6b2e02116d6b5abfeea2d01f
+Author: Gary Whittle <garywhittle19@gmail.com>
+Date:   Sun Apr 7 08:05:41 2019 +0100
+
+    Removed old unorganized files and replaced cave asset references.
+
+commit 2136d1124836432a7cd5047f8f1d6f3ba9ee90c3
+Merge: 6646186 b109f34
+Author: Gary Whittle <garywhittle19@gmail.com>
+Date:   Sun Apr 7 07:54:59 2019 +0100
+
+    Merge branch 'master' of https://www.github.com/jamheadabertay/sundownprototype
+    
+    # Conflicts:
+    #       Content/Levels/Gameplay/cavee.umap
+    #       Content/cave_stuff/assets/lava/lava_flow1.uasset
+    #       Content/cave_stuff/assets/lava/lava_flow_2.uasset
+    #       Content/cave_stuff/assets/lava/lava_flow_3.uasset
+    #       Content/cave_stuff/assets/lava/lava_flow_4.uasset
+    #       Content/cave_stuff/assets/lava/lava_flow_5.uasset
+    #       Content/cave_stuff/assets/lava/lavarock1.uasset
+    #       Content/cave_stuff/assets/lava/lavarock2.uasset
+    #       Content/cave_stuff/assets/lava/lavarock3.uasset
+
+commit 6646186d686f997a5c0fe50c02e8a8afac274af7
+Author: Gary Whittle <garywhittle19@gmail.com>
+Date:   Sun Apr 7 07:53:56 2019 +0100
+
+    Organized some stuff
+
+commit b109f3436d14c3e716bb4487041a4ebf8dc51563
+Author: ythen1011 <ythen1995@hotmail.co.uk>
+Date:   Sun Apr 7 07:51:19 2019 +0100
+
+    cave with rock assets pushed
+
+commit 6bbedf4446412dcb7dc40fb0623d3bfb62dfb8de
+Author: ythen1011 <ythen1995@hotmail.co.uk>
+Date:   Sun Apr 7 07:47:58 2019 +0100
+
+    CAVE AGAIN
+
+commit 25ee8e733f24172b1a23bdc753772953cee47666
+Merge: 16e62be a1be6d5
+Author: Gary Whittle <garywhittle19@gmail.com>
+Date:   Sun Apr 7 07:41:25 2019 +0100
+
+    Merge branch 'master' of https://www.github.com/jamheadabertay/sundownprototype
+
+commit 16e62be4cbdd2b1837a8071d72d2d1a17e1e0ca4
+Author: Gary Whittle <garywhittle19@gmail.com>
+Date:   Sun Apr 7 07:40:59 2019 +0100
+
+    Added boost delay.
+
+commit a1be6d58dd780c76ebf688c3aa71bb6c8e9d77b4
+Author: ythen1011 <ythen1995@hotmail.co.uk>
+Date:   Sun Apr 7 07:31:08 2019 +0100
+
+    MAP UPDATE
+
+commit 735b0616a489e421a22cd5edc1f84aaa39f7cf43
+Merge: 2137e8f 69fcb49
+Author: ythen1011 <ythen1995@hotmail.co.uk>
+Date:   Sun Apr 7 07:17:56 2019 +0100
+
+    Merge branch 'master' of https://github.com/JamheadAbertay/SundownPrototype
+
+commit 2137e8fb40bf8caac89e70175b9a921a12f3ab96
+Author: ythen1011 <ythen1995@hotmail.co.uk>
+Date:   Sun Apr 7 07:17:53 2019 +0100
+
+    New Cave map replaced ryans
+
+commit 69fcb49959768a0053ee7b1047d42529a7a59ffe
+Author: BAGEL-BLIZZARD\Cavan <cavanbryce@hotmail.com>
+Date:   Sun Apr 7 05:47:52 2019 +0100
+
+    Major changes, added hoops into FirstLevel aswell as made twirl animation smoother
+
+commit f4b9f37f4d647fe7ffcdc1a8494ce26173f5b596
+Author: Gary Whittle <garywhittle19@gmail.com>
+Date:   Sun Apr 7 03:56:17 2019 +0100
+
+    Added twirl functionality!
+
+commit 2b766905b99b0b626af8da4858aff1b3a8812d15
+Merge: 16ff825 6804ec9
+Author: Gary Whittle <garywhittle19@gmail.com>
+Date:   Sun Apr 7 03:33:00 2019 +0100
+
+    Merge branch 'master' of https://www.github.com/jamheadabertay/sundownprototype
+
+commit 16ff8254e8248e18d63dc5f9cdf5044017068e28
+Author: Gary Whittle <garywhittle19@gmail.com>
+Date:   Sun Apr 7 03:32:07 2019 +0100
+
+    Made some important changes fixes: the birdspline if in tick in birdpaw.cpp was causing a weird glitch on the moments spline - fixed by removing if statement. Also changed the default FOV, and made the camera shake more gradual.
+    
+    Notes - DiveRangeClamped goes from 100 to 50, not the other way around.
+
+commit 6804ec95ec52d0539b12dd0b0cf54a54a29d25df
+Merge: a6db064 7445c57
+Author: BAGEL-BLIZZARD\Cavan <cavanbryce@hotmail.com>
+Date:   Sun Apr 7 03:30:40 2019 +0100
+
+    Merge remote-tracking branch 'origin/origin/master'
+
+commit a6db064ff4420d9b23f78bc9d569dc5982b98471
+Merge: 6ff166c 1c5bfdc
+Author: BAGEL-BLIZZARD\Cavan <cavanbryce@hotmail.com>
+Date:   Sun Apr 7 03:30:30 2019 +0100
+
+    Merge branch 'master' of https://github.com/JamheadAbertay/SundownPrototype
+    
+    # Conflicts:
+    #       Content/Levels/Gameplay/FirstSection.umap
+
+commit 6ff166cd282d2ba7184b764918f8a62ad8f57e33
+Author: BAGEL-BLIZZARD\Cavan <cavanbryce@hotmail.com>
+Date:   Sun Apr 7 03:29:32 2019 +0100
+
+    Adding the Firefly Particle
+
+commit 7445c57e23934b60603ca0a86334f0da5d895fc1
+Author: ythen1011 <ythen1995@hotmail.co.uk>
+Date:   Sun Apr 7 03:27:58 2019 +0100
+
+    twirl
+
+commit 1c5bfdcde6455d69b0efbff1b3da79f3128f4d0f
+Merge: c5f1a76 dd74c64
+Author: Gary Whittle <garywhittle19@gmail.com>
+Date:   Sun Apr 7 02:00:39 2019 +0100
+
+    Merge branch 'origin/master'
+    
+    # Conflicts:
+    #       Content/Characters/PlayerCharacter/Blueprints/MyBirdPawnBP.uasset
+    #       SundownPrototype.sln
+
+commit c5f1a7618175dc070fc583d278e989d4035e160f
+Author: Gary Whittle <garywhittle19@gmail.com>
+Date:   Sun Apr 7 01:57:53 2019 +0100
+
+    Fixed pitch limits.
+
+commit dd74c644f301f1230c70b0a6ac081e99784ba1c6
+Author: ythen1011 <ythen1995@hotmail.co.uk>
+Date:   Sun Apr 7 01:55:52 2019 +0100
+
+    cave
+
+commit 9651e28cd791a732a89db29c9947ee5a1947cca9
+Author: ythen1011 <ythen1995@hotmail.co.uk>
+Date:   Sun Apr 7 01:54:42 2019 +0100
+
+    birdanim inbetween for dive
+
+commit 67c29f21a6e823db2baf4238266fdcbb7e397c6b
+Merge: 348a20c 39bf45c
+Author: ythen1011 <ythen1995@hotmail.co.uk>
+Date:   Sun Apr 7 01:28:15 2019 +0100
+
+    Merge branch 'master' of https://github.com/JamheadAbertay/SundownPrototype
+
+commit 348a20ce3e5fdd1ee1805dae66b333f78b918e68
+Author: ythen1011 <ythen1995@hotmail.co.uk>
+Date:   Sun Apr 7 01:28:04 2019 +0100
+
+    cavemap
+
+commit 39bf45cf8eca2d380100de01a2fa8b1fe8d18453
+Author: Gary Whittle <garywhittle19@gmail.com>
+Date:   Sun Apr 7 01:27:03 2019 +0100
+
+    Added pitch limits. Finally.
+
+commit 3da48851dc04cea7c706778717d145a30f4bcc2f
+Author: ythen1011 <ythen1995@hotmail.co.uk>
+Date:   Sun Apr 7 01:13:43 2019 +0100
+
+    new bird and fog planes
+
+commit 010f32da6ed53774b8f23578b0bcfb66f316f344
+Author: CAVAN BRYCE <1601214@uad.ac.uk>
+Date:   Sat Apr 6 17:31:44 2019 +0100
+
+    Added collision to some of the foliage, specifically the Bamboo and the trees
+
+commit 22716965147907a6069c6b98251702f85b0b61a4
+Author: CAVAN BRYCE <1601214@uad.ac.uk>
+Date:   Fri Apr 5 19:02:30 2019 +0100
+
+    Added new bird!
+
+commit e7a2dc6d3823fbfa252e5e8ba253edfa39f612af
+Merge: 849f2e4 c6f016a
+Author: CAVAN BRYCE <1601214@uad.ac.uk>
+Date:   Fri Apr 5 11:09:52 2019 +0100
+
+    Merge remote-tracking branch 'origin/origin/master'
+
+commit 849f2e415f109688ec6d7477ed094cf2c2e1d5cb
+Merge: 4372c5a 276ca36
+Author: CAVAN BRYCE <1601214@uad.ac.uk>
+Date:   Fri Apr 5 11:09:20 2019 +0100
+
+    Merge branch 'master' of https://github.com/JamheadAbertay/SundownPrototype
+
+commit 4372c5a45e9b49ef633f5467fadbe5029d63cf29
+Merge: f56d7f1 55ef533
+Author: CAVAN BRYCE <1601214@uad.ac.uk>
+Date:   Fri Apr 5 11:08:04 2019 +0100
+
+    Merge branch 'master' of https://github.com/JamheadAbertay/SundownPrototype
+    
+    # Conflicts:
+    #       Config/DefaultInput.ini
+
+commit 276ca365acc5b242d4e4b0437cbf3c8654888ff0
+Author: Gary <GaryWhittle19@gmail.com>
+Date:   Fri Apr 5 11:05:53 2019 +0100
+
+    Fixed fps movement stutter.
+
+commit f56d7f11a28eb462dde90857f0ba17f2c356282d
+Author: CAVAN BRYCE <1601214@uad.ac.uk>
+Date:   Fri Apr 5 11:05:32 2019 +0100
+
+    Yeet
+
+commit c6f016a4c2f363137b4d56e552d311fc51e28a91
+Author: ythen1011 <ythen1995@hotmail.co.uk>
+Date:   Fri Apr 5 05:11:24 2019 +0100
+
+    just fixing some things
+
+commit d839e835892f0795f43e6cd5a3749671d8f848f9
+Author: ythen1011 <ythen1995@hotmail.co.uk>
+Date:   Fri Apr 5 04:28:25 2019 +0100
+
+    New player animations
+
+commit 55ef53379cf9ab2e01a71b6e7a62f0923c7f5a19
+Author: Gary <GaryWhittle19@gmail.com>
+Date:   Thu Apr 4 19:48:55 2019 +0100
+
+    Added level 2! Changed level one a tiny bit. Level 2 needs vertex painted...
+
+commit e82e1c3cd4eb4c105c27357d3d3b82c12726a665
+Author: Gary <GaryWhittle19@gmail.com>
+Date:   Wed Apr 3 19:41:13 2019 +0100
+
+    Fixed spline cam transition values, minor changes to bird class defaults.
+
+commit 615aeca02474dd29b2f898fbf153b95c876e1437
+Author: Gary <GaryWhittle19@gmail.com>
+Date:   Wed Apr 3 18:53:02 2019 +0100
+
+    Implemented cinematic camera for the moments system.
+
+commit e32393b3af5ab5d13a3fcd944ae327fd26002683
+Author: Gary <GaryWhittle19@gmail.com>
+Date:   Wed Apr 3 17:11:02 2019 +0100
+
+    Added dive camera pull and shake.
+
+commit e0ab0c903ed824644c5658721be43a8405782a6d
+Merge: b601ec9 68d813d
+Author: Gary <GaryWhittle19@gmail.com>
+Date:   Tue Apr 2 19:11:30 2019 +0100
+
+    Merge remote-tracking branch 'origin/HEAD' into origin/master
+
+commit b601ec9936b75bdafb1954dfb3052b62a10aea41
+Author: Gary <GaryWhittle19@gmail.com>
+Date:   Tue Apr 2 19:09:53 2019 +0100
+
+    Some minor changes that make movement more responsive.
+
+commit 68d813df67f927819c9aa16c274b4ecdd346c9b9
+Merge: 995d3b7 7fa4760
+Author: CAVAN BRYCE <1601214@uad.ac.uk>
+Date:   Tue Apr 2 15:36:33 2019 +0100
+
+    Merge remote-tracking branch 'origin/origin/master'
+    
+    # Conflicts:
+    #       Content/Characters/PlayerCharacter/Blueprints/MyBirdPawnBP.uasset
+    #       Content/Levels/Gameplay/FirstSection.umap
+    #       Source/SundownPrototype/BirdPawn.cpp
+    #       Source/SundownPrototype/BirdPawn.h
+
+commit 995d3b724e5ad75d4eab55a4a9c35dcc6ff64df8
+Merge: 4fe1d27 2218a6a
+Author: CAVAN BRYCE <1601214@uad.ac.uk>
+Date:   Tue Apr 2 15:34:25 2019 +0100
+
+    Merge branch 'master' of https://github.com/JamheadAbertay/SundownPrototype
+
+commit 4fe1d27756ce8e33a2bc42f4a549a4de53751f3a
+Author: CAVAN BRYCE <1601214@uad.ac.uk>
+Date:   Tue Apr 2 15:30:25 2019 +0100
+
+    Added Cave Lava Bubble particle as well as the Sheep and added Steve's Church, also made changes to the maps
+
+commit 7fa47600b52da4ddf228ed3327187f47c8ee37bb
+Author: Gary <GaryWhittle19@gmail.com>
+Date:   Mon Apr 1 17:55:37 2019 +0100
+
+    Removed some unnecessary header includes. Could do with a more comprehensive check of all our includes and dependencies.
+
+commit 57feaf71a85b5b00c81920031243025e823bee34
+Author: Gary <GaryWhittle19@gmail.com>
+Date:   Sun Mar 31 16:29:38 2019 +0100
+
+    Resized Cinder as they were too small, added more brazier functionality (cinematic camera, bird can enter/leave brazier now using a temporary timer setup - this will need reworked to be part of the brazier interface instead of being based on FTimers). Need to get the brazier animated Cinder model, and also create the UI to be used for the brazier storyboards. Added CinematicCamera to the build.cs so we can use it with C++.
+    
+    First level has all the mechanics currently in our game - hoops, collectibles, and a "working" brazier. Cinder can boost and maintain dive momentum. The moments can now be implemented using the BirdSpline class and Scott's matinee trigger class (may need reworked as matinees are a bit dated). This is the current state of the game's mechanics.
+
+commit e421457718adcab2ccbae65f0ceb1a73d0a9e51f
+Author: Gary <GaryWhittle19@gmail.com>
+Date:   Sat Mar 30 18:17:48 2019 +0000
+
+    Edited brazier class (trigger) to place Cinder below the map. Next steps:
+    - Change camera to a cinematic view from behind fake brazier Cinder.
+    - Take-off functionality (press A to take off).
+    - Put fake Cinder (animated sitting) on the brazier.
+
+commit ce4dd8a5e032b8f0dd86ea1fb2551d2f76373ee3
+Merge: 9a488b1 2218a6a
+Author: Gary <GaryWhittle19@gmail.com>
+Date:   Sat Mar 30 17:23:04 2019 +0000
+
+    Merge branch 'master' into origin/master
+
+commit 9a488b19cc1d7c2cca486d10a32517c2142120fb
+Author: DESKTOP-A8N2MRH\scott <scottmichaeldouglas@gmail.com>
+Date:   Sat Mar 30 12:06:17 2019 +0000
+
+    Matinee player and collectible system done
+
+commit 2218a6a8d59c7b86b9919da2a9dbabbc176f32f2
+Merge: 6f089ef afb48fc
+Author: Gary <GaryWhittle19@gmail.com>
+Date:   Thu Mar 28 18:30:54 2019 +0000
+
+    Merge branch 'master' of https://www.github.com/jamheadabertay/sundownprototype
+
+commit 6f089efcba948c30b7cf174d248bd3d32ef2c482
+Author: Gary <GaryWhittle19@gmail.com>
+Date:   Thu Mar 28 18:30:08 2019 +0000
+
+    Added designer values for tweaking turn interpolation values, which affects how fast the bird can turn. Lower values are slower. Also hard-coded momentum from downwards velocity, which can speed the bird up to max speed (the same as boost). A few other settings have been added to the blueprint, read the documentation of each to see what they do.
+    
+    Spline now just changes control rotation, next steps are allowing up/down/left/right movement and adding the dynamic camera functionality.
+
+commit afb48fc68a3e1345c2ef6d7ac29ebad085abfd5d
+Merge: 616a975 600a265
+Author: CAVAN BRYCE <1601214@uad.ac.uk>
+Date:   Wed Mar 27 16:04:57 2019 +0000
+
+    Merge branch 'master' of https://github.com/JamheadAbertay/SundownPrototype
+
+commit 616a975073c3748825c86405cdcd8ff30e743d4f
+Author: CAVAN BRYCE <1601214@uad.ac.uk>
+Date:   Wed Mar 27 16:04:47 2019 +0000
+
+    Made some minor changes to the Oceon Material
+
+commit 600a2657ae3a70fe7b285c0107d811080ae66d27
+Author: Gary <GaryWhittle19@gmail.com>
+Date:   Wed Mar 27 15:37:04 2019 +0000
+
+    Updated spline code to get a reference to the player controller, experimented with moving the control rotation manually. Next steps are to make movement smoother, and implement a cinematic camera into the spline.
+
+commit 0b1bca8c20523de61222e00d2027b7bb0679caf3
+Author: Gary <GaryWhittle19@gmail.com>
+Date:   Tue Mar 26 09:40:16 2019 +0000
+
+    Modified bird to allow designers to tweak default speed. Removed camera lag from the bird. Fixed collision on the hoop course members.
+
+commit 780a93f5a9241527c18156839081a1c39b222c19
+Merge: f4e53ca 4b372bb
+Author: CAVAN BRYCE <1601214@uad.ac.uk>
+Date:   Mon Mar 25 11:19:51 2019 +0000
+
+    Merge branch 'master' of https://github.com/JamheadAbertay/SundownPrototype
+    
+    # Conflicts:
+    #       SundownPrototype.sln
+
+commit f4e53ca6981dffc68fc2fec766a4c55befa0ee1c
+Author: CAVAN BRYCE <1601214@uad.ac.uk>
+Date:   Mon Mar 25 11:17:53 2019 +0000
+
+    Altered the oceon slightly to make it more realistic in the way the waves move
+
+commit 4b372bb852842d92460e1cf0b9430035b03d8c53
+Author: DESKTOP-A8N2MRH\scott <scottmichaeldouglas@gmail.com>
+Date:   Sun Mar 24 19:57:44 2019 +0000
+
+    Working hoops with proper assets
+
+commit fa6172bdbfb95e281b79108ecb493a20f621cf31
+Merge: af3bbb2 8e07968
+Author: DESKTOP-A8N2MRH\scott <scottmichaeldouglas@gmail.com>
+Date:   Sun Mar 24 14:58:46 2019 +0000
+
+    Merge branch 'master' of https://github.com/JamheadAbertay/SundownPrototype into origin/master
+    
+    # Conflicts:
+    #       Config/DefaultInput.ini
+    #       Content/Levels/Gameplay/FirstSection.umap
+    #       SundownPrototype.sln
+
+commit 8e07968b1e8f2f3cf02335bfc8fe1b75d4461432
+Merge: b29d8ef 4cf1d7f
+Author: CAVAN BRYCE <1601214@uad.ac.uk>
+Date:   Sun Mar 24 14:48:00 2019 +0000
+
+    Merge remote-tracking branch 'origin/Develop_02(SD)'
+    
+    # Conflicts:
+    #       Config/DefaultInput.ini
+    #       Content/Levels/Gameplay/FirstSection.umap
+    #       SundownPrototype.sln
+
+commit b29d8efc11d4f9d9f3d961324fc6719fca1cb90e
+Author: HeldUnder <shtevereilly@googlemail.com>
+Date:   Sun Mar 24 14:43:01 2019 +0000
+
+    Glowing Rings
+
+commit af3bbb2b4fa3266d9631299ea974b2d8a6dc1977
+Merge: 52271e5 4cf1d7f
+Author: DESKTOP-A8N2MRH\scott <scottmichaeldouglas@gmail.com>
+Date:   Sun Mar 24 14:05:38 2019 +0000
+
+    Merge branch 'Develop_02(SD)' of https://github.com/JamheadAbertay/SundownPrototype into origin/master
+    
+    # Conflicts:
+    #       Config/DefaultInput.ini
+    #       Content/Levels/Gameplay/FirstSection.umap
+    #       SundownPrototype.sln
+
+commit 4cf1d7f3f6ddd2825b75f910cc884f2278ca13bc
+Author: smd96 <scottmichaeldouglas@gmail.com>
+Date:   Sun Mar 24 14:01:22 2019 +0000
+
+    More work on triggers
+    Removed some code that was not needed
+
+commit 52271e54c1bea21cd952272a19f8400fc8ba4292
+Author: Gary <GaryWhittle19@gmail.com>
+Date:   Sat Mar 23 17:22:41 2019 +0000
+
+    Cavan refined the water materials, I made the boost actually editable now (forgot to assign correct variables), and boost now has a cooldown variable (in seconds). Also added some mountains to hide the ocean edge to the left of the spawn area, and tidied up some areas of the map. Deleted unnecessary landscape areas behind the cave at the end.
+
+commit f7a31bfca39c9a5b111a9635f558739ad7fa86ea
+Author: CAVAN BRYCE <1601214@uad.ac.uk>
+Date:   Sat Mar 23 14:42:18 2019 +0000
+
+    Added waterfall textures
+
+commit dc00b58f92f93d3f5640493a77a100a3ee6a092e
+Merge: 82fc1eb 260cb16
+Author: CAVAN BRYCE <1601214@uad.ac.uk>
+Date:   Fri Mar 22 17:46:50 2019 +0000
+
+    Merge branch 'master' of https://github.com/JamheadAbertay/SundownPrototype
+
+commit 82fc1eb676389a855bee1c2b47319ddd6c591907
+Author: CAVAN BRYCE <1601214@uad.ac.uk>
+Date:   Fri Mar 22 17:46:36 2019 +0000
+
+    Added dynamic nice water, ready for use in all the levels :)
+
+commit 260cb16a7b3f9d8064d285916cf0249fbc3071d6
+Author: Gary <GaryWhittle19@gmail.com>
+Date:   Fri Mar 22 17:20:42 2019 +0000
+
+    Modified the boost code to allow designers to tweak BoostSpeed, BoostMultiplier (how fast we reach max boost), and SlowdownMultiplier (how fast we go back to normal speed).
+
+commit 0bdd86cca14c2d8e7d7d3e241c773a5d487b99bc
+Author: Gary <GaryWhittle19@gmail.com>
+Date:   Fri Mar 22 15:51:00 2019 +0000
+
+    Developed initial boost mechanic using MaxWalkSpeed - this means that we could also perhaps restructure to apply momentum from diving using MaxWalkSpeed too, rather than working with acceleration which has been temperamental so far. SPACE or A BUTTON to boost. Boost is a tap right now - can make hold, release, or refine it into anything.
+    
+    NEXT STEPS:
+    Add tools for designers to tweak boost.
+    Clean up C++ of birdpawn as a lot has been worked on recently and it could do with a quick read-over and re-commenting.
+
+commit 8ee49ef7a5eb82c4b3af7c8982317c325c97003c
+Author: ythen1011 <ythen1995@hotmail.co.uk>
+Date:   Thu Mar 21 18:09:59 2019 +0000
+
+    cave rocks added
+
+commit 628961d97a2846d0ab1ca0b32f4a40113a3a66a1
+Author: CAVAN BRYCE <1601214@uad.ac.uk>
+Date:   Thu Mar 21 16:46:49 2019 +0000
+
+    Added a subdivided plan for use with the water.
+
+commit fb72286a16e70c36e1fce1d9c7275be3ce4df7b1
+Author: CAVAN BRYCE <1601214@uad.ac.uk>
+Date:   Thu Mar 21 16:44:35 2019 +0000
+
+    Added Low Poly Water
+
+commit 31da593dad3ba7b0f55f853c2161621946bc0c9c
+Merge: 2bf1a3d 5a668c9
+Author: smd96 <scottmichaeldouglas@gmail.com>
+Date:   Thu Mar 21 12:22:05 2019 +0000
+
+    Merge branch 'master' of https://github.com/JamheadAbertay/SundownPrototype
+    
+    # Conflicts:
+    #       Content/Levels/Gameplay/FirstSection.umap
+    #       SundownPrototype.sln
+
+commit 5a668c983f387d1a2aaa012a1aca3347fd3d11a2
+Author: HeldUnder <shtevereilly@googlemail.com>
+Date:   Tue Mar 19 17:54:27 2019 +0000
+
+    2 Egg Houses
+
+commit 20a75e9063644decd341f834eac4ae93546bdd1c
+Author: HeldUnder <shtevereilly@googlemail.com>
+Date:   Tue Mar 19 15:51:54 2019 +0000
+
+    Mine Cart & Deciduous Trees
+
+commit 7b208dcf58a318873cf1be0574f15aa760cb8a39
+Merge: bc5d91c 70e2dda
+Author: Gary <GaryWhittle19@gmail.com>
+Date:   Mon Mar 18 17:58:04 2019 +0000
+
+    Merge branch 'master' of https://www.github.com/jamheadabertay/sundownprototype
+
+commit bc5d91ca14b9a75e709b486980e329b93194daaa
+Author: Gary <GaryWhittle19@gmail.com>
+Date:   Mon Mar 18 17:57:51 2019 +0000
+
+    Updated spline.
+
+commit 70e2ddace5815ac9479a41bf2181f92de8851e38
+Author: CAVAN BRYCE <1601214@uad.ac.uk>
+Date:   Mon Mar 18 17:21:08 2019 +0000
+
+    Placed the music in the game and reworked some of the spline
+
+commit a8d527ec25b0b8c241e526f5a1f623275eeee26c
+Merge: 51a2d9e 20bc0db
+Author: CAVAN BRYCE <1601214@uad.ac.uk>
+Date:   Sun Mar 17 18:08:35 2019 +0000
+
+    Merge branch 'master' of https://github.com/JamheadAbertay/SundownPrototype
+
+commit 51a2d9e04cb5345b6abf1b9ed070d7284ae8e163
+Author: CAVAN BRYCE <1601214@uad.ac.uk>
+Date:   Sun Mar 17 18:08:30 2019 +0000
+
+    Added more functionality to the collision boundary boxes that will now affect the players control rotation
+
+commit 20bc0db4c83944898cd1bbf43ff4c1991596aff4
+Author: Gary <GaryWhittle19@gmail.com>
+Date:   Sun Mar 17 18:04:40 2019 +0000
+
+    Pushed new spline functionality for moments (basic cinematic camera, spline attach/detach).
+
+commit 2bf1a3db42af60b86700bd3db35167ace25885a6
+Author: smd96 <scottmichaeldouglas@gmail.com>
+Date:   Fri Mar 15 22:29:10 2019 +0000
+
+    Finished hoop course, can only interact with active hoop and new hoop spawns when player goes through active one
+
+commit 7680a7eef98d8fee133eb9e7f28994440f119d19
+Author: smd96 <scottmichaeldouglas@gmail.com>
+Date:   Fri Mar 15 17:09:54 2019 +0000
+
+    Hoop course basic implementation
+
+commit 53284974f34b0d295082518aec04a9a103680db1
+Merge: b12c3f1 61a2d25
+Author: smd96 <scottmichaeldouglas@gmail.com>
+Date:   Fri Mar 15 15:33:37 2019 +0000
+
+    Merge branch 'master' of https://github.com/JamheadAbertay/SundownPrototype
+    
+    # Conflicts:
+    #       Content/Levels/Gameplay/FirstSection.umap
+    #       SundownPrototype.sln
+
+commit b12c3f16bebc6e95dbe4dafdec259814a3494112
+Author: smd96 <scottmichaeldouglas@gmail.com>
+Date:   Fri Mar 15 15:33:02 2019 +0000
+
+    Started work on hoop/ring course/guidance system
+
+commit 61a2d25db88b0005ada934986466034413810aef
+Author: Gary <GaryWhittle19@gmail.com>
+Date:   Thu Mar 14 18:22:40 2019 +0000
+
+    Removed ground push as it isn't ready yet.
+
+commit 178099de5d2dd1533ac1b460d1ed36fda6623765
+Author: Gary <GaryWhittle19@gmail.com>
+Date:   Thu Mar 14 18:17:32 2019 +0000
+
+    Quick movement change before uploading Puny's build.
+
+commit 42c4084dec7681a06083b59ee991afe5e22f0c43
+Merge: 45ec2e1 0d5b93c
+Author: Gary <GaryWhittle19@gmail.com>
+Date:   Thu Mar 14 17:31:17 2019 +0000
+
+    Merge branch 'master' of https://www.github.com/jamheadabertay/sundownprototype
+
+commit 45ec2e11bee8bf854c37cd47fe151e0ad8ce36cf
+Author: Gary <GaryWhittle19@gmail.com>
+Date:   Thu Mar 14 17:31:05 2019 +0000
+
+    Updated bird character - smoothed pitch and yaw input with FInterpTo.
+
+commit 0d5b93c8ce73d3bc64fa3129f04939c9020b0610
+Merge: 07f68db 949bbf4
+Author: CAVAN BRYCE <1601214@uad.ac.uk>
+Date:   Thu Mar 14 17:19:10 2019 +0000
+
+    Merge branch 'master' of https://github.com/JamheadAbertay/SundownPrototype
+    
+    # Conflicts:
+    #       Content/GI_Sundown.uasset
+    #       Content/Levels/Gameplay/FirstSection.umap
+
+commit 07f68db18a11c6b760c3d581dfdd9b0d190def44
+Author: CAVAN BRYCE <1601214@uad.ac.uk>
+Date:   Thu Mar 14 17:17:15 2019 +0000
+
+    More map changes/bugfixes
+
+commit 68c067981090e6c2ef3a1e74a534ddb36a41001f
+Author: CAVAN BRYCE <1601214@uad.ac.uk>
+Date:   Thu Mar 14 17:16:15 2019 +0000
+
+    Updated map and some bugfixes
+
+commit 17e406dd250fad3e57a7859fe6bbcab6ba4400c0
+Merge: 787ee64 949bbf4
+Author: smd96 <scottmichaeldouglas@gmail.com>
+Date:   Thu Mar 14 12:54:30 2019 +0000
+
+    Merge branch 'master' of https://github.com/JamheadAbertay/SundownPrototype
+    
+    # Conflicts:
+    #       Content/Bird/MyBirdPawnBP.uasset
+    #       Content/Level.umap
+    #       Content/Levels/TestLevels/DevLevel.umap
+    #       SundownPrototype.sln
+
+commit 787ee64e3659c340fc1365f7797bc051c1ba1ebf
+Author: smd96 <scottmichaeldouglas@gmail.com>
+Date:   Thu Mar 14 12:48:30 2019 +0000
+
+    Work on triggers
+
+commit 949bbf41243039bde381ce43d6497f092e5b1a0d
+Author: ZOE HOUSTON <1603120@uad.ac.uk>
+Date:   Wed Mar 13 20:53:21 2019 +0000
+
+    Fixed some lighting issues and overode most of the light maps that were causing issues, made the cel-shading able to be turned on and off
+
+commit 2420499a24c36b140ed37e593cca82bb95973985
+Author: ZOE HOUSTON <1603120@uad.ac.uk>
+Date:   Wed Mar 13 19:59:15 2019 +0000
+
+    Add audio, placed some audio in map.
+
+commit a08c621a9314cfaa22aa66b26aec8ae24fd35df4
+Merge: ddfc8f5 152535e
+Author: CAVAN BRYCE <1601214@uad.ac.uk>
+Date:   Wed Mar 13 17:06:54 2019 +0000
+
+    Merge branch 'master' of https://github.com/JamheadAbertay/SundownPrototype
+
+commit ddfc8f564f1e15a94bc893b85f267c89a341501e
+Author: CAVAN BRYCE <1601214@uad.ac.uk>
+Date:   Wed Mar 13 17:06:20 2019 +0000
+
+    Added options menu - sound and cel-shading options.
+
+commit 152535ed89b502d333b8bfa05b429f9103630a28
+Merge: b424b6f 752e96a
+Author: Gary Whittle <garywhittle19@gmail.com>
+Date:   Wed Mar 13 15:45:52 2019 +0000
+
+    Merge branch 'master' of https://www.github.com/jamheadabertay/sundownprototype
+    
+    # Conflicts:
+    #       Content/Characters/PlayerCharacter/Blueprints/MyBirdPawnBP.uasset
+
+commit b424b6fdbda5c7375ff1d4fafadbbef59b6d7273
+Author: Gary Whittle <garywhittle19@gmail.com>
+Date:   Wed Mar 13 15:44:25 2019 +0000
+
+    Sorted turning by raising the max acceleration of the bird; allowed momentum to carry over from diving; cleaned up BirdPawnBP to hold all the correct values; modified the angle muliplier curve graph; remapped movement to left stick; cleaned up the C++ considerably.
+
+commit 752e96a1e6b78896ab11ad1280e5a81f47065f48
+Author: CAVAN BRYCE <1601214@uad.ac.uk>
+Date:   Tue Mar 12 18:13:09 2019 +0000
+
+    Added an options section to the main menu and made all the water in the level reflective
+
+commit ad4eed8f93f14473858d1d290a7fc5a4eaf817a5
+Author: CAVAN BRYCE <1601214@uad.ac.uk>
+Date:   Mon Mar 11 18:55:26 2019 +0000
+
+    Added a Post Processing Value that makes everything have Cel Shading, planning to make this optional in the menu in the options section that will be added next
+
+commit 1e42b37c040b6e1f25dddf300f535109f4910947
+Author: CAVAN BRYCE <1601214@uad.ac.uk>
+Date:   Sat Mar 9 16:44:08 2019 +0000
+
+    Refining the main menu adding in Dynamic Text for the play and quit options. Re-added the fairy as a creature to give some visual appeal to the menu. Fixed lighting in menu to be more cinematic.
+
+commit a3241eb0490521f0868cd946db9575203bf1ee3b
+Author: CAVAN BRYCE <1601214@uad.ac.uk>
+Date:   Fri Mar 8 17:31:31 2019 +0000
+
+    Creation of Main Menu level and organising of the content manager to have meaningful naming conventions and organised folders
+
+commit 3ffd5c7adbddf27d68aaa6ba7073e8124db778fb
+Author: Gary <GaryWhittle19@gmail.com>
+Date:   Wed Mar 6 20:45:34 2019 +0000
+
+    Updated spline to be detachable.
+
+commit 5b5dd645ed364bc7d783de5fed4991408ab8632e
+Author: CAVAN BRYCE <1601214@uad.ac.uk>
+Date:   Wed Mar 6 16:40:47 2019 +0000
+
+    Edited BirdPawn and BirdSpline C++ files to allow bird to follow spline - yet to make bird detachable or controllable from spline.
+
+commit 66368406f6c90096781eb4bac66edbf9c57cc165
+Merge: 0f8a64e bba8013
+Author: smd96 <scottmichaeldouglas@gmail.com>
+Date:   Wed Mar 6 13:43:25 2019 +0000
+
+    Merge branch 'master' of https://github.com/JamheadAbertay/SundownPrototype
+    
+    # Conflicts:
+    #       SundownPrototype.sln
+
+commit bba801365e719ca52e3addcd7bbe282708ab7d63
+Merge: b9d918c 47ee3fa
+Author: Gary <GaryWhittle19@gmail.com>
+Date:   Wed Mar 6 13:39:55 2019 +0000
+
+    Merge branch 'master' of https://www.github.com/jamheadabertay/sundownprototype
+    
+    # Conflicts:
+    #       Content/Bird/Assets/Animations/Dive__2_.uasset
+    #       Content/Bird/Assets/Animations/FlapPleaseWork__1_.uasset
+    #       Content/Bird/Assets/Animations/wingflapUpRight.uasset
+    #       Content/Level.umap
+    #       Content/Recording_Equipment/Cinematics/Sequences/Animations/RecordedSequence_MyBirdPawnBP.uasset
+    #       Content/Recording_Equipment/Cinematics/Sequences/Animations/RecordedSequence_MyBirdPawnBP_0.uasset
+    #       Content/Recording_Equipment/Cinematics/Sequences/Animations/RecordedSequence_MyBirdPawnBP_1.uasset
+    #       Content/Recording_Equipment/Cinematics/Sequences/Animations/RecordedSequence_MyBirdPawnBP_11.uasset
+    #       Content/Recording_Equipment/Cinematics/Sequences/Animations/RecordedSequence_MyBirdPawnBP_12.uasset
+    #       Content/Recording_Equipment/Cinematics/Sequences/Animations/RecordedSequence_MyBirdPawnBP_2.uasset
+    #       Content/Recording_Equipment/Cinematics/Sequences/Animations/RecordedSequence_MyBirdPawnBP_3.uasset
+    #       Content/Recording_Equipment/Cinematics/Sequences/Animations/RecordedSequence_MyBirdPawnBP_4.uasset
+    #       Content/Recording_Equipment/Cinematics/Sequences/Animations/RecordedSequence_MyBirdPawnBP_5.uasset
+    #       Content/Recording_Equipment/Cinematics/Sequences/Animations/RecordedSequence_MyBirdPawnBP_6.uasset
+    #       Content/Recording_Equipment/Cinematics/Sequences/Animations/RecordedSequence_MyBirdPawnBP_7.uasset
+    #       Content/Recording_Equipment/Cinematics/Sequences/Animations/RecordedSequence_MyBirdPawnBP_8.uasset
+    #       Content/Recording_Equipment/Cinematics/Sequences/Animations/RecordedSequence_MyBirdPawnBP_9.uasset
+    #       Content/Recording_Equipment/Cinematics/Sequences/RecordedSequence.uasset
+    #       Content/Recording_Equipment/Cinematics/Sequences/RecordedSequence_1.uasset
+    #       Content/Recording_Equipment/glidePleaseWork__1_.uasset
+    #       Content/Recording_Equipment/glidePleaseWork__1__Skeleton.uasset
+
+commit b9d918cceaff4ddb1a26bfa997c4f50f7aabc9ef
+Author: Gary <GaryWhittle19@gmail.com>
+Date:   Wed Mar 6 13:34:02 2019 +0000
+
+    Hello yes I am a Gary. Just uploading an updated level for taking the shots
+
+commit 0f8a64e8263e835cdd9864a6daed1bb70d92bf26
+Author: smd96 <scottmichaeldouglas@gmail.com>
+Date:   Wed Mar 6 13:30:27 2019 +0000
+
+    Added open level functionality to trigger class
+
+commit 47ee3fad2e941d3a8e871a582ba9c22e05bbbf47
+Author: CAVAN BRYCE <1601214@uad.ac.uk>
+Date:   Wed Mar 6 13:25:08 2019 +0000
+
+    Cleaned up the assets etc.
+
+commit 712b3e05743e5ecef34fddc45ed7f7c8af6838b0
+Merge: dc4fdec 88560e0
+Author: smd96 <scottmichaeldouglas@gmail.com>
+Date:   Wed Mar 6 12:26:23 2019 +0000
+
+    Merge branch 'master' of https://github.com/JamheadAbertay/SundownPrototype
+
+commit 88560e038d1e2d977da433e7623d4e35f54c0a4c
+Merge: ffd58e5 419b025
+Author: Gary <GaryWhittle19@gmail.com>
+Date:   Wed Mar 6 09:55:28 2019 +0000
+
+    Merge branch 'master' of https://www.github.com/jamheadabertay/sundownprototype
+    
+    # Conflicts:
+    #       Content/Level.umap
+
+commit ffd58e5a647e35b8b8500247bb1e4e370c307b23
+Author: Gary <GaryWhittle19@gmail.com>
+Date:   Wed Mar 6 09:46:15 2019 +0000
+
+    It'll allll be fine.
+
+commit 419b0250cadde3b8654b3cd42fb9e1a0a8f37cbc
+Author: BAGEL-BLIZZARD\Cavan <cavanbryce@hotmail.com>
+Date:   Wed Mar 6 08:32:29 2019 +0000
+
+    Made some smoother camera panning for the sea shot
+
+commit bc813a90d6ec6a59828a82649a51787f9c83e268
+Author: BAGEL-BLIZZARD\Cavan <cavanbryce@hotmail.com>
+Date:   Wed Mar 6 07:30:25 2019 +0000
+
+    Added all the sequences for the teaser trailer
+
+commit 9bf429660fffc5d8e3729f83b5274e00cbe11104
+Author: Gary <GaryWhittle19@gmail.com>
+Date:   Tue Mar 5 19:56:15 2019 +0000
+
+    More brazier work
+
+commit eae15ac96d87278e59d4f112451d5d2bea96b20b
+Author: Gary <GaryWhittle19@gmail.com>
+Date:   Tue Mar 5 18:03:57 2019 +0000
+
+    Quick fix to brazier trigger code
+
+commit 449072d289dc1c7ef233bca7443271b8bf171548
+Author: Gary <GaryWhittle19@gmail.com>
+Date:   Tue Mar 5 17:51:21 2019 +0000
+
+    Added new trigger class to fix brazier moment
+
+commit dc4fdeccc958be28ef609399b93a55a507da9b62
+Merge: 9134ae1 5a8f1ca
+Author: smd96 <scottmichaeldouglas@gmail.com>
+Date:   Tue Mar 5 16:07:34 2019 +0000
+
+    Merge branch 'master' of https://github.com/JamheadAbertay/SundownPrototype
+
+commit 5a8f1ca3f220bafd466a8930cd766714a43a8b82
+Author: Gary Whittle Jr <garywhittle19@gmail.com>
+Date:   Mon Mar 4 22:16:05 2019 +0000
+
+    Quick fix to reupdate level! 😎
+
+commit d4724fd489bd628d172ff31cd91d5de206928614
+Author: HeldUnder <shtevereilly@googlemail.com>
+Date:   Mon Mar 4 21:45:59 2019 +0000
+
+    Crystals & Modular Stone Wall
+
+commit 8eabb96daf03204d09829392ad2b5fb59f584468
+Author: Gary <GaryWhittle19@gmail.com>
+Date:   Mon Mar 4 20:57:48 2019 +0000
+
+    Polished level - added waterfalls, made level look beautiful(er).
+
+commit e49a0eda46b1b3678c80a233e3c15843a3efed5f
+Author: Gary <GaryWhittle19@gmail.com>
+Date:   Mon Mar 4 18:50:13 2019 +0000
+
+    More iteration on the player movement - max speed in the movement component (325 seems very appropriate).
+
+commit 6be867e2e163b9bff0be092b67c4e1fac06b80a8
+Author: Gary <GaryWhittle19@gmail.com>
+Date:   Mon Mar 4 17:52:35 2019 +0000
+
+    Removed unused animations.
+
+commit dc93f4c895ce8d05161df981b730666121873537
+Author: CAVAN BRYCE <1601214@uad.ac.uk>
+Date:   Mon Mar 4 16:29:16 2019 +0000
+
+    Updated level and some more animations.
+
+commit 9d9eba0e90bbebf6b70358bf108b536e40cb0f71
+Merge: 874b5b5 d28026f
+Author: CAVAN BRYCE <1601214@uad.ac.uk>
+Date:   Mon Mar 4 16:27:35 2019 +0000
+
+    Merge branch 'master' of https://github.com/JamheadAbertay/SundownPrototype
+    
+    # Conflicts:
+    #       Content/Bird/Assets/Animations/cinderTurnLeftRight.uasset
+    #       Content/WindParticle/WindGusts.uasset
+
+commit 874b5b5248cb5540a0b2f1cb1e208bf132173597
+Author: CAVAN BRYCE <1601214@uad.ac.uk>
+Date:   Mon Mar 4 16:24:04 2019 +0000
+
+    Updated the water shader, fixed bird animations (again).
+
+commit d28026fa35624eeeaaee0a83cb43881ee1d99b82
+Merge: ba6d5c4 b40895d
+Author: Gary <GaryWhittle19@gmail.com>
+Date:   Mon Mar 4 14:21:48 2019 +0000
+
+    Merge branch 'master' of https://www.github.com/jamheadabertay/sundownprototype
+
+commit b40895d2a03f0391fd866a5b8429fbbe3f17d6ca
+Author: Gary Whittle Jr <garywhittle19@gmail.com>
+Date:   Sun Mar 3 18:34:10 2019 +0000
+
+    Added dev level for testing mechanics without needing to render the entire level (useful for working on personal laptops etc).
+
+commit ba6d5c42407d9b65159c33eefe594c369d19c3d6
+Author: Gary <GaryWhittle19@gmail.com>
+Date:   Sun Mar 3 17:52:55 2019 +0000
+
+    Updated the animations and added a wall of force to keep player in level
+
+commit ebe01ed0a313f01752b91b35b6c5df75b86f1bb2
+Author: Gary <GaryWhittle19@gmail.com>
+Date:   Sun Mar 3 16:06:00 2019 +0000
+
+    Added blendspace animations for the character, fixed collision meshes for some assets. Altered the creature actor to be used for trailer/moments.
+
+commit 9134ae17075837d68915f0851ce56a56f419575e
+Merge: f5f87fd 6253b75
+Author: smd96 <scottmichaeldouglas@gmail.com>
+Date:   Sat Mar 2 00:44:29 2019 +0000
+
+    Merge branch 'master' of https://github.com/JamheadAbertay/SundownPrototype
+    
+    # Conflicts:
+    #       Content/Bird/MyBirdPawnBP.uasset
+
+commit 6253b75510cea5c882813f72bbc47b142160a1f4
+Merge: 11f5bfc d557eef
+Author: ythen1011 <ythen1995@hotmail.co.uk>
+Date:   Fri Mar 1 19:25:16 2019 +0000
+
+    Merge branch 'master' of https://github.com/JamheadAbertay/SundownPrototype
+
+commit 11f5bfc503cb9bf4bdc89e9f82cb9186ebde36ca
+Author: ythen1011 <ythen1995@hotmail.co.uk>
+Date:   Fri Mar 1 19:25:12 2019 +0000
+
+    update on map bamboo section
+
+commit d557eefcefbdff4cad726727fad0cf9d94774ce6
+Author: Gary <GaryWhittle19@gmail.com>
+Date:   Fri Mar 1 18:54:38 2019 +0000
+
+    Polished new flying, much better now. Changed input axis of yaw and pitch controller rotation to be 0.3 for smoother movement.
+
+commit 525e737deca01945f1bf405813bead6e81a81d34
+Author: Gary Whittle Jr <garywhittle19@gmail.com>
+Date:   Thu Feb 28 22:12:55 2019 +0000
+
+    Quick commit to set flying up in the blueprint again.
+
+commit 82ffdce172f5d72d416c18ff77483a1baa06e5db
+Merge: edf66d0 2b434af
+Author: Gary Whittle Jr <garywhittle19@gmail.com>
+Date:   Thu Feb 28 21:03:02 2019 +0000
+
+    Merge branch 'master' of https://www.github.com/jamheadabertay/sundownprototype
+
+commit 2b434af469767352931ff48441a527f37fcddaaf
+Merge: 834abf7 55feca1
+Author: ythen1011 <ythen1995@hotmail.co.uk>
+Date:   Thu Feb 28 20:16:44 2019 +0000
+
+    Merge branch 'master' of https://github.com/JamheadAbertay/SundownPrototype
+
+commit 834abf7ba532fe6141646a2376add563e250ff46
+Author: ythen1011 <ythen1995@hotmail.co.uk>
+Date:   Thu Feb 28 19:58:18 2019 +0000
+
+    complete overhaul of map
+
+commit 55feca1211f0189152175be051156d42b0e2597f
+Author: Gary <GaryWhittle19@gmail.com>
+Date:   Thu Feb 28 19:38:07 2019 +0000
+
+    Redone flight mechanics for more physics based flying, basic version uploaded for now.
+
+commit edf66d0421f15e9d6f1e6b6499f9b6ea843d4dbb
+Merge: 798b81d f99d51c
+Author: Gary Whittle Jr <garywhittle19@gmail.com>
+Date:   Wed Feb 27 09:12:03 2019 +0000
+
+    Merge branch 'master' of https://www.github.com/jamheadabertay/sundownprototype
+
+commit 798b81d967b129df7e0e812407041320ad922f97
+Author: Gary Whittle Jr <garywhittle19@gmail.com>
+Date:   Wed Feb 27 09:11:42 2019 +0000
+
+    no message
+
+commit 3521712156c367d77452e8f4f511c9d5eb5ebe73
+Author: ythen1011 <ythen1995@hotmail.co.uk>
+Date:   Wed Feb 27 07:06:22 2019 +0000
+
+    m
+
+commit fd0a3fa1d3ad65d3dc05dbc45860051fdfc15df1
+Author: ythen1011 <ythen1995@hotmail.co.uk>
+Date:   Wed Feb 27 07:04:55 2019 +0000
+
+    just pushing more map stuff
+
+commit f99d51c58bba82e4d2ed15f4bbbe7757ea9db0b6
+Author: HeldUnder <shtevereilly@googlemail.com>
+Date:   Tue Feb 26 20:29:44 2019 +0000
+
+    Landscape Materials & Water PlaceHolder
+
+commit 5f7c605bc9ba04b5b289f5976d3f1bae822a89ee
+Author: HeldUnder <shtevereilly@googlemail.com>
+Date:   Tue Feb 26 20:22:30 2019 +0000
+
+    Ythen's Map Reworked
+
+commit 14ef742d23f572023f3c0098a8da2a266d0e40c9
+Author: HeldUnder <shtevereilly@googlemail.com>
+Date:   Tue Feb 26 19:40:33 2019 +0000
+
+    Map Progress
+
+commit 7737e685bb4e25df6323fbc5d77a03a746649feb
+Merge: 21f359c ca5357c
+Author: HeldUnder <shtevereilly@googlemail.com>
+Date:   Tue Feb 26 18:44:45 2019 +0000
+
+    Merge branch 'master' of https://github.com/JamheadAbertay/SundownPrototype
+
+commit 21f359cc5ea4c645a8fdebe1d5097b42bc1f06c8
+Author: HeldUnder <shtevereilly@googlemail.com>
+Date:   Tue Feb 26 18:27:16 2019 +0000
+
+    Does this one work?
+
+commit 679b3a8856477e2699fcfa2d46d10f6f3519c2c3
+Author: HeldUnder <shtevereilly@googlemail.com>
+Date:   Tue Feb 26 18:25:09 2019 +0000
+
+    Alternate Map
+
+commit ca5357c4e67e4236fe59943e7449993344013096
+Author: ythen1011 <ythen1995@hotmail.co.uk>
+Date:   Tue Feb 26 18:12:22 2019 +0000
+
+    d
+
+commit a1089d73831f21e643d7ce544fdc0978aad8dc83
+Author: HeldUnder <shtevereilly@googlemail.com>
+Date:   Tue Feb 26 18:02:31 2019 +0000
+
+    Alternate Level: Steve's (it didn't work. Nevermind)
+
+commit 94ae8879050336f74dc9b3c087788c19c7e5cbbf
+Author: HeldUnder <shtevereilly@googlemail.com>
+Date:   Tue Feb 26 17:58:48 2019 +0000
+
+    Alternate Level Test: Steve's (ignore it)
+
+commit c3fb64c8e1b8d9b7ca9e911da3b0bb66a6ea201f
+Author: ythen1011 <ythen1995@hotmail.co.uk>
+Date:   Tue Feb 26 17:58:37 2019 +0000
+
+    moremap
+
+commit f5f87fde1cc29be76eefe11309db9cdda88a8961
+Merge: 0897f4c 5534f1a
+Author: smd96 <scottmichaeldouglas@gmail.com>
+Date:   Tue Feb 26 17:41:26 2019 +0000
+
+    Merge branch 'master' of https://github.com/JamheadAbertay/SundownPrototype
+    
+    # Conflicts:
+    #       Content/Assets/vertex.uasset
+    #       Content/Bird/MyBirdPawnBP.uasset
+    #       Content/BirdSplineBP.uasset
+    #       Content/NewMapScaled.umap
+    #       Content/Untitled.umap
+    #       Content/wood_Mat.uasset
+
+commit 0897f4c0d91198cc6efce49787219cbce5075875
+Author: smd96 <scottmichaeldouglas@gmail.com>
+Date:   Tue Feb 26 17:39:15 2019 +0000
+
+    Added some placeholder audio files and started flock moment
+
+commit 5534f1a72e89221a33685af359e1926257dce573
+Author: ythen1011 <ythen1995@hotmail.co.uk>
+Date:   Tue Feb 26 16:31:38 2019 +0000
+
+    addedbrazier
+
+commit e68cbc81f5325f68d6dcfe9948b3d6753d38fbf1
+Author: ythen1011 <ythen1995@hotmail.co.uk>
+Date:   Tue Feb 26 16:20:28 2019 +0000
+
+    map update
+
+commit 5e1cf26343a4f91c7f5038b231ffd8f817f222a5
+Author: ythen1011 <ythen1995@hotmail.co.uk>
+Date:   Tue Feb 26 12:32:41 2019 +0000
+
+    messing around with map to see whats needed
+
+commit a1c6c1bc14fb242c738d26c2c43885106d39532b
+Author: ythen1011 <ythen1995@hotmail.co.uk>
+Date:   Tue Feb 26 12:06:44 2019 +0000
+
+    its a mushroom mario
+
+commit 577a8b7aac723d91ebddda658cce3b280cd41c8f
+Author: HeldUnder <shtevereilly@googlemail.com>
+Date:   Mon Feb 25 21:18:02 2019 +0000
+
+    LogPile
+
+commit 36b6c1cc4d465763c18e81d8d43f14324b5c2695
+Author: HeldUnder <shtevereilly@googlemail.com>
+Date:   Mon Feb 25 20:52:21 2019 +0000
+
+    Barn Asset
+
+commit 01257183c342a2a5ea4d9695194cca0ebd098568
+Author: HeldUnder <shtevereilly@googlemail.com>
+Date:   Mon Feb 25 19:09:59 2019 +0000
+
+    2 Story Houses
+
+commit 90258c1ea3b9760100795ee087bb686b8f0027b3
+Author: HeldUnder <shtevereilly@googlemail.com>
+Date:   Mon Feb 25 18:59:48 2019 +0000
+
+    Standing Stone Assets: Seperated
+
+commit bfb7d4547db35243a5e31d54a1281419568b2bfb
+Author: ythen1011 <ythen1995@hotmail.co.uk>
+Date:   Thu Feb 21 23:06:41 2019 +0000
+
+    new cliff rocks
+
+commit 75aee8c176526423f032f326958f3a7ff8cb0281
+Author: Gary <GaryWhittle19@gmail.com>
+Date:   Thu Feb 21 18:19:13 2019 +0000
+
+    Removed unneeded assets and reorganized. Updated BirdPawnBP to use new mesh for new animations.
+    
+    NEXT STEPS: flying rythm, spline movement, refine normal flying
+
+commit 795042bef33d0ac12bd0fc1c76497783e86adcd0
+Merge: 8e2cc3b 81a21a9
+Author: Gary <GaryWhittle19@gmail.com>
+Date:   Thu Feb 21 15:56:12 2019 +0000
+
+    Merge branch 'master' of https://www.github.com/jamheadabertay/sundownprototype
+
+commit 8e2cc3b95c4eb220bdd1a242670ef0b4361cc855
+Author: Gary <GaryWhittle19@gmail.com>
+Date:   Thu Feb 21 15:53:26 2019 +0000
+
+    Added Steve's houses
+
+commit 81a21a98dd78db5a2c674205fd245a2f66b8cdb9
+Author: ythen1011 <ythen1995@hotmail.co.uk>
+Date:   Thu Feb 21 15:46:17 2019 +0000
+
+    hopefully the landscape stays
+
+commit c52d3b56043a4fc3d784fcb8b8d58a903bd31283
+Merge: 63e22ed 8e9c58a
+Author: smd96 <scottmichaeldouglas@gmail.com>
+Date:   Thu Feb 21 12:50:27 2019 +0000
+
+    Merge branch 'master' of https://github.com/JamheadAbertay/SundownPrototype
+    
+    # Conflicts:
+    #       Content/Bird/MyBirdPawnBP.uasset
+    #       SundownPrototype.sln
+
+commit 63e22ed7d8b7010205027cf3f5a3523b24aaa205
+Author: smd96 <scottmichaeldouglas@gmail.com>
+Date:   Thu Feb 21 12:48:07 2019 +0000
+
+    Quick commit
+
+commit e03c536ea1e35604314d3ed9392fa9e99cfe3962
+Author: ythen1011 <ythen1995@hotmail.co.uk>
+Date:   Thu Feb 21 07:22:16 2019 +0000
+
+    animations properly imported
+
+commit 8e9c58a7430c7ba36602bf974398b9a146b69504
+Author: ythen1011 <ythen1995@hotmail.co.uk>
+Date:   Thu Feb 21 07:13:47 2019 +0000
+
+    new bird animations
+
+commit 8096b97b7034a58470ed8349b706e6f56b80afcb
+Author: ythen1011 <ythen1995@hotmail.co.uk>
+Date:   Wed Feb 20 17:53:32 2019 +0000
+
+    some more assets
+
+commit aef4487e4043e101cb6eb526aad29ce11d564ff1
+Merge: c82c4bc ebc2836
+Author: Gary <GaryWhittle19@gmail.com>
+Date:   Wed Feb 20 16:12:41 2019 +0000
+
+    Merge branch 'master' of https://www.github.com/jamheadabertay/sundownprototype
+    
+    # Conflicts:
+    #       Content/Untitled.umap
+
+commit c82c4bc61307bcbad90d5ca120ea5c4c49f680da
+Author: Gary <GaryWhittle19@gmail.com>
+Date:   Wed Feb 20 16:10:23 2019 +0000
+
+    Got bird following spline within bounds.
+
+commit ebc2836a39cd6bf4239459ac94a68990417cdd08
+Author: ythen1011 <ythen1995@hotmail.co.uk>
+Date:   Wed Feb 20 15:25:29 2019 +0000
+
+    map built
+
+commit cbbbffc0fa6a295bda3516f9d911726190f97b7f
+Author: ythen1011 <ythen1995@hotmail.co.uk>
+Date:   Mon Feb 18 22:06:03 2019 +0000
+
+    kanye west
+
+commit 5278a7fb6b57e6545c6d31e0a3d2b51e9b82e540
+Author: ythen1011 <ythen1995@hotmail.co.uk>
+Date:   Mon Feb 18 21:50:48 2019 +0000
+
+    added we low poly mountain things just to see
+
+commit d33b16200562076a12bf92f2a8246e20ede2f99c
+Merge: 116ed9d 6d43d2e
+Author: HeldUnder <shtevereilly@googlemail.com>
+Date:   Mon Feb 18 21:29:56 2019 +0000
+
+    Retry
+
+commit 6d43d2e709b31f3fbfb40c4e2ef06744647a16bf
+Author: Gary <GaryWhittle19@gmail.com>
+Date:   Mon Feb 18 20:25:43 2019 +0000
+
+    Placed spline bounds within spline and made it move along at fixed rate.
+    
+    NEXT WEEK/TO-DO ASAP: keep bird within spline bounds, spline points designer settings, rythm flying, level bounds (too high, sides etc), main menu, music/sounds.
+
+commit 116ed9dffbab0c0b64e07d3c1bda5d3cc86b97d9
+Author: HeldUnder <shtevereilly@googlemail.com>
+Date:   Sun Feb 17 17:32:00 2019 +0000
+
+    Rocks Reuploaded
+
+commit 9e2903307d5b5bacab8cf9dc18bde5e40bfdbd2c
+Author: HeldUnder <shtevereilly@googlemail.com>
+Date:   Sun Feb 17 17:08:33 2019 +0000
+
+    Cleaned Up Asset Folder & Fence Reupload
+
+commit 2642e01008faea5bff45249417d5296c81bff990
+Author: HeldUnder <shtevereilly@googlemail.com>
+Date:   Sun Feb 17 15:25:57 2019 +0000
+
+    Deleted faulty assets: Rocks & Fence
+
+commit 23d2bcefd383db1fc9f44e71d5a45f9a5d231483
+Author: ythen1011 <ythen1995@hotmail.co.uk>
+Date:   Sun Feb 17 14:38:30 2019 +0000
+
+    art push
+
+commit ebb492af1b4dba8422271b56a9abd60e2b3a2aa2
+Merge: 8d94742 54aab2a
+Author: sdoug96 <35918256+sdoug96@users.noreply.github.com>
+Date:   Sun Feb 17 14:07:24 2019 +0000
+
+    Merge pull request #4 from JamheadAbertay/Develop_02(SD)
+    
+    Basic brazier system working
+
+commit 54aab2a7caff6cf63705d7b993b4be82c044b33a
+Merge: cc8e600 8d94742
+Author: DESKTOP-A8N2MRH\scott <scottmichaeldouglas@gmail.com>
+Date:   Sun Feb 17 14:06:16 2019 +0000
+
+    Added umap to GitLFS
+
+commit cc8e600b747306d88e3d777a81af508279892d57
+Author: DESKTOP-A8N2MRH\scott <scottmichaeldouglas@gmail.com>
+Date:   Sun Feb 17 13:58:37 2019 +0000
+
+    New assetts
+
+commit 8d94742239ce45b193c5fa2d699abfddb85d49c1
+Author: ythen1011 <ythen1995@hotmail.co.uk>
+Date:   Sat Feb 16 19:34:46 2019 +0000
+
+    GF
+
+commit 101c8ca628a54c07cc9c5145fa21faeee136690d
+Author: ythen1011 <ythen1995@hotmail.co.uk>
+Date:   Sat Feb 16 17:58:59 2019 +0000
+
+    GHJ
+
+commit 1133a2826365cdde59a504b25eb708f6eab6da73
+Author: ythen1011 <ythen1995@hotmail.co.uk>
+Date:   Sat Feb 16 17:48:30 2019 +0000
+
+    D
+
+commit 443056896c9f96d6a4b3a77b175e319ca1cbd424
+Author: ythen1011 <ythen1995@hotmail.co.uk>
+Date:   Sat Feb 16 17:00:23 2019 +0000
+
+    titty monster
+
+commit b9774a53c668691345f931e107f8e672a365b713
+Author: ythen1011 <ythen1995@hotmail.co.uk>
+Date:   Sat Feb 16 16:02:08 2019 +0000
+
+    included the genuine right scale map for refference
+
+commit 4557d6df6d2ee019bb34cc8fa2246d2eaf163258
+Author: ythen1011 <ythen1995@hotmail.co.uk>
+Date:   Sat Feb 16 14:23:57 2019 +0000
+
+    more assets
+
+commit 38d5bf1a85ced12b5f1d6282413ea04f45279f3d
+Author: ythen1011 <ythen1995@hotmail.co.uk>
+Date:   Sat Feb 16 14:04:40 2019 +0000
+
+    steves assets imported
+
+commit 0c1858dcdc3a7e0a0aad937d548f8fc66520bf60
+Author: ythen1011 <ythen1995@hotmail.co.uk>
+Date:   Sat Feb 16 13:52:55 2019 +0000
+
+    test2
+
+commit 01097bef23f1898b7de573c96576198b25108cc0
+Author: ythen1011 <ythen1995@hotmail.co.uk>
+Date:   Sat Feb 16 13:51:28 2019 +0000
+
+    testing
+
+commit 1c476ada1394d50a7faf3631fed82ad62806cf70
+Author: ythen1011 <ythen1995@hotmail.co.uk>
+Date:   Thu Feb 14 20:20:25 2019 +0000
+
+    b
+
+commit 47bf9895c815b0244e451fd7e523c966b9b0b0d1
+Author: DESKTOP-A8N2MRH\scott <scottmichaeldouglas@gmail.com>
+Date:   Wed Feb 13 21:41:01 2019 +0000
+
+    Basic brazier system working
+
+commit 66685de1ba047af041e2d55ab183b93b5fe2ca22
+Author: Gary Whittle Jr <garywhittle19@gmail.com>
+Date:   Wed Feb 13 16:37:34 2019 +0000
+
+    Fixed keyboard input and collision mesh for big donut things.
+
+commit 90144eae6938b729163a144d97da4245ef4a7b9a
+Author: ythen1011 <ythen1995@hotmail.co.uk>
+Date:   Tue Feb 12 18:02:50 2019 +0000
+
+    bleh bla bleh im dracula
+
+commit 3df9e5cff7bb4de126bd0c2d6920a5cc642d3d52
+Author: ythen1011 <ythen1995@hotmail.co.uk>
+Date:   Tue Feb 12 16:44:23 2019 +0000
+
+    dunno
+
+commit da20604695dd9959b0cbc5677ea63f7565d12d0b
+Author: Gary Whittle Jr <garywhittle19@gmail.com>
+Date:   Sun Feb 10 00:30:06 2019 +0000
+
+    Improved freeroam movement/collision. Left thumbstick click to enable/disable forward movement. Updated startup map in settings.
+
+commit 84105f2f24c7d2c1eeae655fa594f9b8f4889863
+Merge: 0645abb 7fa422c
+Author: Gary Whittle Jr <garywhittle19@gmail.com>
+Date:   Fri Feb 8 22:36:47 2019 +0000
+
+    Merge branch 'Develop_04(GW)' of https://github.com/JamheadAbertay/SundownPrototype into Develop_04(GW)
+    
+    # Conflicts:
+    #       Content/Bird/MyBirdPawnBP.uasset
+    #       Source/SundownPrototype/BirdPawn.cpp
+    #       SundownPrototype.sln
+
+commit 0645abb7863a8f91266fdd5b0d65af412266c7c4
+Author: Gary Whittle Jr <garywhittle19@gmail.com>
+Date:   Fri Feb 8 22:34:32 2019 +0000
+
+    Restructured BirdPawn class to inherit from Pawn again. Got basic collision working using static invisible sphere mesh, updated spline rotation with RInterpTo for smoother spline movement.
+
+commit 7fa422c049167275bdfbbf6045089cbdac71ff2b
+Author: Gary <GaryWhittle19@gmail.com>
+Date:   Wed Feb 6 13:24:17 2019 +0000
+
+    Further work on collision. Collision is detected on hit and a normal is constructed between root components. This isn't working, likely because the root components don't necessarily represent the best locations to construct a normal from.
+
+commit f7ea3ff98e78c1a6571806557b72e748342a0b72
+Author: Gary Whittle Jr <garywhittle19@gmail.com>
+Date:   Tue Feb 5 12:13:50 2019 +0000
+
+    Work in progress collision
+
+commit 7eab4994a4bb33956332387ad71fcc87711c094c
+Author: Gary Whittle Jr <garywhittle19@gmail.com>
+Date:   Mon Feb 4 16:47:47 2019 +0000
+
+    Changed map, got bird collision sphere code setup (needs bugfixing).
+
+commit a13873323224ce4ba9f33034114210c4a2796741
+Author: Gary Whittle Jr <garywhittle19@gmail.com>
+Date:   Sun Feb 3 20:31:22 2019 +0000
+
+    Working on making the bird mesh appear when set in the inherited ACharacter mesh component, removed old bird assets.
+
+commit 0d62dd6f4112180c89c08e07cbaddd95aaa2b34c
+Author: Gary Whittle Jr <garywhittle19@gmail.com>
+Date:   Sun Feb 3 10:29:50 2019 +0000
+
+    Redone flight code to use as base for advanced flying mechanics and spline movement, reposititioned camera, fixed UPROPERTY categories.
+    
+    Next steps: create spline movement bounds, refine flying to be easier.
+
+commit 265da6c51ebca28da17ea4a339b1c01ea3dbb236
+Merge: 9f3f8e8 7f55144
+Author: Gary Whittle Jr <garywhittle19@gmail.com>
+Date:   Sun Feb 3 08:15:39 2019 +0000
+
+    Merge branch 'Develop_01(GW)'
+    
+    # Conflicts:
+    #       Content/MyBirdPawnBP.uasset
+    #       Content/TestValley.umap
+    #       Source/SundownPrototype/BirdPawn.cpp
+    #       Source/SundownPrototype/BirdPawn.h
+
+commit 9f3f8e8def9ead2db00818b4719ffc8dcfc54a47
+Author: Gary Whittle Jr <garywhittle19@gmail.com>
+Date:   Sun Feb 3 08:12:13 2019 +0000
+
+    Fixed BirdPawn so that bird follows spline when spawned as default pawn, tidied the assets up a little (removed some old UFO flying test files).
+
+commit b3f6b0a1c22067e962141e505c9cb33324d97840
+Author: ythen1011 <ythen1995@hotmail.co.uk>
+Date:   Sat Feb 2 23:04:11 2019 +0000
+
+    small update
+
+commit 7c356c47493296cbdd692726e9b7448a1f771e81
+Author: ythen1011 <ythen1995@hotmail.co.uk>
+Date:   Sat Feb 2 22:24:42 2019 +0000
+
+    newscaledmap
+
+commit f6029c421adc0846f1c9818adc2409ac81a6b65c
+Author: ythen1011 <ythen1995@hotmail.co.uk>
+Date:   Fri Feb 1 22:12:43 2019 +0000
+
+    removing unoptimized models
+
+commit c6e71b6838998ff60480394474cb03d18041c7ad
+Author: CAVAN BRYCE <1601214@uad.ac.uk>
+Date:   Thu Jan 31 16:24:47 2019 +0000
+
+    Added Cloud Material and Waterfall to the level
+
+commit 8a37a631567e6be0cd384d10f5f7a8111ea9b40c
+Author: ythen1011 <ythen1995@hotmail.co.uk>
+Date:   Thu Jan 31 03:04:40 2019 +0000
+
+    Update TestValley.umap
+
+commit ec00290e7c7099f45aa9b030ec8ccb79a25c82b4
+Author: ythen1011 <ythen1995@hotmail.co.uk>
+Date:   Thu Jan 31 02:57:43 2019 +0000
+
+    dont know why these changes appeared
+
+commit fd1d7f09e3cb57d8e0decad742d74add2032867a
+Author: ythen1011 <ythen1995@hotmail.co.uk>
+Date:   Thu Jan 31 02:46:21 2019 +0000
+
+    messed around with map and processing
+
+commit 0dd522f741dd32c7f7cc6f3170751598384bc88a
+Merge: 8517638 5dbb693
+Author: Gary Whittle Jr <garywhittle19@gmail.com>
+Date:   Mon Jan 28 13:49:40 2019 +0000
+
+    Merge branch 'master' of https://github.com/JamheadAbertay/SundownPrototype
+    
+    # Conflicts:
+    #       Content/TestValley.umap
+    #       Source/SundownPrototype/BirdPawn.cpp
+    #       Source/SundownPrototype/BirdPawn.h
+    #       SundownPrototype.sln
+
+commit 7f5514490653526cc5742fc15c5e7c6f74f57de9
+Author: Gary Whittle Jr <garywhittle19@gmail.com>
+Date:   Mon Jan 28 13:46:39 2019 +0000
+
+    Made some more changes.
+
+commit 5dbb693ff46cfb9a28464be4c07dff9a9e751cf4
+Merge: 958eeda ee01525
+Author: sdoug96 <35918256+sdoug96@users.noreply.github.com>
+Date:   Mon Jan 28 13:34:20 2019 +0000
+
+    Merge pull request #3 from JamheadAbertay/Develop_02(SD)
+    
+    Develop 02(sd)
+
+commit ee0152521847cc83b30c19632685e6493fd64f5e
+Author: DESKTOP-A8N2MRH\scott <scottmichaeldouglas@gmail.com>
+Date:   Mon Jan 28 13:32:17 2019 +0000
+
+    Added brazier to test moment
+
+commit 1c8d2302cb3a12e79b3b938dc7b1e7d8d316ad94
+Author: DESKTOP-A8N2MRH\scott <scottmichaeldouglas@gmail.com>
+Date:   Mon Jan 28 13:30:44 2019 +0000
+
+    New valley and bird
+
+commit 8517638fa3d60228b2c09092ae0ee21bbf4a2c63
+Author: Gary Whittle Jr <garywhittle19@gmail.com>
+Date:   Mon Jan 28 11:34:45 2019 +0000
+
+    Quickcommit, no major changes
+
+commit ae70477e2df1e74cbe145f9d989ca039f808b626
+Author: Gary <GaryWhittle19@gmail.com>
+Date:   Thu Jan 24 16:09:26 2019 +0000
+
+    Quickcommit for working spline movement from birdpawn.cpp.
+
+commit 9317f3ac3d6d8167137f61c03a4f56b1209d2b4f
+Author: Gary <GaryWhittle19@gmail.com>
+Date:   Thu Jan 24 15:04:41 2019 +0000
+
+    Quickcommit for working spline reference from birdpawn.cpp.
+
+commit a7b567e5bbce846c3363fb4458cbf6458004eae4
+Author: DESKTOP-A8N2MRH\scott <scottmichaeldouglas@gmail.com>
+Date:   Thu Jan 24 00:23:08 2019 +0000
+
+    Added trigger box and deleted some unnecessary code
+
+commit 958eeda62fe85f54f6256f8c76a47b72fc89578a
+Author: Gary <GaryWhittle19@gmail.com>
+Date:   Thu Jan 17 14:10:14 2019 +0000
+
+    Quick update to put the spline BP in the level.
+
+commit b198ed7c5afe207c024e4c388eef856bf844ad9c
+Author: Gary <GaryWhittle19@gmail.com>
+Date:   Wed Jan 16 16:13:29 2019 +0000
+
+    Created the spline class to be used for character movement/properties. Still to do - make character follow spline, simplify spline for designers to create prototype moment.
+
+commit 44f7ac7ef92fddb28c9dca845730a6cc3763fbab
+Author: DESKTOP-A8N2MRH\scott <scottmichaeldouglas@gmail.com>
+Date:   Sat Dec 8 15:00:19 2018 +0000
+
+    Added more water and fixed lighting
+
+commit 5b757f86c982850c5c1c16486a1e53bcc18ef553
+Author: Gary Whittle Jr <garywhittle19@gmail.com>
+Date:   Sat Dec 8 08:53:55 2018 +0000
+
+    Added new environment for prototype (thanks Reilly) and improved fairy light trail and movement/camera.
+
+commit 82e2175d2885e6988038690e88a59dc145d7a2eb
+Author: Gary Whittle Jr <garywhittle19@gmail.com>
+Date:   Fri Dec 7 21:29:12 2018 +0000
+
+    Updated camera position, added fairy that stays beside the bird and emits a fairy particle effect. Changed turn sensitivity because controller was turning too fast (?).
+
+commit 993d398ef73a3e8763b0162f2e8b73d0b8f9f36e
+Author: Gary Whittle Jr <garywhittle19@gmail.com>
+Date:   Thu Dec 6 17:07:32 2018 +0000
+
+    Refined flight.
+
+commit 1f4602834d1b6954e3d5b91e18ececde894527ae
+Author: DESKTOP-A8N2MRH\scott <scottmichaeldouglas@gmail.com>
+Date:   Thu Dec 6 16:14:20 2018 +0000
+
+    Fixed camera stutter when moving up and down
+
+commit e1d1034fcd3dd2226d4047b91520fe83acd36d63
+Merge: 31759df e828472
+Author: sdoug96 <35918256+sdoug96@users.noreply.github.com>
+Date:   Thu Dec 6 13:59:39 2018 +0000
+
+    Merge pull request #2 from JamheadAbertay/Develop_01(GW)
+    
+    Develop 01(gw)
+
+commit e828472f43e3587e8d1bfb64276b08418a25b30c
+Merge: 6870a7b 31759df
+Author: Gary Whittle Jr <garywhittle19@gmail.com>
+Date:   Thu Dec 6 13:52:06 2018 +0000
+
+    Merge branch 'master' of https://github.com/JamheadAbertay/SundownPrototype into Develop_01(GW)
+    
+    # Conflicts:
+    #       Content/MyBirdPawnBP.uasset
+    #       Content/SundownPrototype.umap
+    #       Content/SundownPrototype_BuiltData.uasset
+    #       Source/SundownPrototype/BirdPawn.cpp
+    #       Source/SundownPrototype/BirdPawn.h
+    #       SundownPrototype.sln
+
+commit 6870a7bd319d86dc0b4a5ee62c72f6dfb8a411bc
+Author: Gary Whittle Jr <garywhittle19@gmail.com>
+Date:   Thu Dec 6 13:46:46 2018 +0000
+
+    Quickcommit
+
+commit 31759df4fc708b6861255a61250f38b9a5b27d09
+Merge: 60803f3 a4db282
+Author: sdoug96 <35918256+sdoug96@users.noreply.github.com>
+Date:   Thu Nov 29 12:23:13 2018 +0000
+
+    Merge pull request #1 from JamheadAbertay/Develop_02(SD)
+    
+    Develop 02(sd)
+
+commit 560352421ac13838d409c4f89abbd7662ecd06a7
+Author: Gary Whittle Jr <garywhittle19@gmail.com>
+Date:   Sun Nov 25 03:39:14 2018 +0000
+
+    Updated.
+
+commit 6f7e14933ced8ee9b32000edb7c8aab1c850ab25
+Author: Gary Whittle Jr <garywhittle19@gmail.com>
+Date:   Wed Nov 21 20:36:02 2018 +0000
+
+    Updated BirdPawn to inherit from ACharacter instead of APawn. Updated flight mechanics for rough feel of pitch limits (can't fly vertically up, can't fly straight down then upside down). Need to revise new mechanics - turning left and right is causing problems with the pitch limits.
+
+commit a4db282cfa8614f3f33ae05f1138761529d0c1fc
+Author: DESKTOP-A8N2MRH\scott <scottmichaeldouglas@gmail.com>
+Date:   Tue Nov 20 22:52:23 2018 +0000
+
+    Added basic particle system using unreal starter content
+
+commit 0ab653993aa956c402df08249b0fea0937b75280
+Author: DESKTOP-A8N2MRH\scott <scottmichaeldouglas@gmail.com>
+Date:   Tue Nov 20 21:58:21 2018 +0000
+
+    Test Commit
+
+commit 2f9169b2e29625e852770728f3238a727993713d
+Author: Gary Whittle Jr <garywhittle19@gmail.com>
+Date:   Tue Nov 20 15:26:31 2018 +0000
+
+    Test commit
+
+commit 60803f304273605cbff52f3979a21dd2b3bba4aa
+Author: Caomanach <44269965+Caomanach@users.noreply.github.com>
+Date:   Tue Nov 20 12:29:10 2018 +0000
+
+    Sundown Prototype
+    
+    Initial Commit for working flight prototype
+
+commit 3ede96f24b93f6a445be5b8720a85c3e7de3ba83
+Author: Caomanach <44269965+Caomanach@users.noreply.github.com>
+Date:   Tue Nov 20 12:24:04 2018 +0000
+
+    Initial commit
