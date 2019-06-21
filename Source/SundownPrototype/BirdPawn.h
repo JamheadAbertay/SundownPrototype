@@ -147,9 +147,9 @@ private:
 	// CAMERA MANIPULATION (DIVE)
 public:
 	UPROPERTY(BlueprintReadWrite, Category = Camera)
-		float DefaultSpringArmLength = 125.0f;
+		float DefaultSpringArmLength = 100.0f;
 	UPROPERTY(BlueprintReadWrite, Category = Camera)
-		float DiveSpringArmLength = 100.0f;
+		float DiveSpringArmLength = 60.0f;
 private:
 	UPROPERTY(EditAnywhere, Category = Camera)
 		float DiveCameraInterpSpeed = 0.75f;
