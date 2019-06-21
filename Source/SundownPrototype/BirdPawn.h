@@ -3,6 +3,7 @@
 #include "CoreMinimal.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/Character.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "BirdPawn.generated.h"
 
@@ -25,10 +26,6 @@ public:
 		USpringArmComponent* mCameraSpringArm;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 		UCameraComponent* mCamera;
-
-	// Collision cone
-	UPROPERTY(EditAnywhere)
-		UStaticMeshComponent* mCollisionCone;
 
 	/** Spline movement bool, false by default */
 	UPROPERTY(BlueprintReadWrite, Category = Spline)
@@ -59,7 +56,7 @@ protected:
 	
 	// Begin AActor overrides
 	virtual void BeginPlay();
-	virtual void Tick(float DeltaSeconds) override;
+	virtual void Tick(float DeltaTime) override;
 	virtual void NotifyHit(class UPrimitiveComponent* MyComp, class AActor* Other, class UPrimitiveComponent* OtherComp, bool bSelfMoved, FVector HitLocation, FVector HitNormal, FVector NormalImpulse, const FHitResult& Hit) override;
 	// End AActor overrides
 
@@ -67,26 +64,21 @@ protected:
 	void PerformLineTrace(); // called on tick
 
 private:
-	// FORWARD VECTOR FOR COLLISION AND FLYING
-	FVector flyForwardVector;
-
-	// SPLINE LAST LOCATION FOR CHECKING IF SPLINE IS FINISHED
-	FVector LastLocation;
-
-	// MOVEMENT FUNCTIONS / VARIABLES
-
 	/** Calculate flight function */
-	void CalculateFlight(float DeltaSeconds);
+	void CalculateFlight(float DeltaTime);
 	/** Calculate spline movement function with overloaded direction function */
-	void CalculateDirection(float DeltaSeconds);
+	void CalculateDirection(float DeltaTime);
 	/** Calculate speed of the bird */
 	void CalculateSpeed();
 	/** Calculate the camera position */
 	void CalculateCamera();
 	/** Calculate the turn rate */
 	void CalculateTurnRate();
+
+	// Movement component reference
+	UCharacterMovementComponent* cMoveCompRef;
 	
-	// TURNING FLOATS
+	// Turning rates and defaults
 
 	UPROPERTY(EditAnywhere, Category = Turning)
 		float YawTurnRate = 15.0f;
@@ -96,32 +88,38 @@ private:
 		float MaxYawTurnRate = 25.0f;
 	UPROPERTY(EditAnywhere, Category = Turning)
 		float MaxPitchTurnRate = 25.0f;
-	// For increasing turn rate based on input
+	// For increasing turn rate based on input (increment from 0.0)
 	float TurnRateFloat = 0.0f;
 	//
 	float DefaultPitchRate;
 	float DefaultYawRate;
 
-	// FLIGHT FLOATS
+	// Flight floats
 
 	/** This is used when calculating the inclination of the character (then used for Z velocity) */
-	float InclinationAmount;
+	float fInclination;
 	/** This is used to control the lift of the bird (force against gravity) */
-	float LiftAmount;
+	float fLiftAmount;
+
 	/** The force of gravity */
 	UPROPERTY(EditDefaultsOnly, Category = Flight)
 		float GravityConstant = -980.0f;
 
-	// FLIGHT MULTIPLIER CURVES
+	// Flight curves
 
+	// Curves for translating velocity into character "sway"
+	UCurveFloat* xVelCurve;
+	UCurveFloat* yVelCurve;
+	// Curve for fixing the offset if stick remains idle (sway correction)
+	UCurveFloat* offsetCurve;
 	/** Flight Velocity Lift Multiplier Curve */
-	UPROPERTY(EditAnywhere, Category = Flight)
+	UPROPERTY(EditAnywhere)
 		UCurveFloat* VelCurve;
 	/** Flight Angle Lift Multiplier Curve */
-	UPROPERTY(EditAnywhere, Category = Flight)
+	UPROPERTY(EditAnywhere)
 		UCurveFloat* AngCurve;
 
-	// DEFAULT SPEEDS
+	// Default speeds
 
 	/** Speed to go to when boosting (and also the speed you accelerate to when diving) */
 	UPROPERTY(EditAnywhere, Category = Boost)
@@ -130,7 +128,7 @@ private:
 	UPROPERTY(EditAnywhere, Category = MovementSpeed)
 		float DefaultSpeed = 375.0f;
 
-	// BOOSTING (FORWARD FLAP THING)
+	// Boosting (spin boost thing)
 
 	/** Bool for knowing when player can boost again */
 	bool bBoostReady = true;
@@ -144,27 +142,29 @@ private:
 	UPROPERTY(EditAnywhere, Category = Boost)
 		float BoostDelaySeconds = 0.875f;
 
-	// CAMERA MANIPULATION (DIVE)
 public:
+	// Camera manipulation (dive)
 	UPROPERTY(BlueprintReadWrite, Category = Camera)
-		float DefaultSpringArmLength = 100.0f;
+		float DefaultSpringArmLength = 125.0f;
 	UPROPERTY(BlueprintReadWrite, Category = Camera)
-		float DiveSpringArmLength = 60.0f;
+		float DiveSpringArmLength = 100.0f;
+	
+	// For storing the 
+	UPROPERTY(BlueprintReadOnly)
+		float fDiveCamClamped;
+
 private:
 	UPROPERTY(EditAnywhere, Category = Camera)
 		float DiveCameraInterpSpeed = 0.75f;
 
-	// CAMERA MANIPULATION (CLAMP Y AXIS)
+	// Camera manipulation (clamp Y axis)
 	UPROPERTY(EditAnywhere, Category = Camera)
 		float MaxYRot = 45.0f;
 	UPROPERTY(EditAnywhere, Category = Camera)
 		float MinYRot = 300.0f;
 
+	// Used for invert-Y
 	float YCamMultiplier = 1.0f;
-	
-public:
-	UPROPERTY(BlueprintReadWrite)
-		float DiveRangeClamped = 100.0f;
 
 private:
 	/** For using delay to create cooldowns */

@@ -1,15 +1,12 @@
-// Developed by Gary Whittle and Scott Douglas, based on Unreal's Flight Example Project
+// Developed by Jamhead Games
 
 #include "BirdPawn.h"
-#include "Components/InputComponent.h"
-#include "Components/StaticMeshComponent.h"
 #include "DrawDebugHelpers.h"
-#include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/Controller.h"
-#include "Engine/World.h"
 #include "EngineGlobals.h"
+#include "Engine/World.h"
 #include "Kismet/GameplayStatics.h"
-#include "Runtime/Engine/Classes/Kismet/KismetMathLibrary.h"
+#include "Kismet/KismetMathLibrary.h"
 #include "UnrealMath.h"
 #include "UObject/ConstructorHelpers.h"
 
@@ -20,42 +17,30 @@ ABirdPawn::ABirdPawn()
 	mCameraSpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("mCameraSpringArm"));
 	mCameraSpringArm->SetupAttachment(RootComponent);
 	mCameraSpringArm->bUsePawnControlRotation = true; // Rotate the arm based on the controller
-	mCameraSpringArm->bEnableCameraLag = true;
+	mCameraSpringArm->bEnableCameraLag = false;
 	mCameraSpringArm->TargetArmLength = DefaultSpringArmLength;
 
 	// Create a follow camera
 	mCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
 	mCamera->SetupAttachment(mCameraSpringArm, USpringArmComponent::SocketName); // Attach the camera to the end of the boom and let the boom adjust to match the controller orientation
 	mCamera->bUsePawnControlRotation = true;
-
-	// Setup the collision cone
-	mCollisionCone = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Collision Cone"));
-	mCollisionCone->SetupAttachment(RootComponent);
-
-	static ConstructorHelpers::FObjectFinder<UStaticMesh> ConeMeshAsset(TEXT("StaticMesh'/Game/Characters/PlayerCharacter/Meshes/CollisionCone.CollisionCone'"));
-	if (ConeMeshAsset.Succeeded()) {
-		mCollisionCone->SetStaticMesh(ConeMeshAsset.Object);
-		mCollisionCone->SetWorldScale3D(FVector(1.0f));
-		mCollisionCone->SetMobility(EComponentMobility::Movable);
-		mCollisionCone->SetRelativeLocation(FVector(0.0f, 0.0f, 0.0f));
-		mCollisionCone->SetRelativeRotation(FRotator(0.0f, 0.0f, 90.0f));
-		mCollisionCone->bVisible = true;
-		mCollisionCone->bCastDynamicShadow = false;
-	}
 }
 
 void ABirdPawn::BeginPlay()
 {
 	Super::BeginPlay();
 
+	// Set up references
+	cMoveCompRef = GetCharacterMovement();
+
 	// Set relevant character movement properties
-	GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Falling);
-	GetCharacterMovement()->AirControl = 1.0f;
-	GetCharacterMovement()->BrakingFrictionFactor = 1.0f;
-	GetCharacterMovement()->FallingLateralFriction = 1.0f;
-	GetCharacterMovement()->RotationRate = FRotator(0.0f, 180.0f, 90.0f);
-	GetCharacterMovement()->MaxAcceleration = 220.0f;
-	GetCharacterMovement()->MaxWalkSpeed = DefaultSpeed;
+	cMoveCompRef->SetMovementMode(EMovementMode::MOVE_Falling);
+	cMoveCompRef->AirControl = 1.0f;
+	cMoveCompRef->BrakingFrictionFactor = 1.0f;
+	cMoveCompRef->FallingLateralFriction = 1.0f;
+	cMoveCompRef->RotationRate = FRotator(360.0f, 360.0f, 360.0f);
+	cMoveCompRef->MaxAcceleration = 500.0f;
+	cMoveCompRef->MaxWalkSpeed = 2000.0f;
 
 	// For changing turn rate
 	DefaultPitchRate = PitchTurnRate;
@@ -76,14 +61,17 @@ void ABirdPawn::BeginPlay()
 	}
 }
 
-void ABirdPawn::Tick(float DeltaSeconds)
+void ABirdPawn::Tick(float DeltaTime)
 {
 	//GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, FString::Printf(TEXT("PitchTurnRate: %f"), PitchTurnRate));
 
+	// Call any parent class Tick implementation
+	Super::Tick(DeltaTime);
+
 	// Calculate the flight movement (Z velocity and forward speed)
-	CalculateFlight(DeltaSeconds);
+	CalculateFlight(DeltaTime);
 	// Calculate the direction of the bird (turning left/right is independent of the Z velocity and forward speed)
-	CalculateDirection(DeltaSeconds);
+	CalculateDirection(DeltaTime);
 	// Calculate the forward speed of the bird
 	CalculateSpeed();
 	// Calculate the camera's location
@@ -92,9 +80,6 @@ void ABirdPawn::Tick(float DeltaSeconds)
 	CalculateTurnRate();
 	//
 	//PerformLineTrace();
-
-	// Call any parent class Tick implementation
-	Super::Tick(DeltaSeconds);
 }
 
 
@@ -102,7 +87,7 @@ void ABirdPawn::PerformLineTrace() {
 	FHitResult OutHit;
 	FVector Start = GetActorLocation();
 
-	FVector End = ((flyForwardVector * 1000.0f) + Start);
+	FVector End = ((UKismetMathLibrary::GetForwardVector(GetControlRotation()) * 1000.0f) + Start);
 	FCollisionQueryParams CollisionParams;
 
 	CollisionParams.AddIgnoredActor(this);
@@ -141,51 +126,64 @@ void ABirdPawn::NotifyHit(class UPrimitiveComponent* MyComp, class AActor* Other
 	}
 }
 
-void ABirdPawn::CalculateFlight(float DeltaSeconds) 
-{
-	// Step 1: Calculate LiftAmount
+void ABirdPawn::CalculateFlight(float DeltaTime) 
+{	
+	Super::Tick(DeltaTime);
 
-	// A) Calculate inclination of Cinder using dot product of control up vector and actor forward vector 
-	FVector controlUpVec = UKismetMathLibrary::GetUpVector(FRotator(GetControlRotation()));
-	// control inclination ranges from -1 to 1 based on the rotational difference between camera up vector and actor forward vector (clamped to avoid total vertical up/down)
-	InclinationAmount = FVector::DotProduct(controlUpVec, GetActorForwardVector()); 
-	// B) Get value from angle curve using Inclination Amount (takeaway 90 degrees to get the correct angle)
-	float AngCurveVal = AngCurve->GetFloatValue(FMath::Acos(InclinationAmount));
-	float Time = FMath::Acos(InclinationAmount);
-	// C) Get value from velocity curve
-	FVector VelocityVec = GetCharacterMovement()->Velocity;
-	// Clamp Z within appropriate velocity as this deal with downwards movement - change the negative value to allow higher "down" velocity amounts to influence LiftAmount
-	VelocityVec.Z = FMath::Clamp<float>(VelocityVec.Z, -2000, 0); 
-	float VelCurveVal = VelCurve->GetFloatValue(VelocityVec.Size());
-	// E) Calculate lift normalized by multiplying the flight angle curve and velocity curve values
-	LiftAmount = VelCurveVal * AngCurveVal;
-	
-	// Step 2: GRAVITY!
 
-	// A) Create force against gravity
-	float x = GetCharacterMovement()->Mass * GravityConstant * LiftAmount;
-	FVector force = FVector(0.0f, 0.0f, -x); // x 1.3 to give more lift
-	// B) Add force
-	GetCharacterMovement()->AddForce(force);
+	// Compute velocity of character movement component and seperate the components
+	FVector vVelocity = cMoveCompRef->Velocity;
+	float fXVel = vVelocity.X;
+	float fYVel = vVelocity.Y;
+	float fZVel = vVelocity.Z;
+	////
 
-	// Step 3: Add movement input in the correct direction (based on SpeedHoldAmount and controlrotation forward vector)
 
-	// A) Calculate ZRangeClamped (Z downwards velocity, clamped between some appropriate movement values)
-	float ZRangeClamped;
+	// Get the forward vector of the actor 
+	FVector vActorForward = GetActorForwardVector();
+	// Get the forward vector of the control rotation
+	FVector vControlUpward = UKismetMathLibrary::GetUpVector(FRotator(GetControlRotation()));
+
+	// Using the two vectors, create a value from -1 to 1 by getting the dot product
+	fInclination = FVector::DotProduct(vControlUpward, GetActorForwardVector());
+
+
+	// Fetch value from angle/curve graph
+	float AngCurveVal = AngCurve->GetFloatValue(FMath::Acos(fInclination));
+
+	// Clamp Z velocity within appropriate velocity as this deal with downwards movement
+	float fZVelRange = FMath::Clamp<float>(fZVel, -2000, 0);
+
+	// Fetch value from velocity/curve graph
+	float VelCurveVal = VelCurve->GetFloatValue(vVelocity.Size());
+
+	// Calculate lift normalized by multiplying the flight angle curve and velocity curve values
+	fLiftAmount = VelCurveVal * AngCurveVal;
+	////
+
+
+	// Find resultant force against gravity based on character's mass, world gravity, and the amount of lift (fLiftAmount)
+	float fGravityKryptonite = (cMoveCompRef->Mass * -980.0f * fLiftAmount);
+	FVector vUpForce = FVector(0.0f, 0.0f, -fGravityKryptonite);
+	cMoveCompRef->AddForce(vUpForce);
+	////
+
+
 	// First convert Z velocity value to be within the correct range
-	FVector2D input = FVector2D(-250.0f, 0.0f);
-	FVector2D output = FVector2D(DefaultSpeed, 0.0f);
-	// mapRangeClamped represents the difference in the Z velocity of the character, but clamped within reasonable values to be used for SpeedHoldAmount)
-	ZRangeClamped = FMath::GetMappedRangeValueClamped(input, output, GetCharacterMovement()->Velocity.Z);
-	// B) FInterp SpeedHoldAmount towards mapRangeClamped
-	if (GetCharacterMovement()->MaxWalkSpeed < MaxSpeed) {
-		GetCharacterMovement()->MaxWalkSpeed = FMath::FInterpTo(GetCharacterMovement()->MaxWalkSpeed, GetCharacterMovement()->MaxWalkSpeed + ZRangeClamped, DeltaSeconds, FMath::Abs(InclinationAmount) + 0.5f);
+	FVector2D input = FVector2D(-500.0f, 0.0f);
+	FVector2D output = FVector2D(2000.0f, 0.0f);
+	// Get mapped value 
+	float fZRangeClamped = FMath::GetMappedRangeValueClamped(input, output, fZVel);
+	// FInterp character speed towards max speed
+	if (GetCharacterMovement()->MaxWalkSpeed < 2000.0f) {
+		GetCharacterMovement()->MaxWalkSpeed = FMath::FInterpTo(GetCharacterMovement()->MaxWalkSpeed, GetCharacterMovement()->MaxWalkSpeed + fZRangeClamped, UGameplayStatics::GetWorldDeltaSeconds(GetWorld()), FMath::Abs(fInclination) + 0.5f);
 	}
-	GetCharacterMovement()->MaxWalkSpeed = FMath::Clamp(GetCharacterMovement()->MaxWalkSpeed, DefaultSpeed, MaxSpeed);
-	// C) Get direction to fly in
-	flyForwardVector = UKismetMathLibrary::GetForwardVector(GetControlRotation());
-	// D) Add the movement input in the correct direction, using flyspeedHold as weighting
-	AddMovementInput(flyForwardVector, 1.0f);
+	GetCharacterMovement()->MaxWalkSpeed = FMath::Clamp(GetCharacterMovement()->MaxWalkSpeed, 2000.0f, 2000.0f);
+	// Get direction to fly in
+	FVector vControlForward = UKismetMathLibrary::GetForwardVector(GetControlRotation());
+	// Add movement input (1.0f = max acceleration)
+	AddMovementInput(vControlForward, 1.0f);
+	////
 }
 
 void ABirdPawn::CalculateDirection(float DeltaSeconds) {
@@ -195,10 +193,9 @@ void ABirdPawn::CalculateDirection(float DeltaSeconds) {
 	XYRotation = FRotator(0.0f, XYRotation.Yaw, 0.0f); // Create FRotator with just the Yaw
 	SetActorRelativeRotation(XYRotation); // Set relative rotation - X and Z rotation won't change
 
-	// Apply Z velocity to character (upwards/downwards movement) - Set Z velocity based on the InclinationAmount (character steepness)
-	float ZVelocity = FMath::FInterpTo(GetCharacterMovement()->Velocity.Z, (InclinationAmount * -980 * FMath::Abs(InclinationAmount)), DeltaSeconds, 4);
-	FVector newVel = FVector(0.0f, 0.0f, ZVelocity);
-	GetCharacterMovement()->Velocity.SetComponentForAxis(EAxis::Z, newVel.Z);
+										  // Apply Z velocity to character (upwards/downwards movement) - Set Z velocity based on the InclinationAmount (character steepness)
+	float ZVelocity = FMath::FInterpTo(GetCharacterMovement()->Velocity.Z, (fInclination * -980.0f * FMath::Abs(fInclination)), UGameplayStatics::GetWorldDeltaSeconds(GetWorld()), 4);
+	cMoveCompRef->Velocity.SetComponentForAxis(EAxis::Z, ZVelocity);
 }
 
 void ABirdPawn::CalculateSpeed() {
@@ -219,12 +216,14 @@ void ABirdPawn::CalculateSpeed() {
 
 void ABirdPawn::CalculateCamera() {
 	// First convert Z velocity value to be within the correct range
-	FVector2D input = FVector2D(-350.0f, 0.0f);
+	FVector2D input = FVector2D(-500.0f, 0.0f);
 	FVector2D output = FVector2D(DiveSpringArmLength, DefaultSpringArmLength);
 
-	DiveRangeClamped = FMath::GetMappedRangeValueClamped(input, output, GetCharacterMovement()->Velocity.Z);
+	// Using -500.0f to 0.0, map value to correct dive camera distance
+	fDiveCamClamped = FMath::GetMappedRangeValueClamped(input, output, GetCharacterMovement()->Velocity.Z);
 
-	mCameraSpringArm->TargetArmLength = UKismetMathLibrary::FInterpTo(mCameraSpringArm->TargetArmLength, DiveRangeClamped, UGameplayStatics::GetWorldDeltaSeconds(GetWorld()), DiveCameraInterpSpeed);
+	// Interp to camera distance
+	mCameraSpringArm->TargetArmLength = UKismetMathLibrary::FInterpTo(mCameraSpringArm->TargetArmLength, fDiveCamClamped, UGameplayStatics::GetWorldDeltaSeconds(GetWorld()), DiveCameraInterpSpeed);
 }
 
 void ABirdPawn::CalculateTurnRate() {
