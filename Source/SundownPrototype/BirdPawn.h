@@ -53,9 +53,15 @@ protected:
 		void BoostReady();
 	/** Bound to the faster turning button */
 	void TurnFaster(float Val);
+
+	void ConeCheck();
 	
 	// Begin AActor overrides
 	virtual void BeginPlay();
+	void UpRightOverlap();
+	void UpLeftOverlap();
+	void DownRightOverlap();
+	void DownLeftOverlap();
 	virtual void Tick(float DeltaTime) override;
 	virtual void NotifyHit(class UPrimitiveComponent* MyComp, class AActor* Other, class UPrimitiveComponent* OtherComp, bool bSelfMoved, FVector HitLocation, FVector HitNormal, FVector NormalImpulse, const FHitResult& Hit) override;
 	// End AActor overrides
@@ -64,6 +70,9 @@ protected:
 	void PerformLineTrace(); // called on tick
 
 private:
+
+
+
 	/** Calculate flight function */
 	void CalculateFlight(float DeltaTime);
 	/** Calculate spline movement function with overloaded direction function */
@@ -74,6 +83,12 @@ private:
 	void CalculateCamera();
 	/** Calculate the turn rate */
 	void CalculateTurnRate();
+
+	/** Collision mesh references */
+	UStaticMeshComponent* UpperRightCone;
+	UStaticMeshComponent* UpperLeftCone;
+	UStaticMeshComponent* LowerRightCone;
+	UStaticMeshComponent* LowerLeftCone;
 
 	// Movement component reference
 	UCharacterMovementComponent* cMoveCompRef;

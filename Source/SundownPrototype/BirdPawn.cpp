@@ -9,6 +9,7 @@
 #include "Kismet/KismetMathLibrary.h"
 #include "UnrealMath.h"
 #include "UObject/ConstructorHelpers.h"
+#include "Components/StaticMeshComponent.h"
 
 // Sets default values
 ABirdPawn::ABirdPawn()
@@ -24,6 +25,8 @@ ABirdPawn::ABirdPawn()
 	mCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
 	mCamera->SetupAttachment(mCameraSpringArm, USpringArmComponent::SocketName); // Attach the camera to the end of the boom and let the boom adjust to match the controller orientation
 	mCamera->bUsePawnControlRotation = true;
+
+	
 }
 
 void ABirdPawn::BeginPlay()
@@ -59,6 +62,54 @@ void ABirdPawn::BeginPlay()
 	else if (!bInvertCamY) {
 		YCamMultiplier = 1.0f;
 	}
+
+	// Create references to cone mesh
+	auto components = GetComponents();
+	for (auto component : components)
+	{
+		if (component->GetFName() == "UpperRight") {
+			UpperRightCone = Cast<UStaticMeshComponent>(component);
+		}
+		else if (component->GetFName() == "UpperLeft") {
+			UpperLeftCone = Cast<UStaticMeshComponent>(component);
+		}
+		else if (component->GetFName() == "LowerRight") {
+			LowerRightCone = Cast<UStaticMeshComponent>(component);
+		}
+		else if (component->GetFName() == "LowerLeft") {
+			LowerLeftCone = Cast<UStaticMeshComponent>(component);
+		}
+	}
+}
+
+void ABirdPawn::BeginPlay() {
+	UpperRightCone->OnComponentBeginOverlap.AddDynamic(this, &ABirdPawn::UpRightOverlap);
+	UpperRightCone->OnComponentEndOverlap.AddDynamic(this, &ABirdPawn::UpRightOverlap);
+
+	UpperLeftCone->OnComponentBeginOverlap.AddDynamic(this, &ABirdPawn::UpLeftOverlap);
+	UpperLeftCone->OnComponentEndOverlap.AddDynamic(this, &ABirdPawn::UpLeftOverlap);
+
+	LowerRightCone->OnComponentBeginOverlap.AddDynamic(this, &ABirdPawn::DownRightOverlap);
+	LowerRightCone->OnComponentEndOverlap.AddDynamic(this, &ABirdPawn::DownRightOverlap);
+
+	LowerLeftCone->OnComponentBeginOverlap.AddDynamic(this, &ABirdPawn::DownLeftOverlap);
+	LowerLeftCone->OnComponentEndOverlap.AddDynamic(this, &ABirdPawn::DownLeftOverlap);
+}
+
+void ABirdPawn::UpRightOverlap() {
+
+}
+
+void ABirdPawn::UpLeftOverlap() {
+
+}
+
+void ABirdPawn::DownRightOverlap() {
+
+}
+
+void ABirdPawn::DownLeftOverlap() {
+
 }
 
 void ABirdPawn::Tick(float DeltaTime)
@@ -280,4 +331,8 @@ void ABirdPawn::TurnFaster(float Val) {
 		TurnRateFloat = 0.0f;
 	}
 	TurnRateFloat = FMath::Clamp(TurnRateFloat, 0.0f, 1.0f);
+}
+
+void ABirdPawn::ConeCheck() {
+
 }
