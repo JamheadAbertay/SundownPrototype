@@ -2,6 +2,8 @@
 
 #include "CoreMinimal.h"
 #include "Camera/CameraComponent.h"
+#include "Components/TimelineComponent.h"
+#include "GameFramework/Controller.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
@@ -27,6 +29,20 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 		UCameraComponent* mCamera;
 
+	// Collision cone component
+	UPROPERTY(EditAnywhere)
+		UStaticMeshComponent* smCollisionConeUp;
+	// Collision cone component
+	UPROPERTY(EditAnywhere)
+		UStaticMeshComponent* smCollisionConeLeft;
+	// Collision cone component
+	UPROPERTY(EditAnywhere)
+		UStaticMeshComponent* smCollisionConeRight;
+	// Collision cone component
+	UPROPERTY(EditAnywhere)
+		UStaticMeshComponent* smCollisionConeDown;
+
+
 	/** Spline movement bool, false by default */
 	UPROPERTY(BlueprintReadWrite, Category = Spline)
 		bool OnSpline = false;
@@ -39,6 +55,28 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 		bool bInvertCamY;
 
+	//
+	UFUNCTION()
+		void OnOverlapUp(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+	UFUNCTION()
+		void OnEndOverlapUp(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+	//
+	UFUNCTION()
+		void OnOverlapLeft(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+	UFUNCTION()
+		void OnEndOverlapLeft(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+	//
+	UFUNCTION()
+		void OnOverlapRight(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+	UFUNCTION()
+		void OnEndOverlapRight(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+	//
+	UFUNCTION()
+		void OnOverlapDown(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+	UFUNCTION()
+		void OnEndOverlapDown(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+
+
 protected:
 
 	/** Bound to the control rotation pitch (camera too) */
@@ -47,81 +85,56 @@ protected:
 	/** Bound to the control rotation yaw (camera too) */
 	void YawInput(float Val);
 	float YawAmount = 0.0f;
-	/** Bound to the boost ability */
-	void BuildBoost();
-	UFUNCTION(BlueprintCallable, Category = "Boost")
-		void BoostReady();
-	/** Bound to the faster turning button */
-	void TurnFaster(float Val);
+	/** Speed controls */
+	void SpeedUp();
+	void SlowDown();
 
-	void ConeCheck();
-	
 	// Begin AActor overrides
 	virtual void BeginPlay();
-	void UpRightOverlap();
-	void UpLeftOverlap();
-	void DownRightOverlap();
-	void DownLeftOverlap();
 	virtual void Tick(float DeltaTime) override;
 	virtual void NotifyHit(class UPrimitiveComponent* MyComp, class AActor* Other, class UPrimitiveComponent* OtherComp, bool bSelfMoved, FVector HitLocation, FVector HitNormal, FVector NormalImpulse, const FHitResult& Hit) override;
 	// End AActor overrides
 
-	// Line trace function for collision
-	void PerformLineTrace(); // called on tick
-
 private:
 
+	/** Collision bools */
+	bool bConeUp = false;
+	bool bConeRight = false;
+	bool bConeLeft = false;
+	bool bConeDown = false;
 
 
 	/** Calculate flight function */
 	void CalculateFlight(float DeltaTime);
 	/** Calculate spline movement function with overloaded direction function */
 	void CalculateDirection(float DeltaTime);
-	/** Calculate speed of the bird */
-	void CalculateSpeed();
 	/** Calculate the camera position */
 	void CalculateCamera();
-	/** Calculate the turn rate */
-	void CalculateTurnRate();
-
-	/** Collision mesh references */
-	UStaticMeshComponent* UpperRightCone;
-	UStaticMeshComponent* UpperLeftCone;
-	UStaticMeshComponent* LowerRightCone;
-	UStaticMeshComponent* LowerLeftCone;
+	// Line trace function for collision
+	//void PerformLineTrace();
+	/** Update the collision cone state */
+	void CheckConeColliders();
 
 	// Movement component reference
 	UCharacterMovementComponent* cMoveCompRef;
+	APlayerController* cControllerRef;
 	
-	// Turning rates and defaults
-
+	// Turning rates
 	UPROPERTY(EditAnywhere, Category = Turning)
 		float YawTurnRate = 15.0f;
 	UPROPERTY(EditAnywhere, Category = Turning)
 		float PitchTurnRate = 22.5f;
-	UPROPERTY(EditAnywhere, Category = Turning)
-		float MaxYawTurnRate = 25.0f;
-	UPROPERTY(EditAnywhere, Category = Turning)
-		float MaxPitchTurnRate = 25.0f;
-	// For increasing turn rate based on input (increment from 0.0)
-	float TurnRateFloat = 0.0f;
-	//
-	float DefaultPitchRate;
-	float DefaultYawRate;
 
 	// Flight floats
-
 	/** This is used when calculating the inclination of the character (then used for Z velocity) */
 	float fInclination;
 	/** This is used to control the lift of the bird (force against gravity) */
 	float fLiftAmount;
-
 	/** The force of gravity */
 	UPROPERTY(EditDefaultsOnly, Category = Flight)
 		float GravityConstant = -980.0f;
 
 	// Flight curves
-
 	// Curves for translating velocity into character "sway"
 	UCurveFloat* xVelCurve;
 	UCurveFloat* yVelCurve;
@@ -143,19 +156,7 @@ private:
 	UPROPERTY(EditAnywhere, Category = MovementSpeed)
 		float DefaultSpeed = 375.0f;
 
-	// Boosting (spin boost thing)
-
-	/** Bool for knowing when player can boost again */
-	bool bBoostReady = true;
-	/** Amount to multiply MaxWalkSpeed by during boost each frame */
-	UPROPERTY(EditAnywhere, Category = Boost)
-		float BoostMultiplier = 1.035f;
-	/** Amount to multiply MaxWalkSpeed by after boosting each frame until speed is back to normal */
-	UPROPERTY(EditAnywhere, Category = Boost)
-		float SlowdownMultiplier = 0.998f;
-	/** Time to delay between boosts (in seconds) */
-	UPROPERTY(EditAnywhere, Category = Boost)
-		float BoostDelaySeconds = 0.875f;
+	float fAcceleration = 0.25f;
 
 public:
 	// Camera manipulation (dive)
@@ -181,11 +182,22 @@ private:
 	// Used for invert-Y
 	float YCamMultiplier = 1.0f;
 
-private:
-	/** For using delay to create cooldowns */
-	FLatentActionInfo BoostLTI;
-
 protected:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+protected:
+	UPROPERTY()
+		UTimelineComponent* MyTimeline;
+
+	UPROPERTY()
+		UCurveFloat* FloatCurve;
+
+	UFUNCTION()
+		void TimelineCallback(float val);
+
+	UFUNCTION()
+		void TimelineFinishedCallback();
+
+		void PlayTimeline();
 };
