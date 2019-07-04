@@ -160,9 +160,9 @@ private:
 public:
 	// Camera manipulation (dive)
 	UPROPERTY(BlueprintReadWrite, Category = Camera)
-		float DefaultSpringArmLength = 125.0f;
+		float DefaultSpringArmLength = 50.0f;
 	UPROPERTY(BlueprintReadWrite, Category = Camera)
-		float DiveSpringArmLength = 100.0f;
+		float DiveSpringArmLength = 40.0f;
 	
 	// For storing the 
 	UPROPERTY(BlueprintReadOnly)

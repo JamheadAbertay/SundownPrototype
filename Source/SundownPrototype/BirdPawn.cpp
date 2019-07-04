@@ -96,8 +96,8 @@ void ABirdPawn::BeginPlay()
 	cMoveCompRef->BrakingFrictionFactor = 1.0f;
 	cMoveCompRef->FallingLateralFriction = 1.0f;
 	cMoveCompRef->RotationRate = FRotator(360.0f, 360.0f, 360.0f);
-	cMoveCompRef->MaxAcceleration = 500.0f;
-	cMoveCompRef->MaxWalkSpeed = 2000.0f;
+	cMoveCompRef->MaxAcceleration = 100.0f;
+	cMoveCompRef->MaxWalkSpeed = 2400.0f;
 
 	// Invert-Y
 	if (bInvertCamY) {
@@ -283,13 +283,13 @@ void ABirdPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 
 void ABirdPawn::TimelineCallback(float val)
 {
-	AddMovementInput(GetActorForwardVector(), val);
+	AddMovementInput(GetActorForwardVector(), val * 10);
 }
 
 void ABirdPawn::TimelineFinishedCallback()
 {
 	Boosting = false;
-	cMoveCompRef->MaxWalkSpeed = 2000.0f;
+	cMoveCompRef->MaxWalkSpeed = 2400.0f;
 }
 
 void ABirdPawn::PlayTimeline()
@@ -298,7 +298,7 @@ void ABirdPawn::PlayTimeline()
 	{
 		MyTimeline->PlayFromStart();
 		Boosting = true;
-		cMoveCompRef->MaxWalkSpeed = 4000.0f;
+		cMoveCompRef->MaxWalkSpeed = 4800.0f;
 	}
 }
 
@@ -315,11 +315,11 @@ void ABirdPawn::YawInput(float Val) {
 }
 
 void ABirdPawn::SpeedUp() {
-	fAcceleration = 1000.0f;
+	fAcceleration = 1.0f;
 }
 
 void ABirdPawn::SlowDown() {
-	fAcceleration = 0.0f;
+	fAcceleration = 0.25f;
 }
 
 void ABirdPawn::OnOverlapUp(UPrimitiveComponent * OverlappedComp, AActor * OtherActor, UPrimitiveComponent * OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult)
