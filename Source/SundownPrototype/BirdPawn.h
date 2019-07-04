@@ -103,7 +103,6 @@ private:
 	bool bConeLeft = false;
 	bool bConeDown = false;
 
-
 	/** Calculate flight function */
 	void CalculateFlight(float DeltaTime);
 	/** Calculate spline movement function with overloaded direction function */
@@ -161,9 +160,9 @@ private:
 public:
 	// Camera manipulation (dive)
 	UPROPERTY(BlueprintReadWrite, Category = Camera)
-		float DefaultSpringArmLength = 125.0f;
+		float DefaultSpringArmLength = 50.0f;
 	UPROPERTY(BlueprintReadWrite, Category = Camera)
-		float DiveSpringArmLength = 100.0f;
+		float DiveSpringArmLength = 40.0f;
 	
 	// For storing the 
 	UPROPERTY(BlueprintReadOnly)
@@ -175,9 +174,9 @@ private:
 
 	// Camera manipulation (clamp Y axis)
 	UPROPERTY(EditAnywhere, Category = Camera)
-		float MaxYRot = 45.0f;
+		float MaxYRot = 60.0f;
 	UPROPERTY(EditAnywhere, Category = Camera)
-		float MinYRot = 300.0f;
+		float MinYRot = 385.0f;
 
 	// Used for invert-Y
 	float YCamMultiplier = 1.0f;
