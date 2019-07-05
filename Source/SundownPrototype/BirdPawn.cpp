@@ -72,7 +72,7 @@ void ABirdPawn::BeginPlay()
 		MyTimeline->SetDirectionPropertyName(FName("TimelineDirection"));
 
 		MyTimeline->SetLooping(false);
-		MyTimeline->SetTimelineLength(10.0f);
+		MyTimeline->SetTimelineLength(1.5f);
 		MyTimeline->SetTimelineLengthMode(ETimelineLengthMode::TL_LastKeyFrame);
 
 		MyTimeline->SetPlaybackPosition(0.0f, false);
@@ -96,8 +96,8 @@ void ABirdPawn::BeginPlay()
 	cMoveCompRef->BrakingFrictionFactor = 1.0f;
 	cMoveCompRef->FallingLateralFriction = 1.0f;
 	cMoveCompRef->RotationRate = FRotator(360.0f, 360.0f, 360.0f);
-	cMoveCompRef->MaxAcceleration = 500.0f;
-	cMoveCompRef->MaxWalkSpeed = 2000.0f;
+	cMoveCompRef->MaxAcceleration = 100.0f;
+	cMoveCompRef->MaxWalkSpeed = 2400.0f;
 
 	// Invert-Y
 	if (bInvertCamY) {
@@ -233,11 +233,7 @@ void ABirdPawn::CalculateFlight(float DeltaTime)
 	FVector2D output = FVector2D(2000.0f, 0.0f);
 	// Get mapped value 
 	float fZRangeClamped = FMath::GetMappedRangeValueClamped(input, output, fZVel);
-	// FInterp character speed towards max speed
-	if (GetCharacterMovement()->MaxWalkSpeed < 2000.0f) {
-		GetCharacterMovement()->MaxWalkSpeed = FMath::FInterpTo(GetCharacterMovement()->MaxWalkSpeed, GetCharacterMovement()->MaxWalkSpeed + fZRangeClamped, UGameplayStatics::GetWorldDeltaSeconds(GetWorld()), FMath::Abs(fInclination) + 0.5f);
-	}
-	GetCharacterMovement()->MaxWalkSpeed = FMath::Clamp(GetCharacterMovement()->MaxWalkSpeed, 2000.0f, 2000.0f);
+	GetCharacterMovement()->MaxWalkSpeed = FMath::Clamp(GetCharacterMovement()->MaxWalkSpeed, 0.0f, 2000.0f);
 	// Get direction to fly in
 	FVector vControlForward = UKismetMathLibrary::GetForwardVector(GetControlRotation());
 	// Add movement input
@@ -281,26 +277,28 @@ void ABirdPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 	// Bind our boost action
 	PlayerInputComponent->BindAction("BuildBoost", IE_Pressed, this, &ABirdPawn::PlayTimeline);
 	// Bind speed controls
-	PlayerInputComponent->BindAction("SpeedUp", IE_Repeat, this, &ABirdPawn::SpeedUp);
-	PlayerInputComponent->BindAction("SlowDown", IE_Repeat, this, &ABirdPawn::SlowDown);
+	PlayerInputComponent->BindAction("SpeedUp", IE_Pressed, this, &ABirdPawn::SpeedUp);
+	PlayerInputComponent->BindAction("SlowDown", IE_Released, this, &ABirdPawn::SlowDown);
 }
 
 void ABirdPawn::TimelineCallback(float val)
 {
-	AddMovementInput(GetActorForwardVector(), fAcceleration * 2.0f);
+	AddMovementInput(GetActorForwardVector(), val * 10);
 }
 
 void ABirdPawn::TimelineFinishedCallback()
 {
 	Boosting = false;
+	cMoveCompRef->MaxWalkSpeed = 2400.0f;
 }
 
 void ABirdPawn::PlayTimeline()
 {
-	if (MyTimeline != NULL)
+	if (MyTimeline != NULL && !MyTimeline->IsActive())
 	{
 		MyTimeline->PlayFromStart();
 		Boosting = true;
+		cMoveCompRef->MaxWalkSpeed = 4800.0f;
 	}
 }
 
@@ -317,13 +315,11 @@ void ABirdPawn::YawInput(float Val) {
 }
 
 void ABirdPawn::SpeedUp() {
-	fAcceleration++;
-	FMath::Clamp(fAcceleration, 0.25f, 0.75f);
+	fAcceleration = 1.0f;
 }
 
 void ABirdPawn::SlowDown() {
-	fAcceleration--;
-	FMath::Clamp(fAcceleration, 0.25f, 0.75f);
+	fAcceleration = 0.25f;
 }
 
 void ABirdPawn::OnOverlapUp(UPrimitiveComponent * OverlappedComp, AActor * OtherActor, UPrimitiveComponent * OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult)
