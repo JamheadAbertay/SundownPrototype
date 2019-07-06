@@ -95,9 +95,9 @@ void ABirdPawn::BeginPlay()
 	cMoveCompRef->AirControl = 1.0f;
 	cMoveCompRef->BrakingFrictionFactor = 1.0f;
 	cMoveCompRef->FallingLateralFriction = 1.0f;
-	cMoveCompRef->RotationRate = FRotator(360.0f, 360.0f, 360.0f);
-	cMoveCompRef->MaxAcceleration = 100.0f;
-	cMoveCompRef->MaxWalkSpeed = 2400.0f;
+	cMoveCompRef->RotationRate = FRotator(0.0f, 180.0f, 360.0f);
+	cMoveCompRef->MaxAcceleration = 200.0f;
+	cMoveCompRef->MaxWalkSpeed = 400.0f;
 
 	// Invert-Y
 	if (bInvertCamY) {
@@ -130,7 +130,7 @@ void ABirdPawn::BeginPlay()
 
 void ABirdPawn::Tick(float DeltaTime)
 {
-	//GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, FString::Printf(TEXT("PitchTurnRate: %f"), PitchTurnRate));
+	
 
 	// Call any parent class Tick implementation
 	Super::Tick(DeltaTime);
@@ -174,15 +174,15 @@ void ABirdPawn::NotifyHit(class UPrimitiveComponent* MyComp, class AActor* Other
 {
 	Super::NotifyHit(MyComp, Other, OtherComp, bSelfMoved, HitLocation, HitNormal, NormalImpulse, Hit);
 
-	if (Other->GetClass()->IsChildOf(SplineClassType) && !OnSpline) { // If hit spline and not on spline
-		OnSpline = true;
-		//GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, FString::Printf(TEXT("Spline found!")));
-	}
-	else if (Other->GetClass()->IsChildOf(SplineClassType) && OnSpline) { // If hit spline and on spine
-		OnSpline = false;
-		Other->SetActorEnableCollision(false);  // disable collision on spline
-		//GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, FString::Printf(TEXT("Spline left!")));
-	}
+	//if (Other->GetClass()->IsChildOf(SplineClassType) && !OnSpline) { // If hit spline and not on spline
+	//	OnSpline = true;
+	//	//GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, FString::Printf(TEXT("Spline found!")));
+	//}
+	//else if (Other->GetClass()->IsChildOf(SplineClassType) && OnSpline) { // If hit spline and on spine
+	//	OnSpline = false;
+	//	Other->SetActorEnableCollision(false);  // disable collision on spline
+	//	//GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, FString::Printf(TEXT("Spline left!")));
+	//}
 }
 
 void ABirdPawn::CalculateFlight(float DeltaTime) 
@@ -214,7 +214,7 @@ void ABirdPawn::CalculateFlight(float DeltaTime)
 	float fZVelRange = FMath::Clamp<float>(fZVel, -2000, 0);
 
 	// Fetch value from velocity/curve graph
-	float VelCurveVal = VelCurve->GetFloatValue(vVelocity.Size());
+	float VelCurveVal = VelCurve->GetFloatValue(fZVelRange);
 
 	// Calculate lift normalized by multiplying the flight angle curve and velocity curve values
 	fLiftAmount = VelCurveVal * AngCurveVal;
@@ -227,17 +227,18 @@ void ABirdPawn::CalculateFlight(float DeltaTime)
 	cMoveCompRef->AddForce(vUpForce);
 	////
 
+	GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, FString::Printf(TEXT("fInclination: %f fLiftAmount: %f"), fInclination, fLiftAmount));
 
 	// First convert Z velocity value to be within the correct range
 	FVector2D input = FVector2D(-500.0f, 0.0f);
-	FVector2D output = FVector2D(2000.0f, 0.0f);
+	FVector2D output = FVector2D(1.0, 0.0f);
 	// Get mapped value 
 	float fZRangeClamped = FMath::GetMappedRangeValueClamped(input, output, fZVel);
-	GetCharacterMovement()->MaxWalkSpeed = FMath::Clamp(GetCharacterMovement()->MaxWalkSpeed, 0.0f, 2000.0f);
+	fFlightSpeed = FMath::FInterpTo(fFlightSpeed, fZRangeClamped, UGameplayStatics::GetWorldDeltaSeconds(GetWorld()), FMath::Abs(fInclination) + 1.0f);
 	// Get direction to fly in
 	FVector vControlForward = UKismetMathLibrary::GetForwardVector(GetControlRotation());
 	// Add movement input
-	AddMovementInput(vControlForward, fAcceleration);
+	AddMovementInput(vControlForward, fAcceleration + fFlightSpeed);
 	////
 }
 
@@ -278,18 +279,19 @@ void ABirdPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 	PlayerInputComponent->BindAction("BuildBoost", IE_Pressed, this, &ABirdPawn::PlayTimeline);
 	// Bind speed controls
 	PlayerInputComponent->BindAction("SpeedUp", IE_Pressed, this, &ABirdPawn::SpeedUp);
-	PlayerInputComponent->BindAction("SlowDown", IE_Released, this, &ABirdPawn::SlowDown);
+	PlayerInputComponent->BindAction("SlowDown", IE_Pressed, this, &ABirdPawn::SlowDown);
+
 }
 
 void ABirdPawn::TimelineCallback(float val)
 {
-	AddMovementInput(GetActorForwardVector(), val * 10);
+	AddMovementInput(UKismetMathLibrary::UKismetMathLibrary::GetForwardVector(GetControlRotation()), val);
 }
 
 void ABirdPawn::TimelineFinishedCallback()
 {
 	Boosting = false;
-	cMoveCompRef->MaxWalkSpeed = 2400.0f;
+	cMoveCompRef->MaxWalkSpeed = 400.0f;
 }
 
 void ABirdPawn::PlayTimeline()
@@ -298,7 +300,7 @@ void ABirdPawn::PlayTimeline()
 	{
 		MyTimeline->PlayFromStart();
 		Boosting = true;
-		cMoveCompRef->MaxWalkSpeed = 4800.0f;
+		cMoveCompRef->MaxWalkSpeed = 650.0f;
 	}
 }
 
@@ -319,7 +321,7 @@ void ABirdPawn::SpeedUp() {
 }
 
 void ABirdPawn::SlowDown() {
-	fAcceleration = 0.25f;
+	fAcceleration = 0.0f;
 }
 
 void ABirdPawn::OnOverlapUp(UPrimitiveComponent * OverlappedComp, AActor * OtherActor, UPrimitiveComponent * OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult)

@@ -18,11 +18,6 @@ public:
 	// Sets default values for this character's properties
 	ABirdPawn();
 
-	// Spline reference variables
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Spline)
-		TSubclassOf<class AActor>  SplineClassType;
-	UStaticMeshComponent* SplineBounds; // the spline bounds
-
 	// Camera components
 	UPROPERTY(EditAnywhere)
 		USpringArmComponent* mCameraSpringArm;
@@ -129,6 +124,8 @@ private:
 	float fInclination;
 	/** This is used to control the lift of the bird (force against gravity) */
 	float fLiftAmount;
+	/** Used for maintaining momentum */
+	float fFlightSpeed = 1.0f;
 	/** The force of gravity */
 	UPROPERTY(EditDefaultsOnly, Category = Flight)
 		float GravityConstant = -980.0f;
@@ -146,15 +143,6 @@ private:
 	UPROPERTY(EditAnywhere)
 		UCurveFloat* AngCurve;
 
-	// Default speeds
-
-	/** Speed to go to when boosting (and also the speed you accelerate to when diving) */
-	UPROPERTY(EditAnywhere, Category = Boost)
-		float MaxSpeed = 650.0f;
-	/** Default speed variable */
-	UPROPERTY(EditAnywhere, Category = MovementSpeed)
-		float DefaultSpeed = 375.0f;
-
 	float fAcceleration = 0.25f;
 
 public:
@@ -171,12 +159,6 @@ public:
 private:
 	UPROPERTY(EditAnywhere, Category = Camera)
 		float DiveCameraInterpSpeed = 0.75f;
-
-	// Camera manipulation (clamp Y axis)
-	UPROPERTY(EditAnywhere, Category = Camera)
-		float MaxYRot = 60.0f;
-	UPROPERTY(EditAnywhere, Category = Camera)
-		float MinYRot = 385.0f;
 
 	// Used for invert-Y
 	float YCamMultiplier = 1.0f;
