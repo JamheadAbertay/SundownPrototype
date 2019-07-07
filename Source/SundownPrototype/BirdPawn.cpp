@@ -97,7 +97,7 @@ void ABirdPawn::BeginPlay()
 	cMoveCompRef->FallingLateralFriction = 1.0f;
 	cMoveCompRef->RotationRate = FRotator(1.0f, 1.0f, 1.0f);
 	cMoveCompRef->MaxAcceleration = 600.0f;
-	cMoveCompRef->MaxWalkSpeed = 3600.0f;
+	cMoveCompRef->MaxWalkSpeed = fDefaultFlightSpeed;
 
 	// Invert-Y
 	if (bInvertCamY) {
@@ -215,24 +215,24 @@ void ABirdPawn::CalculateFlight(float DeltaTime)
 
 
 	// Find resultant force against gravity based on character's mass, world gravity, and the amount of lift (fLiftAmount)
-	float fGravityKryptonite = (cMoveCompRef->Mass * -980.0f * fLiftAmount);
+	float fGravityKryptonite = (cMoveCompRef->Mass * GravityConstant * fLiftAmount);
 	FVector vUpForce = FVector(0.0f, 0.0f, fGravityKryptonite);
 	cMoveCompRef->AddForce(vUpForce);
 	////
 
-	GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, FString::Printf(TEXT("fInclination: %f fLiftAmount: %f"), fInclination, fLiftAmount));
-	GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, FString::Printf(TEXT("Movement input: %f"), float(fAcceleration + fLiftAmount)));
+	/*GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, FString::Printf(TEXT("fInclination: %f fLiftAmount: %f"), fInclination, fLiftAmount));
+	GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, FString::Printf(TEXT("Movement input: %f"), float(fAcceleration + fLiftAmount)));*/
 
 	// First convert Z velocity value to be within the correct range
 	FVector2D input = FVector2D(-500.0f, 0.0f);
 	FVector2D output = FVector2D(2.0f, 0.0f);
 	// Get mapped value 
 	float fZRangeClamped = FMath::GetMappedRangeValueClamped(input, output, fZVel);
-	fFlightSpeed = FMath::FInterpTo(fFlightSpeed, fZRangeClamped, UGameplayStatics::GetWorldDeltaSeconds(GetWorld()), FMath::Abs(fInclination) + 0.5f);
+	fMomentumAmount = FMath::FInterpTo(fMomentumAmount, fZRangeClamped, UGameplayStatics::GetWorldDeltaSeconds(GetWorld()), FMath::Abs(fInclination) + 0.5f);
 	// Get direction to fly in
 	FVector vControlForward = UKismetMathLibrary::GetForwardVector(GetControlRotation());
 	// Add movement input
-	AddMovementInput(vControlForward, fAcceleration + fFlightSpeed);
+	AddMovementInput(vControlForward, fAcceleration + fMomentumAmount);
 	////
 }
 
@@ -243,19 +243,25 @@ void ABirdPawn::CalculateDirection(float DeltaSeconds) {
 	XYRotation = FRotator(0.0f, XYRotation.Yaw, 0.0f); // Create FRotator with just the Yaw
 	SetActorRelativeRotation(XYRotation); // Set relative rotation - X and Z rotation won't change
 
+	// initialize float
 	float ZVelocity;
 
 	// Apply Z velocity to character (upwards/downwards movement) - Set Z velocity based on the InclinationAmount (character steepness)
 	if (fInclination < 0.0f) {
-		fDiving = 1.0f;
-		ZVelocity = FMath::FInterpTo(GetCharacterMovement()->Velocity.Z, (fInclination * -980.0f * FMath::Abs(fInclination + 1.0)), UGameplayStatics::GetWorldDeltaSeconds(GetWorld()), 4) + fAcceleration +-fInclination * 200.0f;
+		ZVelocity = FMath::FInterpTo(GetCharacterMovement()->Velocity.Z, (fInclination * GravityConstant * FMath::Abs(fInclination + 1.0)), UGameplayStatics::GetWorldDeltaSeconds(GetWorld()), 4) + fAcceleration +-fInclination * 200.0f;
 	}
 	else {
-		fDiving = 4.0f;
-		ZVelocity = FMath::FInterpTo(GetCharacterMovement()->Velocity.Z, (fInclination * -980.0f * FMath::Abs(fInclination)) * 4.0f, UGameplayStatics::GetWorldDeltaSeconds(GetWorld()), 4);
+		ZVelocity = FMath::FInterpTo(GetCharacterMovement()->Velocity.Z, (fInclination * GravityConstant * FMath::Abs(fInclination)) * 4.0f, UGameplayStatics::GetWorldDeltaSeconds(GetWorld()), 4);
 	}
 
+	// Set the Z velocity
 	cMoveCompRef->Velocity.SetComponentForAxis(EAxis::Z, ZVelocity);
+
+	// Find the dot product between character forward axis and control forward to disallow abnormally tight/fast turning
+	FRotator rControlRotation = UKismetMathLibrary::MakeRotationFromAxes(UKismetMathLibrary::GetForwardVector(GetControlRotation()), UKismetMathLibrary::GetRightVector(GetControlRotation()), FVector(0.0f, 0.0f, 1.0f)); // Create rotator from control rotation and XY movement
+	rControlRotation = FRotator(0.0f, rControlRotation.Yaw, 0.0f); // Create FRotator with just the Yaw
+
+	fTurnDotP = FVector::DotProduct(GetActorForwardVector(), UKismetMathLibrary::GetForwardVector(rControlRotation));
 }
 
 void ABirdPawn::CalculateCamera() {
@@ -306,7 +312,7 @@ void ABirdPawn::TimelineCallback(float val)
 void ABirdPawn::TimelineFinishedCallback()
 {
 	Boosting = false;
-	cMoveCompRef->MaxWalkSpeed = 3600.0f;
+	cMoveCompRef->MaxWalkSpeed = fDefaultFlightSpeed;
 }
 
 void ABirdPawn::PlayTimeline()
@@ -315,7 +321,7 @@ void ABirdPawn::PlayTimeline()
 	{
 		MyTimeline->PlayFromStart();
 		Boosting = true;
-		cMoveCompRef->MaxWalkSpeed = 6000.0f;
+		cMoveCompRef->MaxWalkSpeed = fBoostFlightSpeed;
 	}
 }
 
@@ -329,9 +335,11 @@ void ABirdPawn::PitchInput(float Val) {
 void ABirdPawn::YawInput(float Val) {
 	YawAmount = UGameplayStatics::GetWorldDeltaSeconds(GetWorld()) * YawTurnRate * Val;
 	AddControllerYawInput(YawAmount);
-	AddMovementInput(GetActorRightVector() * Val / 4);
 
-	//if (UKismetMathLibrary::Dot_VectorVector(GetActorForwardVector(), UKismetMathLibrary::GetForwardVector(GetControlRotation())) > 1.0f || UKismetMathLibrary::Dot_VectorVector(GetActorForwardVector(), UKismetMathLibrary::GetForwardVector(GetControlRotation())) < -1.0f)
+	if (fTurnDotP > 0.50f || fTurnDotP < -0.50f) {
+		AddMovementInput(GetActorRightVector(), Val, false);
+		GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, FString::Printf(TEXT("Dot product: %f"), float(fTurnDotP)));
+	}
 }
 
 void ABirdPawn::SpeedUp() {
