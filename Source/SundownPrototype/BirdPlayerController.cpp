@@ -6,7 +6,7 @@ void ABirdPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	PlayerCameraManager->ViewPitchMax = 15.0f;
-	PlayerCameraManager->ViewPitchMin = -89.99f;
+	PlayerCameraManager->ViewPitchMax = 35.0f;
+	PlayerCameraManager->ViewPitchMin = -80.0f;
 	PlayerCameraManager->DefaultFOV = 105.0f;
 }

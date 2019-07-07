@@ -83,6 +83,7 @@ protected:
 	/** Speed controls */
 	void SpeedUp();
 	void SlowDown();
+	void Stop();
 
 	// Begin AActor overrides
 	virtual void BeginPlay();
@@ -150,15 +151,20 @@ public:
 	UPROPERTY(BlueprintReadWrite, Category = Camera)
 		float DefaultSpringArmLength = 50.0f;
 	UPROPERTY(BlueprintReadWrite, Category = Camera)
-		float DiveSpringArmLength = 40.0f;
+		float DiveSpringArmLength = 30.0f;
 	
 	// For storing the 
 	UPROPERTY(BlueprintReadOnly)
 		float fDiveCamClamped;
+	// 
+	UPROPERTY(BlueprintReadOnly)
+		float fFovRangeClamped;
+	// bool for diving
+	float fDiving = 1.0f;
 
 private:
 	UPROPERTY(EditAnywhere, Category = Camera)
-		float DiveCameraInterpSpeed = 0.75f;
+		float DiveCameraInterpSpeed = 1.0f;
 
 	// Used for invert-Y
 	float YCamMultiplier = 1.0f;

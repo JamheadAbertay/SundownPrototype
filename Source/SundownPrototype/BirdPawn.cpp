@@ -97,7 +97,7 @@ void ABirdPawn::BeginPlay()
 	cMoveCompRef->FallingLateralFriction = 1.0f;
 	cMoveCompRef->RotationRate = FRotator(1.0f, 1.0f, 1.0f);
 	cMoveCompRef->MaxAcceleration = 600.0f;
-	cMoveCompRef->MaxWalkSpeed = 2400.0f;
+	cMoveCompRef->MaxWalkSpeed = 3600.0f;
 
 	// Invert-Y
 	if (bInvertCamY) {
@@ -247,10 +247,12 @@ void ABirdPawn::CalculateDirection(float DeltaSeconds) {
 
 	// Apply Z velocity to character (upwards/downwards movement) - Set Z velocity based on the InclinationAmount (character steepness)
 	if (fInclination < 0.0f) {
-		ZVelocity = FMath::FInterpTo(GetCharacterMovement()->Velocity.Z, (fInclination * -980.0f * FMath::Abs(fInclination + 1.0)), UGameplayStatics::GetWorldDeltaSeconds(GetWorld()), 4) + fAcceleration * -fInclination * 150.0f;
+		fDiving = 1.0f;
+		ZVelocity = FMath::FInterpTo(GetCharacterMovement()->Velocity.Z, (fInclination * -980.0f * FMath::Abs(fInclination + 1.0)), UGameplayStatics::GetWorldDeltaSeconds(GetWorld()), 4) + fAcceleration +-fInclination * 200.0f;
 	}
 	else {
-		ZVelocity = FMath::FInterpTo(GetCharacterMovement()->Velocity.Z, (fInclination * -980.0f * FMath::Abs(fInclination)) * 2.0f, UGameplayStatics::GetWorldDeltaSeconds(GetWorld()), 4);
+		fDiving = 4.0f;
+		ZVelocity = FMath::FInterpTo(GetCharacterMovement()->Velocity.Z, (fInclination * -980.0f * FMath::Abs(fInclination)) * 4.0f, UGameplayStatics::GetWorldDeltaSeconds(GetWorld()), 4);
 	}
 
 	cMoveCompRef->Velocity.SetComponentForAxis(EAxis::Z, ZVelocity);
@@ -259,7 +261,8 @@ void ABirdPawn::CalculateDirection(float DeltaSeconds) {
 void ABirdPawn::CalculateCamera() {
 	// First convert Z velocity value to be within the correct range
 	FVector2D input = FVector2D(-2000.0f, 0.0f);
-	FVector2D output = FVector2D(DiveSpringArmLength, DefaultSpringArmLength);
+	FVector2D output = FVector2D(DiveSpringArmLength, DefaultSpringArmLength); // target arm length
+	FVector2D output2 = FVector2D(117.5f, 105.0f); // fov
 
 	// Using -500.0f to 0.0, map value to correct dive camera distance
 	fDiveCamClamped = FMath::GetMappedRangeValueClamped(input, output, GetCharacterMovement()->Velocity.Z);
@@ -267,11 +270,14 @@ void ABirdPawn::CalculateCamera() {
 	// Interp to camera distance
 	mCameraSpringArm->TargetArmLength = UKismetMathLibrary::FInterpTo(mCameraSpringArm->TargetArmLength, fDiveCamClamped, UGameplayStatics::GetWorldDeltaSeconds(GetWorld()), DiveCameraInterpSpeed);
 
-	//
-	if (fInclination > 0.0f) {
-		//mCameraSpringArm->TargetOffset = FMath::VInterpTo(mCameraSpringArm->TargetOffset, FVector(0.0f, 0.0f, fInclination * 22.5f), UGameplayStatics::GetWorldDeltaSeconds(GetWorld()), 1.5f);
-	}
+	////
+	//if (fInclination > 0.0f) {
+	//	mCameraSpringArm->TargetOffset = FMath::VInterpTo(mCameraSpringArm->TargetOffset, FVector(0.0f, 0.0f, fInclination * 5.0f), UGameplayStatics::GetWorldDeltaSeconds(GetWorld()), 1.0f);
+	//}
 
+	// 
+	fFovRangeClamped = FMath::GetMappedRangeValueClamped(input, output2, GetCharacterMovement()->Velocity.Z);
+	mCamera->SetFieldOfView(fFovRangeClamped);
 }
 
 // Called to bind functionality to input
@@ -288,6 +294,7 @@ void ABirdPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 	// Bind speed controls
 	PlayerInputComponent->BindAction("SpeedUp", IE_Repeat, this, &ABirdPawn::SpeedUp);
 	PlayerInputComponent->BindAction("SlowDown", IE_Released, this, &ABirdPawn::SlowDown);
+	PlayerInputComponent->BindAction("Stop", IE_Repeat, this, &ABirdPawn::Stop);
 
 }
 
@@ -299,7 +306,7 @@ void ABirdPawn::TimelineCallback(float val)
 void ABirdPawn::TimelineFinishedCallback()
 {
 	Boosting = false;
-	cMoveCompRef->MaxWalkSpeed = 2400.0f;
+	cMoveCompRef->MaxWalkSpeed = 3600.0f;
 }
 
 void ABirdPawn::PlayTimeline()
@@ -308,7 +315,7 @@ void ABirdPawn::PlayTimeline()
 	{
 		MyTimeline->PlayFromStart();
 		Boosting = true;
-		cMoveCompRef->MaxWalkSpeed = 4800.0f;
+		cMoveCompRef->MaxWalkSpeed = 6000.0f;
 	}
 }
 
@@ -322,6 +329,9 @@ void ABirdPawn::PitchInput(float Val) {
 void ABirdPawn::YawInput(float Val) {
 	YawAmount = UGameplayStatics::GetWorldDeltaSeconds(GetWorld()) * YawTurnRate * Val;
 	AddControllerYawInput(YawAmount);
+	AddMovementInput(GetActorRightVector() * Val / 4);
+
+	//if (UKismetMathLibrary::Dot_VectorVector(GetActorForwardVector(), UKismetMathLibrary::GetForwardVector(GetControlRotation())) > 1.0f || UKismetMathLibrary::Dot_VectorVector(GetActorForwardVector(), UKismetMathLibrary::GetForwardVector(GetControlRotation())) < -1.0f)
 }
 
 void ABirdPawn::SpeedUp() {
@@ -329,6 +339,10 @@ void ABirdPawn::SpeedUp() {
 }
 
 void ABirdPawn::SlowDown() {
+	fAcceleration = 0.5f;
+}
+
+void ABirdPawn::Stop() {
 	fAcceleration = 0.0f;
 }
 
