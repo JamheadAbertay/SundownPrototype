@@ -37,11 +37,6 @@ public:
 	UPROPERTY(EditAnywhere)
 		UStaticMeshComponent* smCollisionConeDown;
 
-
-	/** Spline movement bool, false by default */
-	UPROPERTY(BlueprintReadWrite, Category = Spline)
-		bool OnSpline = false;
-
 	/** Boost bool for handling when to boost */
 	UPROPERTY(BlueprintReadWrite)
 		bool Boosting;
@@ -83,6 +78,7 @@ protected:
 	/** Speed controls */
 	void SpeedUp();
 	void SlowDown();
+	void Stop();
 
 	// Begin AActor overrides
 	virtual void BeginPlay();
@@ -119,13 +115,22 @@ private:
 	UPROPERTY(EditAnywhere, Category = Turning)
 		float PitchTurnRate = 22.5f;
 
+	/** Default max speed */
+	UPROPERTY(EditAnywhere, Category = Flight)
+		float fDefaultFlightSpeed = 3600.0f;
+	/** Boost flight speeds */
+	UPROPERTY(EditAnywhere, Category = Flight)
+		float fBoostFlightSpeed = 6000.0f;
+
 	// Flight floats
 	/** This is used when calculating the inclination of the character (then used for Z velocity) */
 	float fInclination;
 	/** This is used to control the lift of the bird (force against gravity) */
 	float fLiftAmount;
 	/** Used for maintaining momentum */
-	float fFlightSpeed = 1.0f;
+	float fMomentumAmount = 1.0f;
+	/** To fix the bayblading issue */
+	float fTurnDotP;
 	/** The force of gravity */
 	UPROPERTY(EditDefaultsOnly, Category = Flight)
 		float GravityConstant = -980.0f;
@@ -150,15 +155,18 @@ public:
 	UPROPERTY(BlueprintReadWrite, Category = Camera)
 		float DefaultSpringArmLength = 50.0f;
 	UPROPERTY(BlueprintReadWrite, Category = Camera)
-		float DiveSpringArmLength = 40.0f;
+		float DiveSpringArmLength = 30.0f;
 	
 	// For storing the 
 	UPROPERTY(BlueprintReadOnly)
 		float fDiveCamClamped;
+	// 
+	UPROPERTY(BlueprintReadOnly)
+		float fFovRangeClamped;
 
 private:
 	UPROPERTY(EditAnywhere, Category = Camera)
-		float DiveCameraInterpSpeed = 0.75f;
+		float DiveCameraInterpSpeed = 1.0f;
 
 	// Used for invert-Y
 	float YCamMultiplier = 1.0f;
