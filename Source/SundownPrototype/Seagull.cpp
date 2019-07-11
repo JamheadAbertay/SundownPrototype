@@ -35,6 +35,7 @@ void ASeagull::BeginPlay()
 void ASeagull::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
 	Frame(DeltaTime);
 
 }
@@ -71,10 +72,10 @@ void ASeagull::Frame(float DeltaTime)
 	//AddMovementInput(vMove, accelerationAmount);
 }
 
-FVector ASeagull::ReturnDirection()
-{
-	return FVector();
-}
+//FVector ASeagull::ReturnDirection()
+//{
+//	return FVector();
+//}
 
 
 // Called to bind functionality to input

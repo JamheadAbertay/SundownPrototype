@@ -2,28 +2,30 @@
 // answers.unrealengine.com/questions/543696/how-to-initialize-a-c-blackboard.html 
 
 #include "SeagullController.h"
+#include "BehaviorTree/BehaviorTree.h"
+#include "BehaviorTree/BehaviorTreeComponent.h"
+#include "BehaviorTree/BlackboardComponent.h"
+#include "BehaviorTree/Blackboard/BlackboardKeyAllTypes.h"
+#include "Seagull.h"
 
-ASeagullController::ASeagullController() {
+ASeagullController::ASeagullController() 
+{
 	bbComp = CreateDefaultSubobject<UBlackboardComponent>(TEXT("BlackboardComponent"));
+	btComp = CreateDefaultSubobject<UBehaviorTreeComponent>(TEXT("BehaviorComponent"));
 }
 
-void ASeagullController::Possess(APawn * InPawn) {
+void ASeagullController::Possess(APawn * InPawn) 
+{
 	Super::Possess(InPawn);
-	ASeagull* Adam = Cast<ASeagull>(InPawn);
+	ASeagull *Adam = Cast<ASeagull>(InPawn);
 	
-	if (Adam) {
-		if (Adam->BehaviourTree->BlackboardAsset) {
-			bbComp->InitializeBlackboard(*Adam->BehaviourTree->BlackboardAsset);
-			bbComp->SetValueAsVector("Location", FVector(0, 0, 0));
+	if (Adam && Adam->SeagullBehavior)
+		{
+			bbComp->InitializeBlackboard(*Adam->SeagullBehavior->BlackboardAsset);
+			//bbComp->SetValueAsVector("Location", FVector(0, 0, 0));
+
+			SeagullKeyID = bbComp->GetKeyID("Target");
+
+			btComp->StartTree(*Adam->SeagullBehavior);
 		}
-
-		btComp->StartTree(*Adam->BehaviourTree);
-	}
-}
-
-void ASeagullController::SetNextPosition(FVector NextPosition) {
-	if (bbComp)
-	{
-		bbComp->SetValueAsVector("Location", NextPosition);
-	}
 }
