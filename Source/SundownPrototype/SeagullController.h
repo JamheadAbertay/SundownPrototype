@@ -4,11 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "AIController.h"
-#include "Runtime/AIModule/Classes/BehaviorTree/BlackboardData.h"
-#include "Runtime/AIModule/Classes/BehaviorTree/BlackboardComponent.h"
-#include "Runtime/AIModule/Classes/BehaviorTree/BehaviorTreeComponent.h"
-#include "Runtime/AIModule/Classes/BehaviorTree/Blackboard/BlackboardKeyAllTypes.h"
-#include "Seagull.h"
 #include "SeagullController.generated.h"
 
 /**
@@ -19,18 +14,17 @@ class SUNDOWNPROTOTYPE_API ASeagullController : public AAIController
 {
 	GENERATED_BODY()
 
+	UPROPERTY(transient)
+	class UBlackboardComponent *bbComp;
+
+	UPROPERTY(transient)
+	class UBehaviorTreeComponent *btComp;
+
+
 public:
 	ASeagullController();
 
+	virtual void Possess(APawn * InPawn) override;
 
-protected:
-	virtual void Possess(APawn * InPawn);
-
-private:
-	UBlackboardComponent* bbComp;
-	UBehaviorTreeComponent* btComp;
-	
-
-	void SetNextPosition(FVector NextPosition);
-
+	uint8 SeagullKeyID;
 };
