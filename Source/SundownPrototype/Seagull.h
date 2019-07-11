@@ -34,26 +34,31 @@ public:
 
 	void Frame(float);
 
-	FVector ReturnDirection();
+	
 
 	UPROPERTY(EditAnywhere)
-		UBehaviorTree* BehaviourTree;
+		class UBehaviorTree *SeagullBehavior;
 	
+
+};
+
+/*
 private:
 
-	//FVector vC, vMove, vTurn;
-	//FRotator fRotatorSeagull;
+	FVector vC, vMove, vTurn;
+	FRotator fRotatorSeagull;
 
-	//UPROPERTY(EditAnywhere)
-	//	float Hreach = 5000.0f;
+	UPROPERTY(EditAnywhere)
+		float Hreach = 5000.0f;
 
-	//UPROPERTY(EditAnywhere)
-	//	float Vreach = 1500.0f;
+	UPROPERTY(EditAnywhere)
+		float Vreach = 1500.0f;
 
-	//float XDistance, YDistance, ZDistance;
-	//float accelerationAmount = 1.0f;
+	float XDistance, YDistance, ZDistance;
+	float accelerationAmount = 1.0f;
 
-	//bool bTurn = false; //turning mechanism while active
+	bool bTurn = false; //turning mechanism while active
 
-	
-};
+	FVector ReturnDirection(); v  
+
+*/
