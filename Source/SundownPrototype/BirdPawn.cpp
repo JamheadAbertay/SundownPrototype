@@ -262,6 +262,15 @@ void ABirdPawn::CalculateDirection(float DeltaSeconds) {
 	rControlRotation = FRotator(0.0f, rControlRotation.Yaw, 0.0f); // Create FRotator with just the Yaw
 
 	fTurnDotP = FVector::DotProduct(GetActorForwardVector(), UKismetMathLibrary::GetForwardVector(rControlRotation));
+
+	// Create a mapped value to help stop turning stutter
+	FVector2D input = FVector2D(0.50f, 1.0f);
+	FVector2D output = FVector2D(0.0f, 1.0f);
+	FVector2D input2 = FVector2D(0.55f, 0.50F);
+	FVector2D output2 = FVector2D(1.0f, 0.0f);
+					
+	fTurnAcceleration = FMath::GetMappedRangeValueClamped(input, output, fTurnDotP);
+	fTurnSmoothingMult = FMath::GetMappedRangeValueClamped(input2, output2, fTurnDotP);
 }
 
 void ABirdPawn::CalculateCamera() {
@@ -336,8 +345,8 @@ void ABirdPawn::YawInput(float Val) {
 	YawAmount = UGameplayStatics::GetWorldDeltaSeconds(GetWorld()) * YawTurnRate * Val;
 	AddControllerYawInput(YawAmount);
 
-	if (fTurnDotP > 0.50f || fTurnDotP < -0.50f) {
-		AddMovementInput(GetActorRightVector(), Val, false);
+	if (fTurnDotP > 0.50f) {
+		AddMovementInput(UKismetMathLibrary::GetRightVector(GetControlRotation()), fTurnAcceleration * fTurnSmoothingMult * Val, true);
 		GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, FString::Printf(TEXT("Dot product: %f"), float(fTurnDotP)));
 	}
 }
