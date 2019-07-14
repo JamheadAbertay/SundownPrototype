@@ -225,7 +225,7 @@ void ABirdPawn::CalculateFlight(float DeltaTime)
 
 	// First convert Z velocity value to be within the correct range
 	FVector2D input = FVector2D(-500.0f, 0.0f);
-	FVector2D output = FVector2D(2.0f, 0.0f);
+	FVector2D output = FVector2D(4.0f, 0.0f);
 	// Get mapped value 
 	float fZRangeClamped = FMath::GetMappedRangeValueClamped(input, output, fZVel);
 	fMomentumAmount = FMath::FInterpTo(fMomentumAmount, fZRangeClamped, UGameplayStatics::GetWorldDeltaSeconds(GetWorld()), FMath::Abs(fInclination) + 0.5f);
@@ -251,7 +251,7 @@ void ABirdPawn::CalculateDirection(float DeltaSeconds) {
 		ZVelocity = FMath::FInterpTo(GetCharacterMovement()->Velocity.Z, (fInclination * GravityConstant * FMath::Abs(fInclination + 1.0)), UGameplayStatics::GetWorldDeltaSeconds(GetWorld()), 4) + fAcceleration +-fInclination * 200.0f;
 	}
 	else {
-		ZVelocity = FMath::FInterpTo(GetCharacterMovement()->Velocity.Z, (fInclination * GravityConstant * FMath::Abs(fInclination)) * 4.0f, UGameplayStatics::GetWorldDeltaSeconds(GetWorld()), 4);
+		ZVelocity = FMath::FInterpTo(GetCharacterMovement()->Velocity.Z, (fInclination * GravityConstant * FMath::Abs(fInclination)) * 3.0f, UGameplayStatics::GetWorldDeltaSeconds(GetWorld()), 4);
 	}
 
 	// Set the Z velocity
@@ -347,12 +347,12 @@ void ABirdPawn::YawInput(float Val) {
 
 	if (fTurnDotP > 0.50f) {
 		AddMovementInput(UKismetMathLibrary::GetRightVector(GetControlRotation()), fTurnAcceleration * fTurnSmoothingMult * Val, true);
-		GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, FString::Printf(TEXT("Dot product: %f"), float(fTurnDotP)));
+		//GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, FString::Printf(TEXT("Dot product: %f"), float(fTurnDotP)));
 	}
 }
 
 void ABirdPawn::SpeedUp() {
-	fAcceleration = 1.0f;
+	fAcceleration = 2.0f;
 }
 
 void ABirdPawn::SlowDown() {
