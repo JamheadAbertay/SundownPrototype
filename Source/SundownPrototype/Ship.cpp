@@ -41,7 +41,9 @@ void AShip::BeginPlay()
 	// Create dynamic material instance
 	DynMaterial = UMaterialInstanceDynamic::Create(SailMaterial, this);
 	// Set parameters
-	DynMaterial->SetScalarParameterValue("Fire amount", 0.0f);
+	DynMaterial->SetScalarParameterValue("Amount", 0.0f);
+	DynMaterial->SetScalarParameterValue("Boost", 1.406528f);
+	DynMaterial->SetScalarParameterValue("Width", 0.04762f);
 
 	//
 	SailMesh->SetMaterial(0, DynMaterial);
@@ -51,6 +53,11 @@ void AShip::BeginPlay()
 void AShip::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	if (bFired) {
+		fFireAmount = FMath::FInterpTo(fFireAmount, 1.0f, DeltaTime, 0.2f);
+		DynMaterial->SetScalarParameterValue("Amount", fFireAmount);
+	}
 
 	// Increase distance along spline
 	fSplineProgress += 5.0f;
@@ -70,7 +77,7 @@ void AShip::Tick(float DeltaTime)
 //Called when character overlaps with collision box
 void AShip::OnOverlapBegin(class AActor* OverlappedActor, class AActor* OtherActor)
 {
-	DynMaterial->SetScalarParameterValue("Fire amount", 1.0f);
+	bFired = true;
 	FVector CinderLocation = OtherActor->GetActorLocation();
 	GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, FString::Printf(TEXT("Sail on fire at: %s"), *CinderLocation.ToString()));
 }

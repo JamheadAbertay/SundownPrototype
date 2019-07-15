@@ -217,8 +217,13 @@ void ABirdPawn::CalculateFlight(float DeltaTime)
 	// Find resultant force against gravity based on character's mass, world gravity, and the amount of lift (fLiftAmount)
 	float fGravityKryptonite = (cMoveCompRef->Mass * GravityConstant * fLiftAmount);
 	FVector vUpForce = FVector(0.0f, 0.0f, fGravityKryptonite);
-	cMoveCompRef->AddForce(vUpForce);
+	if (FMath::Abs(fInclination) < 0.5f) {
+		cMoveCompRef->AddForce(vUpForce);
+	}
 	////
+
+	//GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, FString::Printf(TEXT("Inclination: %f"), float(fInclination)));
+
 
 	/*GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, FString::Printf(TEXT("fInclination: %f fLiftAmount: %f"), fInclination, fLiftAmount));
 	GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, FString::Printf(TEXT("Movement input: %f"), float(fAcceleration + fLiftAmount)));*/

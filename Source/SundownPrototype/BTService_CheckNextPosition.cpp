@@ -15,16 +15,20 @@ UBTService_CheckNextPosition::UBTService_CheckNextPosition()
 	bCreateNodeInstance = true;
 }
 
-void UBTService_CheckNextPosition::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds) {
-	ASeagullController *SeagullAI = Cast<ASeagullController>(OwnerComp.GetAIOwner());
+void UBTService_CheckNextPosition::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds) 
+{
+	//get AI component class
+	ASeagullController *SeagullAI = Cast<ASeagullController>(OwnerComp.GetAIOwner()); 
 
+	
 	if (SeagullAI) 
 	{
 		ABirdPawn *Cinder = Cast<ABirdPawn>(GetWorld()->GetFirstPlayerController()->GetPawn());
 
 		if (Cinder)
 		{
-			OwnerComp.GetBlackboardComponent()->SetValue<UBlackboardKeyType_Object>(SeagullAI->SeagullKeyID, SeagullAI);
+			//get target controller from the blackboard
+			OwnerComp.GetBlackboardComponent()->SetValue<UBlackboardKeyType_Object>(SeagullAI->SeagullKeyID, Cinder);
 			GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, FString::Printf(TEXT("Eureka")));
 		}
 	}

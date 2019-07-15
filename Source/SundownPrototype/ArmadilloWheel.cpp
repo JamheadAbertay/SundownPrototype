@@ -1,11 +1,11 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "ArmadilloWheel.h"
-#include "Runtime/Engine/Classes/Kismet/GameplayStatics.h"
+#include "Engine.h"
+#include "Kismet/GameplayStatics.h"
+#include "Kismet/KismetMathLibrary.h"
 #include "UObject/ConstructorHelpers.h"
 #include "Engine/World.h"
-
-
 
 // Sets default values
 AArmadilloWheel::AArmadilloWheel()
@@ -18,7 +18,6 @@ AArmadilloWheel::AArmadilloWheel()
 
 	// Create mesh used for the wheel
 	WheelMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Hamster wheel"));
-	WheelMesh->SetupAttachment(RootComponent);
 
 	// Setup the mesh
 	static ConstructorHelpers::FObjectFinder<UStaticMesh> WheelMeshAsset(TEXT("StaticMesh'/Game/BlueprintMechanics/HamsterWheel/wheelstandin.wheelstandin'"));
@@ -48,11 +47,34 @@ void AArmadilloWheel::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	if (!WheelTurning && WheelSpeed > 0.0f) {
+		WheelSpeed = FMath::FInterpTo(WheelSpeed, 0.0f, DeltaTime, 0.7f);
+		TheArrow->AddLocalRotation(FRotator(0.0f, 0.0f, (WheelSpeed / 15)));
+	}
 }
 
-void AArmadilloWheel::SpinWheel(float speed) 
+void AArmadilloWheel::SpinWheel(float speed, UArrowComponent* RotationArrow, UArrowComponent* DotPArrow) 
 {
-	FRotator MeshRotation = WheelMesh->GetComponentRotation();
-	WheelMesh->SetWorldRotation(FRotator(MeshRotation.Pitch, MeshRotation.Yaw, MeshRotation.Roll + speed / 10));
+	FVector WheelDirection = RotationArrow->GetForwardVector();
+	FVector DotPArrowDirection = DotPArrow->GetForwardVector();
+	ACharacter* Armadillo = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
+	FVector ArmyDirection = Armadillo->GetActorForwardVector();
 
+	float dotp = FVector::DotProduct(DotPArrowDirection, ArmyDirection);
+	GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, FString::Printf(TEXT("DotP: %f"), float(dotp)));
+
+	if (FMath::Abs(dotp) > 0.7f) {
+		if (dotp < 0.0f) {
+			RotationArrow->AddLocalRotation(FRotator(0.0f, 0.0f, (speed / 15)));
+			if (!WheelTurning) {
+				WheelTurning = true;
+			}
+		}
+		else if (dotp > 0.0f) {
+			RotationArrow->AddLocalRotation(FRotator(0.0f, 0.0f, -(speed / 15)));
+			if (!WheelTurning) {
+				WheelTurning = true;
+			}
+		}
+	}
 }

@@ -36,7 +36,7 @@ public:
 
 	
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, Category = Behavior)
 		class UBehaviorTree *SeagullBehavior;
 	
 
