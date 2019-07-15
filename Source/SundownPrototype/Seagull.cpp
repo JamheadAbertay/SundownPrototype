@@ -19,7 +19,7 @@ void ASeagull::BeginPlay()
 
 	////centre of coordinate system
 	//vC = GetActorLocation();
-
+ 
 	////maybe random new direction
 	//FRandomStream rStream;
 	//vMove = rStream.GetUnitVector();
