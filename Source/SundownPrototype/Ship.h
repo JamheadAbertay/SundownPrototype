@@ -52,4 +52,6 @@ private:
 	float fFireAmount = 0.0f;
 	
 	float fSplineProgress = 0.0f;
+
+	bool bFired = false;
 };
