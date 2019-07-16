@@ -149,6 +149,8 @@ private:
 		UCurveFloat* AngCurve;
 
 	float fAcceleration = 0.25f;
+	float fTurnAcceleration = 1.0f;
+	float fTurnSmoothingMult = 1.0f;
 
 public:
 	// Camera manipulation (dive)

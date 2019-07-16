@@ -14,7 +14,7 @@ ASeagullController::ASeagullController()
 	btComp = CreateDefaultSubobject<UBehaviorTreeComponent>(TEXT("BehaviorComponent"));
 }
 
-void ASeagullController::Possess(APawn * InPawn) 
+void ASeagullController::Possess(APawn *InPawn) 
 {
 	Super::Possess(InPawn);
 	ASeagull *Adam = Cast<ASeagull>(InPawn);
