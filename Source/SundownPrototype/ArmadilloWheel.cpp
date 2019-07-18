@@ -20,7 +20,7 @@ AArmadilloWheel::AArmadilloWheel()
 	WheelMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Hamster wheel"));
 
 	// Setup the mesh
-	static ConstructorHelpers::FObjectFinder<UStaticMesh> WheelMeshAsset(TEXT("StaticMesh'/Game/BlueprintMechanics/HamsterWheel/wheelstandin.wheelstandin'"));
+	static ConstructorHelpers::FObjectFinder<UStaticMesh> WheelMeshAsset(TEXT("StaticMesh'/Game/Blueprints/HamsterWheel/wheelstandin.wheelstandin'"));
 	if (WheelMeshAsset.Succeeded()) {
 		WheelMesh->SetStaticMesh(WheelMeshAsset.Object);
 		WheelMesh->SetWorldScale3D(FVector(1.0f));

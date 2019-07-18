@@ -1,13 +1,26 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Developed by Meile Bauzyte
+// Property of Jamhead Games
 
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Engine.h"
 #include "GameFramework/Actor.h"
 #include "Components/StaticMeshComponent.h"
 #include "Materials/MaterialInterface.h"
 #include "Materials/MaterialInstanceDynamic.h"
+#include "DiamondManager.h"
 #include "ChangeMaterial.generated.h"
+
+//USTRUCT()
+//struct details
+//{
+//	GENERATED_BODY()
+//
+//public:
+//	bool lit;
+//	int ID;
+//};
 
 UCLASS()
 class SUNDOWNPROTOTYPE_API AChangeMaterial : public AActor
@@ -17,6 +30,8 @@ class SUNDOWNPROTOTYPE_API AChangeMaterial : public AActor
 public:	
 	// Sets default values for this actor's properties
 	AChangeMaterial();
+
+
 
 protected:
 	// Called when the game starts or when spawned
@@ -38,12 +53,15 @@ public:
 	UPROPERTY(EditAnywhere)
 		class UBoxComponent* myBoxComponent;
 
+	TArray<AActor*> DiamondManagers;
+		class ADiamondManager* DiamondManager;
+
 	UFUNCTION()
 		void OnOverlapBegin(UPrimitiveComponent* overlappedComp, AActor* otherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
-	void GetActivated(bool bActive);
-
-private:
 	bool bActivated;
-	
+	UPROPERTY(EditAnywhere)
+		int sequenceID;
+
+	void Deactivate();
 };
