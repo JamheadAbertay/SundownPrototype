@@ -2,13 +2,14 @@
 
 #include "BirdPawn.h"
 #include "DrawDebugHelpers.h"
-#include "GameFramework/Controller.h"
 #include "EngineGlobals.h"
 #include "Engine/World.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "UnrealMath.h"
 #include "UObject/ConstructorHelpers.h"
+#include "Components/PrimitiveComponent.h"
+#include "Components/StaticMeshComponent.h"
 
 // Sets default values
 ABirdPawn::ABirdPawn()
@@ -24,33 +25,79 @@ ABirdPawn::ABirdPawn()
 	mCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
 	mCamera->SetupAttachment(mCameraSpringArm, USpringArmComponent::SocketName); // Attach the camera to the end of the boom and let the boom adjust to match the controller orientation
 	mCamera->bUsePawnControlRotation = true;
+
+	// Create a collision cone mesh
+	smCollisionConeUp = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("CollisionConeUpRight"));
+	smCollisionConeUp->SetupAttachment(mCamera);
+	smCollisionConeUp->SetCollisionProfileName("OverlapAllDynamic");
+	smCollisionConeUp->bGenerateOverlapEvents = true;
+	// Create a collision cone mesh
+	smCollisionConeLeft = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("CollisionConeUpLeft"));
+	smCollisionConeLeft->SetupAttachment(mCamera);
+	smCollisionConeLeft->SetCollisionProfileName("OverlapAllDynamic");
+	smCollisionConeLeft->bGenerateOverlapEvents = true;
+	// Create a collision cone mesh
+	smCollisionConeRight = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("CollisionConeDownRight"));
+	smCollisionConeRight->SetupAttachment(mCamera);
+	smCollisionConeRight->SetCollisionProfileName("OverlapAllDynamic");
+	smCollisionConeRight->bGenerateOverlapEvents = true;
+	// Create a collision cone mesh
+	smCollisionConeDown = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("CollisionConeDownLeft"));
+	smCollisionConeDown->SetupAttachment(mCamera);
+	smCollisionConeDown->SetCollisionProfileName("OverlapAllDynamic");
+	smCollisionConeDown->bGenerateOverlapEvents = true;
+
+	// Curve float
+	static ConstructorHelpers::FObjectFinder<UCurveFloat> Curve(TEXT("CurveFloat'/Game/Characters/PlayerCharacter/Blueprints/BoostCurve.BoostCurve'"));
+	check(Curve.Succeeded());
+
+	FloatCurve = Curve.Object;
 }
 
 void ABirdPawn::BeginPlay()
 {
 	Super::BeginPlay();
 
+	FOnTimelineFloat onTimelineCallback;
+	FOnTimelineEventStatic onTimelineFinishedCallback;
+
+	if (FloatCurve != NULL)
+	{
+		MyTimeline = NewObject<UTimelineComponent>(this, FName("TimelineAnimation"));
+		MyTimeline->CreationMethod = EComponentCreationMethod::UserConstructionScript; // Indicate it comes from a blueprint so it gets cleared when we rerun construction scripts
+		this->BlueprintCreatedComponents.Add(MyTimeline); // Add to array so it gets saved
+		MyTimeline->SetNetAddressable();	// This component has a stable name that can be referenced for replication
+
+		MyTimeline->SetPropertySetObject(this); // Set which object the timeline should drive properties on
+		MyTimeline->SetDirectionPropertyName(FName("TimelineDirection"));
+
+		MyTimeline->SetLooping(false);
+		MyTimeline->SetTimelineLength(1.5f);
+		MyTimeline->SetTimelineLengthMode(ETimelineLengthMode::TL_LastKeyFrame);
+
+		MyTimeline->SetPlaybackPosition(0.0f, false);
+
+		//Add the float curve to the timeline and connect it to your timelines's interpolation function
+		onTimelineCallback.BindUFunction(this, FName{ TEXT("TimelineCallback") });
+		onTimelineFinishedCallback.BindUFunction(this, FName{ TEXT("TimelineFinishedCallback") });
+		MyTimeline->AddInterpFloat(FloatCurve, onTimelineCallback);
+		MyTimeline->SetTimelineFinishedFunc(onTimelineFinishedCallback);
+
+		MyTimeline->RegisterComponent();
+	}
+
 	// Set up references
 	cMoveCompRef = GetCharacterMovement();
+	cControllerRef = UGameplayStatics::GetPlayerController(GetWorld(), 0);
 
 	// Set relevant character movement properties
 	cMoveCompRef->SetMovementMode(EMovementMode::MOVE_Falling);
 	cMoveCompRef->AirControl = 1.0f;
 	cMoveCompRef->BrakingFrictionFactor = 1.0f;
 	cMoveCompRef->FallingLateralFriction = 1.0f;
-	cMoveCompRef->RotationRate = FRotator(360.0f, 360.0f, 360.0f);
-	cMoveCompRef->MaxAcceleration = 500.0f;
-	cMoveCompRef->MaxWalkSpeed = 2000.0f;
-
-	// For changing turn rate
-	DefaultPitchRate = PitchTurnRate;
-	DefaultYawRate = YawTurnRate;
-
-	// For boost timing
-	BoostLTI.CallbackTarget = this;
-	BoostLTI.ExecutionFunction = "BoostReady";
-	BoostLTI.UUID = 123;
-	BoostLTI.Linkage = 0;
+	cMoveCompRef->RotationRate = FRotator(1.0f, 1.0f, 1.0f);
+	cMoveCompRef->MaxAcceleration = 600.0f;
+	cMoveCompRef->MaxWalkSpeed = fDefaultFlightSpeed;
 
 	// Invert-Y
 	if (bInvertCamY) {
@@ -59,11 +106,33 @@ void ABirdPawn::BeginPlay()
 	else if (!bInvertCamY) {
 		YCamMultiplier = 1.0f;
 	}
+
+	// Collision cone overlap begin
+	smCollisionConeUp->OnComponentBeginOverlap.AddDynamic(this, &ABirdPawn::OnOverlapUp);
+	// End
+	smCollisionConeUp->OnComponentEndOverlap.AddDynamic(this, &ABirdPawn::OnEndOverlapUp);
+
+	// Collision cone overlap begin
+	smCollisionConeLeft->OnComponentBeginOverlap.AddDynamic(this, &ABirdPawn::OnOverlapLeft);
+	// End
+	smCollisionConeLeft->OnComponentEndOverlap.AddDynamic(this, &ABirdPawn::OnEndOverlapLeft);
+
+	// Collision cone overlap begin
+	smCollisionConeRight->OnComponentBeginOverlap.AddDynamic(this, &ABirdPawn::OnOverlapRight);
+	// End
+	smCollisionConeRight->OnComponentEndOverlap.AddDynamic(this, &ABirdPawn::OnEndOverlapRight);
+
+	// Collision cone overlap begin
+	smCollisionConeDown->OnComponentBeginOverlap.AddDynamic(this, &ABirdPawn::OnOverlapDown);
+	// End
+	smCollisionConeDown->OnComponentEndOverlap.AddDynamic(this, &ABirdPawn::OnEndOverlapDown);
+
+
 }
 
 void ABirdPawn::Tick(float DeltaTime)
 {
-	//GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, FString::Printf(TEXT("PitchTurnRate: %f"), PitchTurnRate));
+	
 
 	// Call any parent class Tick implementation
 	Super::Tick(DeltaTime);
@@ -72,58 +141,41 @@ void ABirdPawn::Tick(float DeltaTime)
 	CalculateFlight(DeltaTime);
 	// Calculate the direction of the bird (turning left/right is independent of the Z velocity and forward speed)
 	CalculateDirection(DeltaTime);
-	// Calculate the forward speed of the bird
-	CalculateSpeed();
 	// Calculate the camera's location
 	CalculateCamera();
-	// Calculate the turn rate of Cinder
-	CalculateTurnRate();
-	//
-	//PerformLineTrace();
+	// Update cone collision for crash avoidance
+	CheckConeColliders();
 }
 
 
-void ABirdPawn::PerformLineTrace() {
-	FHitResult OutHit;
-	FVector Start = GetActorLocation();
-
-	FVector End = ((UKismetMathLibrary::GetForwardVector(GetControlRotation()) * 1000.0f) + Start);
-	FCollisionQueryParams CollisionParams;
-
-	CollisionParams.AddIgnoredActor(this);
-	//DrawDebugLine(GetWorld(), Start, End, FColor::Blue, false, 1.0, 0, 1);
-
-	if (GetWorld()->LineTraceSingleByChannel(OutHit, Start, End, ECC_WorldStatic, CollisionParams))
-	{
-		if (OutHit.bBlockingHit)
-		{
-			//GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, FString::Printf(TEXT("You are hitting: %s"), *OutHit.GetActor()->GetName()));
-			//GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, FString::Printf(TEXT("Impact Point: %s"), *OutHit.ImpactPoint.ToString()));
-			//GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, FString::Printf(TEXT("Normal Point: %s"), *OutHit.ImpactNormal.ToString()));
-
-			APlayerController* CinderController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
-
-			if (OutHit.ImpactNormal.Z > 0.0f) {
-				FRotator NewRotation = FRotator(GetControlRotation().Pitch + 45.0f, GetControlRotation().Yaw, GetControlRotation().Roll);
-				CinderController->SetControlRotation(UKismetMathLibrary::RInterpTo(GetControlRotation(), NewRotation, UGameplayStatics::GetWorldDeltaSeconds(GetWorld()), 1.0f));
-			}
-		}
-	}
-}
+//void ABirdPawn::PerformLineTrace() {
+//	FHitResult OutHit;
+//	FVector Start = GetActorLocation();
+//
+//	FVector End = ((UKismetMathLibrary::GetForwardVector(GetControlRotation()) * 1000.0f) + Start);
+//	FCollisionQueryParams CollisionParams;
+//
+//	CollisionParams.AddIgnoredActor(this);
+//	//DrawDebugLine(GetWorld(), Start, End, FColor::Blue, false, 1.0, 0, 1);
+//
+//	if (GetWorld()->LineTraceSingleByChannel(OutHit, Start, End, ECC_WorldStatic, CollisionParams))
+//	{
+//		if (OutHit.bBlockingHit)
+//		{
+//			APlayerController* CinderController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+//
+//			if (OutHit.ImpactNormal.Z > 0.0f) {
+//				FRotator NewRotation = FRotator(GetControlRotation().Pitch + 45.0f, GetControlRotation().Yaw, GetControlRotation().Roll);
+//				CinderController->SetControlRotation(UKismetMathLibrary::RInterpTo(GetControlRotation(), NewRotation, UGameplayStatics::GetWorldDeltaSeconds(GetWorld()), 1.0f));
+//			}
+//		}
+//	}
+//}
 
 void ABirdPawn::NotifyHit(class UPrimitiveComponent* MyComp, class AActor* Other, class UPrimitiveComponent* OtherComp, bool bSelfMoved, FVector HitLocation, FVector HitNormal, FVector NormalImpulse, const FHitResult& Hit)
 {
 	Super::NotifyHit(MyComp, Other, OtherComp, bSelfMoved, HitLocation, HitNormal, NormalImpulse, Hit);
 
-	if (Other->GetClass()->IsChildOf(SplineClassType) && !OnSpline) { // If hit spline and not on spline
-		OnSpline = true;
-		//GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, FString::Printf(TEXT("Spline found!")));
-	}
-	else if (Other->GetClass()->IsChildOf(SplineClassType) && OnSpline) { // If hit spline and on spine
-		OnSpline = false;
-		Other->SetActorEnableCollision(false);  // disable collision on spline
-		//GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, FString::Printf(TEXT("Spline left!")));
-	}
 }
 
 void ABirdPawn::CalculateFlight(float DeltaTime) 
@@ -144,7 +196,7 @@ void ABirdPawn::CalculateFlight(float DeltaTime)
 	// Get the forward vector of the control rotation
 	FVector vControlUpward = UKismetMathLibrary::GetUpVector(FRotator(GetControlRotation()));
 
-	// Using the two vectors, create a value from -1 to 1 by getting the dot product
+	// Using the two vectors, create a value from -1 to 1 by getting the dot product (-1 = upwards, 1 = downwards)
 	fInclination = FVector::DotProduct(vControlUpward, GetActorForwardVector());
 
 
@@ -155,7 +207,7 @@ void ABirdPawn::CalculateFlight(float DeltaTime)
 	float fZVelRange = FMath::Clamp<float>(fZVel, -2000, 0);
 
 	// Fetch value from velocity/curve graph
-	float VelCurveVal = VelCurve->GetFloatValue(vVelocity.Size());
+	float VelCurveVal = VelCurve->GetFloatValue(fZVelRange);
 
 	// Calculate lift normalized by multiplying the flight angle curve and velocity curve values
 	fLiftAmount = VelCurveVal * AngCurveVal;
@@ -163,26 +215,29 @@ void ABirdPawn::CalculateFlight(float DeltaTime)
 
 
 	// Find resultant force against gravity based on character's mass, world gravity, and the amount of lift (fLiftAmount)
-	float fGravityKryptonite = (cMoveCompRef->Mass * -980.0f * fLiftAmount);
-	FVector vUpForce = FVector(0.0f, 0.0f, -fGravityKryptonite);
-	cMoveCompRef->AddForce(vUpForce);
+	float fGravityKryptonite = (cMoveCompRef->Mass * GravityConstant * fLiftAmount);
+	FVector vUpForce = FVector(0.0f, 0.0f, fGravityKryptonite);
+	if (FMath::Abs(fInclination) < 0.5f) {
+		cMoveCompRef->AddForce(vUpForce);
+	}
 	////
 
+	//GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, FString::Printf(TEXT("Inclination: %f"), float(fInclination)));
+
+
+	/*GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, FString::Printf(TEXT("fInclination: %f fLiftAmount: %f"), fInclination, fLiftAmount));
+	GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, FString::Printf(TEXT("Movement input: %f"), float(fAcceleration + fLiftAmount)));*/
 
 	// First convert Z velocity value to be within the correct range
 	FVector2D input = FVector2D(-500.0f, 0.0f);
-	FVector2D output = FVector2D(2000.0f, 0.0f);
+	FVector2D output = FVector2D(4.0f, 0.0f);
 	// Get mapped value 
 	float fZRangeClamped = FMath::GetMappedRangeValueClamped(input, output, fZVel);
-	// FInterp character speed towards max speed
-	if (GetCharacterMovement()->MaxWalkSpeed < 2000.0f) {
-		GetCharacterMovement()->MaxWalkSpeed = FMath::FInterpTo(GetCharacterMovement()->MaxWalkSpeed, GetCharacterMovement()->MaxWalkSpeed + fZRangeClamped, UGameplayStatics::GetWorldDeltaSeconds(GetWorld()), FMath::Abs(fInclination) + 0.5f);
-	}
-	GetCharacterMovement()->MaxWalkSpeed = FMath::Clamp(GetCharacterMovement()->MaxWalkSpeed, 2000.0f, 2000.0f);
+	fMomentumAmount = FMath::FInterpTo(fMomentumAmount, fZRangeClamped, UGameplayStatics::GetWorldDeltaSeconds(GetWorld()), FMath::Abs(fInclination) + 0.5f);
 	// Get direction to fly in
 	FVector vControlForward = UKismetMathLibrary::GetForwardVector(GetControlRotation());
-	// Add movement input (1.0f = max acceleration)
-	AddMovementInput(vControlForward, 1.0f);
+	// Add movement input
+	AddMovementInput(vControlForward, fAcceleration + fMomentumAmount);
 	////
 }
 
@@ -193,46 +248,56 @@ void ABirdPawn::CalculateDirection(float DeltaSeconds) {
 	XYRotation = FRotator(0.0f, XYRotation.Yaw, 0.0f); // Create FRotator with just the Yaw
 	SetActorRelativeRotation(XYRotation); // Set relative rotation - X and Z rotation won't change
 
-										  // Apply Z velocity to character (upwards/downwards movement) - Set Z velocity based on the InclinationAmount (character steepness)
-	float ZVelocity = FMath::FInterpTo(GetCharacterMovement()->Velocity.Z, (fInclination * -980.0f * FMath::Abs(fInclination)), UGameplayStatics::GetWorldDeltaSeconds(GetWorld()), 4);
-	cMoveCompRef->Velocity.SetComponentForAxis(EAxis::Z, ZVelocity);
-}
+	// initialize float
+	float ZVelocity;
 
-void ABirdPawn::CalculateSpeed() {
-	// BOOST
-	if (Boosting) {
-		if (GetCharacterMovement()->MaxWalkSpeed < MaxSpeed) {
-			GetCharacterMovement()->MaxWalkSpeed *= BoostMultiplier;
-		}
+	// Apply Z velocity to character (upwards/downwards movement) - Set Z velocity based on the InclinationAmount (character steepness)
+	if (fInclination < 0.0f) {
+		ZVelocity = FMath::FInterpTo(GetCharacterMovement()->Velocity.Z, (fInclination * GravityConstant * FMath::Abs(fInclination + 1.0)), UGameplayStatics::GetWorldDeltaSeconds(GetWorld()), 4) + fAcceleration +-fInclination * 200.0f;
 	}
-	// NOT BOOST
 	else {
-		if (GetCharacterMovement()->MaxWalkSpeed > DefaultSpeed) {
-			GetCharacterMovement()->MaxWalkSpeed *= SlowdownMultiplier;
-		}
+		ZVelocity = FMath::FInterpTo(GetCharacterMovement()->Velocity.Z, (fInclination * GravityConstant * FMath::Abs(fInclination)) * 3.0f, UGameplayStatics::GetWorldDeltaSeconds(GetWorld()), 4);
 	}
-	GetCharacterMovement()->MaxWalkSpeed = FMath::Clamp(GetCharacterMovement()->MaxWalkSpeed, DefaultSpeed, MaxSpeed);
+
+	// Set the Z velocity
+	cMoveCompRef->Velocity.SetComponentForAxis(EAxis::Z, ZVelocity);
+
+	// Find the dot product between character forward axis and control forward to disallow abnormally tight/fast turning
+	FRotator rControlRotation = UKismetMathLibrary::MakeRotationFromAxes(UKismetMathLibrary::GetForwardVector(GetControlRotation()), UKismetMathLibrary::GetRightVector(GetControlRotation()), FVector(0.0f, 0.0f, 1.0f)); // Create rotator from control rotation and XY movement
+	rControlRotation = FRotator(0.0f, rControlRotation.Yaw, 0.0f); // Create FRotator with just the Yaw
+
+	fTurnDotP = FVector::DotProduct(GetActorForwardVector(), UKismetMathLibrary::GetForwardVector(rControlRotation));
+
+	// Create a mapped value to help stop turning stutter
+	FVector2D input = FVector2D(0.50f, 1.0f);
+	FVector2D output = FVector2D(0.0f, 1.0f);
+	FVector2D input2 = FVector2D(0.55f, 0.50F);
+	FVector2D output2 = FVector2D(1.0f, 0.0f);
+					
+	fTurnAcceleration = FMath::GetMappedRangeValueClamped(input, output, fTurnDotP);
+	fTurnSmoothingMult = FMath::GetMappedRangeValueClamped(input2, output2, fTurnDotP);
 }
 
 void ABirdPawn::CalculateCamera() {
 	// First convert Z velocity value to be within the correct range
-	FVector2D input = FVector2D(-500.0f, 0.0f);
-	FVector2D output = FVector2D(DiveSpringArmLength, DefaultSpringArmLength);
+	FVector2D input = FVector2D(-2000.0f, 0.0f);
+	FVector2D output = FVector2D(DiveSpringArmLength, DefaultSpringArmLength); // target arm length
+	FVector2D output2 = FVector2D(117.5f, 105.0f); // fov
 
 	// Using -500.0f to 0.0, map value to correct dive camera distance
 	fDiveCamClamped = FMath::GetMappedRangeValueClamped(input, output, GetCharacterMovement()->Velocity.Z);
 
 	// Interp to camera distance
 	mCameraSpringArm->TargetArmLength = UKismetMathLibrary::FInterpTo(mCameraSpringArm->TargetArmLength, fDiveCamClamped, UGameplayStatics::GetWorldDeltaSeconds(GetWorld()), DiveCameraInterpSpeed);
-}
 
-void ABirdPawn::CalculateTurnRate() {
-	FVector2D input = FVector2D(0.0f, 1.0f);
-	FVector2D yawOutput = FVector2D(DefaultYawRate, MaxYawTurnRate);
-	FVector2D pitchOutput = FVector2D(DefaultPitchRate, MaxPitchTurnRate);
+	////
+	//if (fInclination > 0.0f) {
+	//	mCameraSpringArm->TargetOffset = FMath::VInterpTo(mCameraSpringArm->TargetOffset, FVector(0.0f, 0.0f, fInclination * 5.0f), UGameplayStatics::GetWorldDeltaSeconds(GetWorld()), 1.0f);
+	//}
 
-	YawTurnRate = FMath::GetMappedRangeValueClamped(input, yawOutput, TurnRateFloat);
-	PitchTurnRate = FMath::GetMappedRangeValueClamped(input, pitchOutput, TurnRateFloat);
+	// 
+	fFovRangeClamped = FMath::GetMappedRangeValueClamped(input, output2, GetCharacterMovement()->Velocity.Z);
+	mCamera->SetFieldOfView(fFovRangeClamped);
 }
 
 // Called to bind functionality to input
@@ -245,10 +310,36 @@ void ABirdPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 	PlayerInputComponent->BindAxis("PitchInput", this, &ABirdPawn::PitchInput);
 	PlayerInputComponent->BindAxis("YawInput", this, &ABirdPawn::YawInput);
 	// Bind our boost action
-	PlayerInputComponent->BindAction("BuildBoost", IE_Pressed, this, &ABirdPawn::BuildBoost);
-	// Bind our turn faster function to the right trigger
-	PlayerInputComponent->BindAxis("TurnFaster", this, &ABirdPawn::TurnFaster);
+	PlayerInputComponent->BindAction("BuildBoost", IE_Pressed, this, &ABirdPawn::PlayTimeline);
+	// Bind speed controls
+	PlayerInputComponent->BindAction("SpeedUp", IE_Repeat, this, &ABirdPawn::SpeedUp);
+	PlayerInputComponent->BindAction("SlowDown", IE_Released, this, &ABirdPawn::SlowDown);
+	PlayerInputComponent->BindAction("Stop", IE_Repeat, this, &ABirdPawn::Stop);
+
 }
+
+void ABirdPawn::TimelineCallback(float val)
+{
+	AddMovementInput(UKismetMathLibrary::UKismetMathLibrary::GetForwardVector(GetControlRotation()), val);
+}
+
+void ABirdPawn::TimelineFinishedCallback()
+{
+	Boosting = false;
+	cMoveCompRef->MaxWalkSpeed = fDefaultFlightSpeed;
+}
+
+void ABirdPawn::PlayTimeline()
+{
+	if (MyTimeline != NULL && !MyTimeline->IsActive())
+	{
+		MyTimeline->PlayFromStart();
+		Boosting = true;
+		cMoveCompRef->MaxWalkSpeed = fBoostFlightSpeed;
+	}
+}
+
+
 
 void ABirdPawn::PitchInput(float Val) {
 	PitchAmount = UGameplayStatics::GetWorldDeltaSeconds(GetWorld()) * PitchTurnRate * Val;
@@ -258,26 +349,87 @@ void ABirdPawn::PitchInput(float Val) {
 void ABirdPawn::YawInput(float Val) {
 	YawAmount = UGameplayStatics::GetWorldDeltaSeconds(GetWorld()) * YawTurnRate * Val;
 	AddControllerYawInput(YawAmount);
-}
 
-void ABirdPawn::BuildBoost() {
-	if (bBoostReady && !OnSpline) {
-		Boosting = true;
-		bBoostReady = false;
-		UKismetSystemLibrary::Delay(GetWorld(), BoostDelaySeconds, BoostLTI);
+	if (fTurnDotP > 0.50f) {
+		AddMovementInput(UKismetMathLibrary::GetRightVector(GetControlRotation()), fTurnAcceleration * fTurnSmoothingMult * Val, true);
+		//GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, FString::Printf(TEXT("Dot product: %f"), float(fTurnDotP)));
 	}
 }
 
-void ABirdPawn::BoostReady() {
-	Boosting = false;
-	bBoostReady = true;
+void ABirdPawn::SpeedUp() {
+	fAcceleration = 2.0f;
 }
 
-void ABirdPawn::TurnFaster(float Val) {
-	if (Val > 0) {
-		TurnRateFloat += 0.1f;
-	} else {
-		TurnRateFloat = 0.0f;
+void ABirdPawn::SlowDown() {
+	fAcceleration = 0.5f;
+}
+
+void ABirdPawn::Stop() {
+	fAcceleration = 0.0f;
+}
+
+void ABirdPawn::OnOverlapUp(UPrimitiveComponent * OverlappedComp, AActor * OtherActor, UPrimitiveComponent * OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult)
+{
+	//GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, FString::Printf(TEXT("Cone up found!")));
+	bConeUp = true;
+}
+
+void ABirdPawn::OnEndOverlapUp(UPrimitiveComponent * OverlappedComp, AActor * OtherActor, UPrimitiveComponent * OtherComp, int32 OtherBodyIndex)
+{
+	bConeUp = false;
+}
+
+void ABirdPawn::OnOverlapLeft(UPrimitiveComponent * OverlappedComp, AActor * OtherActor, UPrimitiveComponent * OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult)
+{
+	//GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, FString::Printf(TEXT("Cone left found!")));
+	bConeLeft = true;
+	
+}
+
+void ABirdPawn::OnEndOverlapLeft(UPrimitiveComponent * OverlappedComp, AActor * OtherActor, UPrimitiveComponent * OtherComp, int32 OtherBodyIndex)
+{
+	bConeLeft = false;
+}
+
+void ABirdPawn::OnOverlapRight(UPrimitiveComponent * OverlappedComp, AActor * OtherActor, UPrimitiveComponent * OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult)
+{
+	//GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, FString::Printf(TEXT("Cone right found!")));
+	bConeRight = true;
+	
+}
+
+void ABirdPawn::OnEndOverlapRight(UPrimitiveComponent * OverlappedComp, AActor * OtherActor, UPrimitiveComponent * OtherComp, int32 OtherBodyIndex)
+{
+	bConeRight = false;
+}
+
+void ABirdPawn::OnOverlapDown(UPrimitiveComponent * OverlappedComp, AActor * OtherActor, UPrimitiveComponent * OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult)
+{
+	//GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, FString::Printf(TEXT("Cone down found!")));
+	bConeDown = true;
+	
+}
+
+void ABirdPawn::OnEndOverlapDown(UPrimitiveComponent * OverlappedComp, AActor * OtherActor, UPrimitiveComponent * OtherComp, int32 OtherBodyIndex)
+{
+	bConeDown = false;
+}
+
+void ABirdPawn::CheckConeColliders() {
+	if (bConeUp) {
+		FRotator NewRotation = FRotator(GetControlRotation().Pitch - 1.0f, GetControlRotation().Yaw, GetControlRotation().Roll);
+		cControllerRef->SetControlRotation(UKismetMathLibrary::RInterpTo(GetControlRotation(), NewRotation, UGameplayStatics::GetWorldDeltaSeconds(GetWorld()), 10.0f));
 	}
-	TurnRateFloat = FMath::Clamp(TurnRateFloat, 0.0f, 1.0f);
+	if (bConeLeft) {
+		FRotator NewRotation = FRotator(GetControlRotation().Pitch, GetControlRotation().Yaw + 1.0f, GetControlRotation().Roll);
+		cControllerRef->SetControlRotation(UKismetMathLibrary::RInterpTo(GetControlRotation(), NewRotation, UGameplayStatics::GetWorldDeltaSeconds(GetWorld()), 10.0f));
+	}
+	if (bConeRight) {
+		FRotator NewRotation = FRotator(GetControlRotation().Pitch, GetControlRotation().Yaw - 1.0f, GetControlRotation().Roll);
+		cControllerRef->SetControlRotation(UKismetMathLibrary::RInterpTo(GetControlRotation(), NewRotation, UGameplayStatics::GetWorldDeltaSeconds(GetWorld()), 10.0f));
+	}
+	if (bConeDown) {
+		FRotator NewRotation = FRotator(GetControlRotation().Pitch + 5.0f, GetControlRotation().Yaw, GetControlRotation().Roll);
+		cControllerRef->SetControlRotation(UKismetMathLibrary::RInterpTo(GetControlRotation(), NewRotation, UGameplayStatics::GetWorldDeltaSeconds(GetWorld()), 10.0f));
+	}
 }
