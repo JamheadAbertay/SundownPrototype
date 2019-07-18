@@ -2,6 +2,7 @@
 
 #include "Ship.h"
 #include "Engine.h"
+#include "UObject/ConstructorHelpers.h"
 
 
 // Sets default values
@@ -21,8 +22,18 @@ AShip::AShip()
 	ShipMesh->SetupAttachment(RootComponent);
 
 	//
-	SailMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Sail mesh"));
+	SailMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Sail mesh"));
 	SailMesh->SetupAttachment(ShipMesh);
+	/*static ConstructorHelpers::FObjectFinder<USkeletalMesh> SkeletalMeshAsset(TEXT("SkeletalMesh'/Game/BlueprintMechanics/SK_Sail.SK_Sail'"));
+	if (SkeletalMeshAsset.Succeeded()) {
+		SailMesh->SetSkeletalMesh(SkeletalMeshAsset.Object);
+		SailMesh->SetWorldScale3D(FVector(1.0f));
+		SailMesh->SetMobility(EComponentMobility::Movable);
+		SailMesh->SetRelativeLocation(FVector(0.0f, 0.0f, 0.0f));
+		SailMesh->SetRelativeRotation(FRotator(0.0f, 0.0f, 90.0f));
+		SailMesh->bVisible = true;
+		SailMesh->bCastDynamicShadow = true;
+	}*/
 
 	//
 	ShipSpline = CreateDefaultSubobject<USplineComponent>(TEXT("Ship spline"));

@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "Components/SplineComponent.h"
+#include "Components/SkeletalMeshComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "Materials/MaterialInterface.h"
 #include "Materials/MaterialInstanceDynamic.h"
@@ -29,7 +30,7 @@ public:
 		UStaticMeshComponent* ShipMesh;
 
 	UPROPERTY(EditAnywhere)
-		UStaticMeshComponent* SailMesh;
+		USkeletalMeshComponent* SailMesh;
 
 	UPROPERTY(EditAnywhere)
 		USplineComponent* ShipSpline;

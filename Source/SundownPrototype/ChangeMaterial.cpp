@@ -1,4 +1,5 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Developed by Meile Bauzyte
+// Property of Jamhead Games
 
 #include "ChangeMaterial.h"
 #include "DrawDebugHelpers.h"
@@ -9,7 +10,7 @@ AChangeMaterial::AChangeMaterial()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-
+	
 	myMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("mesh"));
 	RootComponent = myMesh;
 
@@ -23,8 +24,6 @@ AChangeMaterial::AChangeMaterial()
 
 	// set up a notification for when this component overlaps something  
 	myBoxComponent->OnComponentBeginOverlap.AddDynamic(this, &AChangeMaterial::OnOverlapBegin);
-
-
 }
 
 // Called when the game starts or when spawned
@@ -33,6 +32,11 @@ void AChangeMaterial::BeginPlay()
 	Super::BeginPlay();
 	
 	//DrawDebugBox(GetWorld(), GetActorLocation(), FVector(100, 100, 100), FColor::White, true, -1, 0, 10);
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ADiamondManager::StaticClass(), DiamondManagers);
+	DiamondManager = Cast<ADiamondManager>(DiamondManagers[0]);
+	if (DiamondManager) {
+		GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Green, FString::Printf(TEXT("Manager found")));
+	}
 
 	myMesh->SetMaterial(0, offCollision);
 	bActivated = false;
@@ -49,14 +53,23 @@ void AChangeMaterial::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor
 	//if collision happens
 	if ((OtherActor != nullptr) && (OtherActor != this) && (OtherComp != nullptr))
 	{
-		//set material to shiny
-		myMesh->SetMaterial(0, onCollision);
+		bool correct = DiamondManager->DiamondCheck(sequenceID, bActivated);
 		//activate the boolean to say that it is indeed shiny
-		bActivated = true;
+		bActivated = correct;
+		
+		//if incorrect order has been presented, deactivate everything that has been done/ change all material to be unlit
+		if (!correct)
+			Deactivate();
+		//if the sequence is correct, set material to shiny
+		else if (correct) 
+			myMesh->SetMaterial(0, onCollision);
+		
 	}
 }
 
-void AChangeMaterial::GetActivated(bool bActive)
+void AChangeMaterial::Deactivate() 
 {
-	/*bActive = bActivated;*/
+	//sets the material to be unlit
+	myMesh->SetMaterial(0, offCollision);
+	bActivated = false;
 }
