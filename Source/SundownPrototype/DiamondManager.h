@@ -1,4 +1,5 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Developed by Meile Bauzyte 
+// Property of Jamhead Games
 
 #pragma once
 
@@ -25,13 +26,12 @@ protected:
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-
-	void DiamondCheck();
+	
+	//
+	bool DiamondCheck(int ID, bool bActivated);
 
 private:
 	TArray<AActor*> Diamonds;
-	//TArray<bool*> DiamondBools;
-	int NumDiamonds; 
-	int NumActivated;
-
+	int progress = 0;
+	int NumDiamonds;
 };
