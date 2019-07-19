@@ -18,9 +18,6 @@ public:
 	// Sets default values for this actor's properties
 	AArmadilloWheel();
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		UStaticMeshComponent* WheelMesh;
-
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
