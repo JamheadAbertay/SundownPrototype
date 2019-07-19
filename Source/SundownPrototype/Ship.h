@@ -20,17 +20,11 @@ public:
 	// Sets default values for this actor's properties
 	AShip();
 
-	UPROPERTY(EditAnywhere, Category = Material)
-		UMaterialInterface* SailMaterial;
-
 	// Create dynamic material instance
-	UMaterialInstanceDynamic* DynMaterial;
+	//UMaterialInstanceDynamic* DynMaterial;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		UStaticMeshComponent* ShipMesh;
-
-	UPROPERTY(EditAnywhere)
-		USkeletalMeshComponent* SailMesh;
 
 	UPROPERTY(EditAnywhere)
 		USplineComponent* ShipSpline;
