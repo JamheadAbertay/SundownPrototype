@@ -15,21 +15,6 @@ AArmadilloWheel::AArmadilloWheel()
 
 	// Create root component
 	RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("Root Component"));
-
-	// Create mesh used for the wheel
-	WheelMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Hamster wheel"));
-
-	// Setup the mesh
-	static ConstructorHelpers::FObjectFinder<UStaticMesh> WheelMeshAsset(TEXT("StaticMesh'/Game/Blueprints/HamsterWheel/wheelstandin.wheelstandin'"));
-	if (WheelMeshAsset.Succeeded()) {
-		WheelMesh->SetStaticMesh(WheelMeshAsset.Object);
-		WheelMesh->SetWorldScale3D(FVector(1.0f));
-		WheelMesh->SetMobility(EComponentMobility::Movable);
-		WheelMesh->SetRelativeLocation(FVector(0.0f, 0.0f, 0.0f));
-		WheelMesh->SetRelativeRotation(FRotator(0.0f, 0.0f, 90.0f));
-		WheelMesh->bVisible = true;
-		WheelMesh->bCastDynamicShadow = true;
-	}
 }
 
 // Called when the game starts or when spawned
