@@ -22,20 +22,6 @@ AShip::AShip()
 	ShipMesh->SetupAttachment(RootComponent);
 
 	//
-	SailMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Sail mesh"));
-	SailMesh->SetupAttachment(ShipMesh);
-	/*static ConstructorHelpers::FObjectFinder<USkeletalMesh> SkeletalMeshAsset(TEXT("SkeletalMesh'/Game/BlueprintMechanics/SK_Sail.SK_Sail'"));
-	if (SkeletalMeshAsset.Succeeded()) {
-		SailMesh->SetSkeletalMesh(SkeletalMeshAsset.Object);
-		SailMesh->SetWorldScale3D(FVector(1.0f));
-		SailMesh->SetMobility(EComponentMobility::Movable);
-		SailMesh->SetRelativeLocation(FVector(0.0f, 0.0f, 0.0f));
-		SailMesh->SetRelativeRotation(FRotator(0.0f, 0.0f, 90.0f));
-		SailMesh->bVisible = true;
-		SailMesh->bCastDynamicShadow = true;
-	}*/
-
-	//
 	ShipSpline = CreateDefaultSubobject<USplineComponent>(TEXT("Ship spline"));
 	ShipSpline->SetupAttachment(RootComponent);
 }
@@ -49,15 +35,15 @@ void AShip::BeginPlay()
 	ShipMesh->SetWorldLocation(ShipSpline->GetLocationAtSplinePoint(0, ESplineCoordinateSpace::World));
 	ShipMesh->SetWorldRotation(ShipSpline->GetRotationAtSplinePoint(0, ESplineCoordinateSpace::World));
 
-	// Create dynamic material instance
-	DynMaterial = UMaterialInstanceDynamic::Create(SailMaterial, this);
-	// Set parameters
-	DynMaterial->SetScalarParameterValue("Amount", 0.0f);
-	DynMaterial->SetScalarParameterValue("Boost", 1.406528f);
-	DynMaterial->SetScalarParameterValue("Width", 0.04762f);
+	//// Create dynamic material instance
+	//DynMaterial = UMaterialInstanceDynamic::Create(SailMaterial, this);
+	//// Set parameters
+	//DynMaterial->SetScalarParameterValue("Amount", 0.0f);
+	//DynMaterial->SetScalarParameterValue("Boost", 1.406528f);
+	//DynMaterial->SetScalarParameterValue("Width", 0.04762f);
 
-	//
-	SailMesh->SetMaterial(0, DynMaterial);
+	////
+	//SailMesh->SetMaterial(0, DynMaterial);
 }
 
 // Called every frame
@@ -67,7 +53,7 @@ void AShip::Tick(float DeltaTime)
 
 	if (bFired) {
 		fFireAmount = FMath::FInterpTo(fFireAmount, 1.0f, DeltaTime, 0.2f);
-		DynMaterial->SetScalarParameterValue("Amount", fFireAmount);
+		//DynMaterial->SetScalarParameterValue("Amount", fFireAmount);
 	}
 
 	// Increase distance along spline
@@ -88,7 +74,7 @@ void AShip::Tick(float DeltaTime)
 //Called when character overlaps with collision box
 void AShip::OnOverlapBegin(class AActor* OverlappedActor, class AActor* OtherActor)
 {
-	bFired = true;
+	/*bFired = true;
 	FVector CinderLocation = OtherActor->GetActorLocation();
-	GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, FString::Printf(TEXT("Sail on fire at: %s"), *CinderLocation.ToString()));
+	GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, FString::Printf(TEXT("Sail on fire at: %s"), *CinderLocation.ToString()));*/
 }
