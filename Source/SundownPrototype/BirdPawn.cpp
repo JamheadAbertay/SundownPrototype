@@ -233,7 +233,7 @@ void ABirdPawn::CalculateFlight(float DeltaTime)
 	FVector2D output = FVector2D(4.0f, 0.0f);
 	// Get mapped value 
 	float fZRangeClamped = FMath::GetMappedRangeValueClamped(input, output, fZVel);
-	fMomentumAmount = FMath::FInterpTo(fMomentumAmount, fZRangeClamped, UGameplayStatics::GetWorldDeltaSeconds(GetWorld()), FMath::Abs(fInclination) + 0.5f);
+	fMomentumAmount = FMath::FInterpTo(fMomentumAmount, fZRangeClamped, UGameplayStatics::GetWorldDeltaSeconds(GetWorld()), FMath::Abs(fInclination) * 0.5f);
 	// Get direction to fly in
 	FVector vControlForward = UKismetMathLibrary::GetForwardVector(GetControlRotation());
 	// Add movement input
