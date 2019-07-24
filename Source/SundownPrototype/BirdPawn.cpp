@@ -341,7 +341,7 @@ void ABirdPawn::PlayTimeline()
 
 void ABirdPawn::PitchInput(float Val) {
 	PitchAmount = UGameplayStatics::GetWorldDeltaSeconds(GetWorld()) * PitchTurnRate * Val;
-	AddControllerPitchInput(PitchAmount * YCamMultiplier);
+	AddControllerPitchInput(PitchAmount * -YCamMultiplier);
 }
 
 void ABirdPawn::YawInput(float Val) {
