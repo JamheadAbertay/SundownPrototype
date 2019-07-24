@@ -48,7 +48,7 @@ ABirdPawn::ABirdPawn()
 	smCollisionConeDown->bGenerateOverlapEvents = true;
 
 	// Curve float
-	static ConstructorHelpers::FObjectFinder<UCurveFloat> Curve(TEXT("CurveFloat'/Game/Characters/PlayerCharacter/Blueprints/BoostCurve.BoostCurve'"));
+	static ConstructorHelpers::FObjectFinder<UCurveFloat> Curve(TEXT("CurveFloatCurveFloat'/Game/Characters/PlayerCharacter/Blueprints/BoostCurve.BoostCurve'"));
 	check(Curve.Succeeded());
 
 	FloatCurve = Curve.Object;
@@ -320,13 +320,12 @@ void ABirdPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 
 void ABirdPawn::TimelineCallback(float val)
 {
-	AddMovementInput(UKismetMathLibrary::UKismetMathLibrary::GetForwardVector(GetControlRotation()), val);
+	cMoveCompRef->AddImpulse(UKismetMathLibrary::UKismetMathLibrary::GetForwardVector(GetControlRotation()) * val);
 }
 
 void ABirdPawn::TimelineFinishedCallback()
 {
 	Boosting = false;
-	cMoveCompRef->MaxWalkSpeed = fDefaultFlightSpeed;
 }
 
 void ABirdPawn::PlayTimeline()
@@ -335,7 +334,6 @@ void ABirdPawn::PlayTimeline()
 	{
 		MyTimeline->PlayFromStart();
 		Boosting = true;
-		cMoveCompRef->MaxWalkSpeed = fBoostFlightSpeed;
 	}
 }
 
@@ -343,7 +341,7 @@ void ABirdPawn::PlayTimeline()
 
 void ABirdPawn::PitchInput(float Val) {
 	PitchAmount = UGameplayStatics::GetWorldDeltaSeconds(GetWorld()) * PitchTurnRate * Val;
-	AddControllerPitchInput(PitchAmount * YCamMultiplier);
+	AddControllerPitchInput(PitchAmount * -YCamMultiplier);
 }
 
 void ABirdPawn::YawInput(float Val) {
