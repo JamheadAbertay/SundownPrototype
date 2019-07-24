@@ -118,9 +118,6 @@ private:
 	/** Default max speed */
 	UPROPERTY(EditAnywhere, Category = Flight)
 		float fDefaultFlightSpeed = 3600.0f;
-	/** Boost flight speeds */
-	UPROPERTY(EditAnywhere, Category = Flight)
-		float fBoostFlightSpeed = 6000.0f;
 
 	// Flight floats
 	/** This is used when calculating the inclination of the character (then used for Z velocity) */
