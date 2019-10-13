@@ -291,9 +291,9 @@ void ABirdPawn::CalculateCamera() {
 	mCameraSpringArm->TargetArmLength = UKismetMathLibrary::FInterpTo(mCameraSpringArm->TargetArmLength, fDiveCamClamped, UGameplayStatics::GetWorldDeltaSeconds(GetWorld()), DiveCameraInterpSpeed);
 
 	////
-	//if (fInclination > 0.0f) {
-	//	mCameraSpringArm->TargetOffset = FMath::VInterpTo(mCameraSpringArm->TargetOffset, FVector(0.0f, 0.0f, fInclination * 5.0f), UGameplayStatics::GetWorldDeltaSeconds(GetWorld()), 1.0f);
-	//}
+	if (fInclination > 0.0f) {
+		mCameraSpringArm->TargetOffset = FMath::VInterpTo(mCameraSpringArm->TargetOffset, FVector(0.0f, 0.0f, fInclination * 5.0f), UGameplayStatics::GetWorldDeltaSeconds(GetWorld()), 1.0f);
+	}
 
 	// 
 	fFovRangeClamped = FMath::GetMappedRangeValueClamped(input, output2, GetCharacterMovement()->Velocity.Z);
