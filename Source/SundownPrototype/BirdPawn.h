@@ -18,6 +18,7 @@ public:
 	// Sets default values for this character's properties
 	ABirdPawn();
 
+
 	// Camera components
 	UPROPERTY(EditAnywhere)
 		USpringArmComponent* mCameraSpringArm;
@@ -86,7 +87,7 @@ protected:
 	virtual void NotifyHit(class UPrimitiveComponent* MyComp, class AActor* Other, class UPrimitiveComponent* OtherComp, bool bSelfMoved, FVector HitLocation, FVector HitNormal, FVector NormalImpulse, const FHitResult& Hit) override;
 	// End AActor overrides
 
-private:
+public:
 
 	/** Collision bools */
 	bool bConeUp = false;
@@ -116,8 +117,8 @@ private:
 		float PitchTurnRate = 22.5f;
 
 	/** Default max speed */
-	UPROPERTY(EditAnywhere, Category = Flight)
-		float fDefaultFlightSpeed = 3600.0f;
+	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Flight)
+	//float fDefaultFlightSpeed = 3600.0f;
 
 	// Flight floats
 	/** This is used when calculating the inclination of the character (then used for Z velocity) */

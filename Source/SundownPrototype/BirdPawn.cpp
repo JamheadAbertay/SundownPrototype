@@ -97,7 +97,7 @@ void ABirdPawn::BeginPlay()
 	cMoveCompRef->FallingLateralFriction = 1.0f;
 	cMoveCompRef->RotationRate = FRotator(1.0f, 1.0f, 1.0f);
 	cMoveCompRef->MaxAcceleration = 600.0f;
-	cMoveCompRef->MaxWalkSpeed = fDefaultFlightSpeed;
+	cMoveCompRef->MaxWalkSpeed = 600.0f;
 
 	// Invert-Y
 	if (bInvertCamY) {
